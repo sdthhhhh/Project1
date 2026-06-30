@@ -1920,6 +1920,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acedc5089877dd747ba580bfa2e6df2c, type: 3}
+<<<<<<< Updated upstream
 --- !u!4 &399328911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acedc5089877dd747ba580bfa2e6df2c, type: 3}
@@ -1999,6 +2000,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0ee63ba2cd475124e986e32bf01ce08c, type: 3}
   m_PrefabInstance: {fileID: 433903054}
   m_PrefabAsset: {fileID: 0}
+=======
+>>>>>>> Stashed changes
 --- !u!4 &446708036 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 18e0ffaf899475a45a3e2cfa27aeee2a, type: 3}
@@ -2320,6 +2323,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b120b43f4356ce4fb8a0d9143929bf9, type: 3}
+<<<<<<< Updated upstream
 --- !u!4 &561919428 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9b120b43f4356ce4fb8a0d9143929bf9, type: 3}
@@ -2397,6 +2401,8 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1217664501}
   m_SourcePrefab: {fileID: 100100000, guid: 6c427e6d7af4d874b939d4ca08bf34bd, type: 3}
+=======
+>>>>>>> Stashed changes
 --- !u!1001 &681392430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3970,6 +3976,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8c8d7933af526c4e9dcdfa1b4110da2, type: 3}
+<<<<<<< Updated upstream
 --- !u!4 &1208576765 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f8c8d7933af526c4e9dcdfa1b4110da2, type: 3}
@@ -4097,6 +4104,8 @@ Transform:
   - {fileID: 1402379501}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> Stashed changes
 --- !u!1001 &1277497622
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5020,11 +5029,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1217664504}
-  - {fileID: 433903055}
   - {fileID: 730108926}
-  - {fileID: 2025307311}
-  - {fileID: 1676953669}
   - {fileID: 1496667336}
   - {fileID: 446708036}
   m_Father: {fileID: 1263427527}
@@ -5899,6 +5904,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2c7395a9c1eb0b4090a153ef63338d6, type: 3}
+<<<<<<< Updated upstream
 --- !u!4 &1674119652 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a2c7395a9c1eb0b4090a153ef63338d6, type: 3}
@@ -6121,6 +6127,8 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1772789930}
   m_CullTransparentMesh: 1
+=======
+>>>>>>> Stashed changes
 --- !u!1001 &1793445269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6859,6 +6867,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9720234d95177e4aa9efbd8de670d1c, type: 3}
+<<<<<<< Updated upstream
 --- !u!4 &1991901487 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c9720234d95177e4aa9efbd8de670d1c, type: 3}
@@ -6938,6 +6947,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fe6ea45a03e4ef54397335f4c63d63f1, type: 3}
   m_PrefabInstance: {fileID: 2025307310}
   m_PrefabAsset: {fileID: 0}
+=======
+>>>>>>> Stashed changes
 --- !u!1001 &2045200200
 PrefabInstance:
   m_ObjectHideFlags: 0
