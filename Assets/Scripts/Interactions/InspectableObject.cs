@@ -13,6 +13,7 @@ public sealed class InspectableObject : MonoBehaviour
     [SerializeField,Tooltip("Optional Renderer name receiving the photo texture. Leave empty to use the largest Renderer.")]private string photoRendererName="";
     [SerializeField,Min(0),Tooltip("Material slot on the selected Renderer receiving the photo texture.")]private int photoMaterialIndex=0;
     [SerializeField, TextArea(2, 5), Tooltip("One-sentence description shown to the right of the image.")] private string description = "A detail that may be worth remembering.";
+    [SerializeField, Tooltip("Whether raycast inspection is currently available for this object.")] private bool canInspect = true;
     [Header("Optional Inspect Completion")]
     [SerializeField, Tooltip("Invoked whenever this item's Inspect UI is fully closed. Local zoom close does not invoke it.")] private UnityEvent onInspectFinished;
 
@@ -20,11 +21,13 @@ public sealed class InspectableObject : MonoBehaviour
     public Vector3 PreviewRotation => previewRotation;
     public Texture2D PreviewPhoto=>previewPhoto;public string PhotoRendererName=>photoRendererName;public int PhotoMaterialIndex=>photoMaterialIndex;
     public string Description => description;
+    public bool CanInspect => canInspect;
     public event Action InspectFinished;
 
     public void ConfigurePreview(GameObject model,string text,Vector3 rotation)
     {previewModel=model;description=text;previewRotation=rotation;}
     public void SetPreviewPhoto(Texture2D photo){previewPhoto=photo;}
+    public void SetCanInspect(bool value){canInspect=value;}
     public void NotifyInspectFinished(){InspectFinished?.Invoke();onInspectFinished?.Invoke();}
 
     private void Reset()

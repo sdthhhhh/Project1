@@ -77,7 +77,11 @@ public sealed class InspectableRaycaster : MonoBehaviour
                 {
                     if(restore.CanClickRestoreTarget(hit.collider))hoveredRestoreTarget=restore;
                 }
-                else hovered=hit.collider.GetComponentInParent<InspectableObject>();
+                else
+                {
+                    InspectableObject candidate=hit.collider.GetComponentInParent<InspectableObject>();
+                    if(candidate!=null&&candidate.CanInspect)hovered=candidate;
+                }
             }
         }
         bool collectible=hovered!=null&&hovered.GetComponent<IInspectableCollectible>()!=null;
