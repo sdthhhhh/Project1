@@ -13,15 +13,22 @@ public sealed class InspectableUIController : MonoBehaviour
     [Header("3D Preview Studio")]
     [SerializeField, Tooltip("Camera rendering only the preview model.")] private Camera previewCamera;
     [SerializeField, Tooltip("Pivot under which the temporary preview model is created.")] private Transform previewPivot;
+    [SerializeField, Tooltip("Hotspot and close-up extension hosted by this same Inspect Canvas.")] private InspectZoomController inspectZoomController;
     [SerializeField, Min(128), Tooltip("Square RenderTexture resolution.")] private int textureResolution=1024;
     [SerializeField, Min(.05f), Tooltip("Mouse drag rotation sensitivity.")] private float rotationSensitivity=.35f;
     [SerializeField, Min(.1f), Tooltip("Target maximum model size inside the studio.")] private float fittedModelSize=2f;
     [SerializeField, Range(0f,1f), Tooltip("Transparency of the full inspection Canvas background. Lower values reveal more of the game scene.")] private float canvasBackgroundAlpha=.55f;
+    [Header("Preview Background")]
+    [SerializeField, Tooltip("Remove transparent, magenta-key, or URP pure-black pixels from the 3D viewport so the overlay behind it remains visible.")] private bool transparentPreviewBackground=true;
+    [SerializeField, Tooltip("Solid viewport background used when Transparent Preview Background is disabled.")] private Color previewFallbackColor=new Color(.08f,.065f,.05f,1f);
     private RenderTexture renderTexture;private Material transparentPreviewMaterial;private GameObject previewInstance;private InspectableObject currentTarget;private bool rotationMode;private Vector3 lastMouse;
     public bool IsOpen => inspectPanel != null && inspectPanel.activeSelf;
+    public bool IsZoomOpen => inspectZoomController != null && inspectZoomController.IsZoomOpen;
 
     public void Configure(GameObject panel, RawImage preview, TMP_Text description, TMP_Text putBack, TMP_Text rotate, Camera camera, Transform pivot)
     {inspectPanel=panel;objectPreview=preview;descriptionText=description;putBackPrompt=putBack;rotatePrompt=rotate;previewCamera=camera;previewPivot=pivot;if(inspectPanel!=null)inspectPanel.SetActive(false);}
+
+    public void ConfigureZoomController(InspectZoomController controller){inspectZoomController=controller;}
 
     public void Show(InspectableObject target)
     {
@@ -39,6 +46,7 @@ public sealed class InspectableUIController : MonoBehaviour
     {
         if(!IsOpen)return;
         ApplyPanelBackgroundAlpha();
+        if(IsZoomOpen)return;
         if(Input.GetKeyDown(KeyCode.E)){rotationMode=!rotationMode;UpdateRotatePrompt();}
         if(!rotationMode)return;
         if(Input.GetMouseButtonDown(0))lastMouse=Input.mousePosition;
@@ -71,17 +79,15 @@ public sealed class InspectableUIController : MonoBehaviour
     {
         if(previewCamera==null||previewPivot==null||objectPreview==null){Debug.LogError("InspectableUIController: 3D preview references are missing. Run Tools/Object Inspection/Install Scene UI.");return;}
         DestroyPreview();
-        if(renderTexture==null){renderTexture=new RenderTexture(textureResolution,textureResolution,24,RenderTextureFormat.ARGB32){name="InspectableObjectRenderTexture"};renderTexture.Create();}
-        previewCamera.clearFlags=CameraClearFlags.SolidColor;previewCamera.backgroundColor=new Color(1f,0f,1f,1f);
-        previewCamera.allowHDR=false;previewCamera.allowMSAA=false;
-        previewCamera.targetTexture=renderTexture;previewCamera.enabled=true;objectPreview.texture=renderTexture;objectPreview.color=Color.white;
-        if(transparentPreviewMaterial==null)
+        if(renderTexture==null)
         {
-            Shader shader=Shader.Find("UI/InspectablePreviewTransparent");
-            if(shader!=null)transparentPreviewMaterial=new Material(shader){name="InspectablePreviewTransparent_Runtime"};
-            else Debug.LogError("InspectableUIController: UI/InspectablePreviewTransparent shader was not found.");
+            renderTexture=new RenderTexture(textureResolution,textureResolution,24,RenderTextureFormat.ARGB32,RenderTextureReadWrite.Default)
+            {name="InspectableObjectRenderTexture",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp,useMipMap=false,autoGenerateMips=false,antiAliasing=4};
+            renderTexture.Create();
         }
-        objectPreview.material=transparentPreviewMaterial;
+        ApplyPreviewBackgroundSettings();
+        previewCamera.allowHDR=false;previewCamera.allowMSAA=true;
+        previewCamera.targetTexture=renderTexture;previewCamera.enabled=true;objectPreview.texture=renderTexture;objectPreview.color=Color.white;
         previewPivot.localRotation=Quaternion.identity;
         previewInstance=Instantiate(target.PreviewModel,previewPivot);previewInstance.name="PreviewModel_Instance";previewInstance.transform.localPosition=Vector3.zero;previewInstance.transform.localRotation=Quaternion.identity;
         PrepareClone(previewInstance.transform);
@@ -93,6 +99,7 @@ public sealed class InspectableUIController : MonoBehaviour
         previewInstance.transform.position+=previewPivot.position-bounds.center;
         if(target.PreviewPhoto!=null)ApplyPhotoToPreviewMaterial(target);
         previewPivot.localRotation=Quaternion.Euler(target.PreviewRotation);
+        if(inspectZoomController!=null)inspectZoomController.BeginInspection(previewInstance);
     }
 
     private void ApplyPhotoToPreviewMaterial(InspectableObject target)
@@ -128,12 +135,38 @@ public sealed class InspectableUIController : MonoBehaviour
     private static void PrepareClone(Transform root)
     {
         foreach(Transform t in root.GetComponentsInChildren<Transform>(true))t.gameObject.layer=31;
-        foreach(Collider c in root.GetComponentsInChildren<Collider>(true))c.enabled=false;
+        // Preview colliders stay enabled on isolated layer 31 so hotspot occlusion checks can
+        // distinguish a visible surface detail from one hidden behind the item itself.
         foreach(Rigidbody rb in root.GetComponentsInChildren<Rigidbody>(true)){rb.isKinematic=true;rb.useGravity=false;}
         foreach(MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
     }
 
     private void DestroyPreview(){if(previewInstance!=null)Destroy(previewInstance);previewInstance=null;}
+
+    private void ApplyPreviewBackgroundSettings()
+    {
+        if(previewCamera==null||objectPreview==null)return;
+        previewCamera.clearFlags=CameraClearFlags.SolidColor;
+        if(!transparentPreviewBackground)
+        {
+            Color fallback=previewFallbackColor;fallback.a=1f;
+            previewCamera.backgroundColor=fallback;
+            objectPreview.material=null;
+            return;
+        }
+
+        // Magenta is intentional: when URP preserves target alpha it is removed by alpha; when
+        // a renderer forces alpha to one the shader removes this key colour. The shader also
+        // removes pure black for URP configurations that replace the clear colour with black.
+        previewCamera.backgroundColor=new Color(1f,0f,1f,0f);
+        if(transparentPreviewMaterial==null)
+        {
+            Shader shader=Shader.Find("UI/InspectablePreviewTransparent");
+            if(shader!=null)transparentPreviewMaterial=new Material(shader){name="InspectablePreviewTransparent_Runtime"};
+            else Debug.LogError("InspectableUIController: UI/InspectablePreviewTransparent shader was not found.",this);
+        }
+        objectPreview.material=transparentPreviewMaterial;
+    }
     public bool TryCollectCurrent()
     {
         if(currentTarget==null)return false;
@@ -141,6 +174,7 @@ public sealed class InspectableUIController : MonoBehaviour
         if(collectible==null)return false;
         collectible.CollectFromInspection();return true;
     }
-    public void Hide(){DestroyPreview();currentTarget=null;rotationMode=false;if(previewCamera!=null)previewCamera.enabled=false;if(inspectPanel!=null)inspectPanel.SetActive(false);}
+    public bool TryCloseZoom(){if(inspectZoomController==null||!inspectZoomController.IsZoomOpen)return false;inspectZoomController.CloseZoom();return true;}
+    public void Hide(){InspectableObject finishedTarget=currentTarget;if(inspectZoomController!=null)inspectZoomController.StopInspection();DestroyPreview();currentTarget=null;rotationMode=false;if(previewCamera!=null)previewCamera.enabled=false;if(inspectPanel!=null)inspectPanel.SetActive(false);if(finishedTarget!=null)finishedTarget.NotifyInspectFinished();}
     private void OnDestroy(){DestroyPreview();if(renderTexture!=null){renderTexture.Release();Destroy(renderTexture);}if(transparentPreviewMaterial!=null)Destroy(transparentPreviewMaterial);}
 }

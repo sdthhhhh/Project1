@@ -31,28 +31,28 @@ public class InteractionUI : MonoBehaviour
         if (FindObjectOfType<ItemRestorationSystem>() == null)
             gameObject.AddComponent<ItemRestorationSystem>();
 
-        crosshairImage.color = normalColor;
+        if (crosshairImage != null) crosshairImage.color = normalColor;
 
-        interactTextObject.SetActive(false);
-        interactText.text = message;
+        if (interactTextObject != null) interactTextObject.SetActive(false);
+        if (interactText != null) interactText.text = message;
 
-        statusTextObject.SetActive(false);
+        if (statusTextObject != null) statusTextObject.SetActive(false);
     }
 
     public void ShowInteract(string text)
     {
-        if (statusTextObject.activeSelf)
+        if (statusTextObject != null && statusTextObject.activeSelf)
             return;
 
-        crosshairImage.color = interactColor;
-        interactTextObject.SetActive(true);
-        interactText.text = text;
+        if (crosshairImage != null) crosshairImage.color = interactColor;
+        if (interactTextObject != null) interactTextObject.SetActive(true);
+        if (interactText != null) interactText.text = text;
     }
 
     public void HideInteract()
     {
-        crosshairImage.color = normalColor;
-        interactTextObject.SetActive(false);
+        if (crosshairImage != null) crosshairImage.color = normalColor;
+        if (interactTextObject != null) interactTextObject.SetActive(false);
     }
 
     public void ShowStatus(string text)
@@ -67,6 +67,7 @@ public class InteractionUI : MonoBehaviour
 
     private IEnumerator StatusRoutine(string text)
     {
+        if (statusText == null || statusTextObject == null) yield break;
         statusText.text = text;
         statusTextObject.SetActive(true);
 

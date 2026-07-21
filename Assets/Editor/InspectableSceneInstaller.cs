@@ -9,7 +9,19 @@ using UnityEngine.UI;
 
 public static class InspectableSceneInstaller
 {
-    private const string IconPath="Assets/UI/GeneratedMagnifier.png";
+    private const string MagnifierIconPath="Assets/UI/GeneratedMagnifier.png";
+
+    [InitializeOnLoadMethod]
+    private static void InstallAfterLeavingPlayMode()
+    {
+        EditorApplication.playModeStateChanged-=OnPlayModeStateChanged;
+        EditorApplication.playModeStateChanged+=OnPlayModeStateChanged;
+    }
+
+    private static void OnPlayModeStateChanged(PlayModeStateChange state)
+    {
+        if(state==PlayModeStateChange.EnteredEditMode)EditorApplication.delayCall+=Install;
+    }
 
     [InitializeOnLoadMethod]
     private static void UpgradeOldPromptAfterCompile()
@@ -18,12 +30,23 @@ public static class InspectableSceneInstaller
         {
             if(Application.isPlaying||EditorApplication.isPlayingOrWillChangePlaymode)return;
             CreateMagnifierSprite();
-            GameObject canvas=GameObject.Find("InspectCanvas");
-            Transform prompt=canvas!=null?canvas.transform.Find("InspectPanel/PutBackPrompt"):null;
-            Transform oldFrame=canvas!=null?canvas.transform.Find("InspectPanel/ObjectImageFrame"):null;
-            Transform legacyImage=canvas!=null?canvas.transform.Find("InspectPanel/ObjectSpriteUI"):null;
-            Transform descriptionFrame=canvas!=null?canvas.transform.Find("InspectPanel/DescriptionFrame"):null;
-            if((prompt!=null&&prompt.Find("QCircle")==null)||oldFrame!=null||legacyImage!=null||descriptionFrame!=null||GameObject.Find("InspectPreviewStudio")==null)Install();
+            GameObject canvas=GameObject.Find("ObjectInspectionCanvas")??GameObject.Find("InspectCanvas");
+            GameObject collectibleCanvas=GameObject.Find("CollectibleInspectionCanvas");
+            Transform panel=canvas!=null?(canvas.transform.Find("ObjectInspectionOverlay")??canvas.transform.Find("InspectPanel")):null;
+            Transform prompt=panel!=null?panel.Find("PutBackPrompt"):null;
+            Transform oldFrame=panel!=null?panel.Find("ObjectImageFrame"):null;
+            Transform legacyImage=panel!=null?panel.Find("ObjectSpriteUI"):null;
+            Transform descriptionFrame=panel!=null?panel.Find("DescriptionFrame"):null;
+            InspectableRaycaster raycaster=Object.FindObjectOfType<InspectableRaycaster>();
+            bool handNeedsUpgrade=false;
+            if(raycaster!=null)
+            {
+                SerializedObject serializedRaycaster=new SerializedObject(raycaster);
+                SerializedProperty magnifierProperty=serializedRaycaster.FindProperty("magnifierSprite");
+                SerializedProperty collectibleUIProperty=serializedRaycaster.FindProperty("collectibleInspectUI");
+                handNeedsUpgrade=magnifierProperty==null||magnifierProperty.objectReferenceValue==null||collectibleUIProperty==null||collectibleUIProperty.objectReferenceValue==null;
+            }
+            if(canvas==null||collectibleCanvas==null||panel==null||raycaster==null||handNeedsUpgrade||(prompt!=null&&prompt.Find("QCircle")==null)||oldFrame!=null||legacyImage!=null||descriptionFrame!=null||(GameObject.Find("ObjectInspection3DStudio")??GameObject.Find("InspectPreviewStudio"))==null||canvas.GetComponent<InspectZoomController>()==null||panel.Find("HotspotMagnifierButton")==null||panel.Find("HotspotZoomOverlay")==null)Install();
         };
     }
 
@@ -31,23 +54,33 @@ public static class InspectableSceneInstaller
     public static void Install()
     {
         if(Application.isPlaying){Debug.LogWarning("Stop Play Mode before installing the inspection UI.");return;}
-        GameObject old=GameObject.Find("InspectCanvas");
+        GameObject old=GameObject.Find("ObjectInspectionCanvas")??GameObject.Find("InspectCanvas");
         InspectableUIController controller;
         if(old==null) controller=CreateCanvas(); else controller=UpgradeExistingCanvas(old);
         if(controller==null){Debug.LogError("Inspect installer: InspectCanvas controller could not be created.");return;}
+        GameObject collectibleCanvasGo=GameObject.Find("CollectibleInspectionCanvas");
+        InspectableUIController collectibleController=collectibleCanvasGo!=null?collectibleCanvasGo.GetComponent<InspectableUIController>():CreateCollectibleCanvas();
+        if(collectibleController==null){Debug.LogError("Inspect installer: CollectibleInspectionCanvas could not be created.");return;}
 
         PlayerInteraction interaction=Object.FindObjectOfType<PlayerInteraction>();
         if(interaction==null){Debug.LogError("Inspect installer: PlayerInteraction was not found.");return;}
-        Image crosshair=FindSceneObject<Image>("CrosshairImage");
-        if(crosshair==null){Debug.LogError("Inspect installer: CrosshairImage was not found.");return;}
-        Sprite icon=CreateMagnifierSprite();
+        Image crosshair=FindSceneObject<Image>("AimCrosshair")??FindSceneObject<Image>("CrosshairImage");
+        if(crosshair==null){Debug.LogError("Inspect installer: AimCrosshair/CrosshairImage was not found.");return;}
         InspectableRaycaster raycaster=interaction.GetComponent<InspectableRaycaster>();
         if(raycaster==null)raycaster=Undo.AddComponent<InspectableRaycaster>(interaction.gameObject);
-        raycaster.Configure(crosshair,icon,controller);
-        EditorUtility.SetDirty(raycaster);EditorUtility.SetDirty(controller);
+        Sprite magnifier=CreateMagnifierSprite();Sprite hand=null;
+        SerializedObject serializedRaycaster=new SerializedObject(raycaster);
+        SerializedProperty existingHand=serializedRaycaster.FindProperty("handSprite");
+        if(existingHand!=null&&existingHand.objectReferenceValue is Sprite customHand)hand=customHand;
+        raycaster.Configure(crosshair,magnifier,hand,controller,collectibleController);
+        Transform uiRoot=GetOrCreateUIRoot();
+        ParentUnder(controller.transform,uiRoot);ParentUnder(collectibleController.transform,uiRoot);
+        GameObject objectStudio=GameObject.Find("ObjectInspection3DStudio")??GameObject.Find("InspectPreviewStudio");if(objectStudio!=null)ParentUnder(objectStudio.transform,uiRoot);
+        GameObject collectibleStudio=GameObject.Find("CollectibleInspection3DStudio");if(collectibleStudio!=null)ParentUnder(collectibleStudio.transform,uiRoot);
+        EditorUtility.SetDirty(raycaster);EditorUtility.SetDirty(controller);EditorUtility.SetDirty(collectibleController);
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();
         Selection.activeGameObject=controller.gameObject;
-        Debug.Log("Object Inspection installed. InspectCanvas is permanent and editable in the Hierarchy.");
+        Debug.Log("Separate ObjectInspectionCanvas and CollectibleInspectionCanvas installed under UI_ROOT.");
     }
 
     [MenuItem("Tools/Object Inspection/Mark Selected Objects Inspectable")]
@@ -62,13 +95,40 @@ public static class InspectableSceneInstaller
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
     }
 
+    [MenuItem("Tools/Object Inspection/Mark Selected Objects Collectible")]
+    public static void MarkSelectedCollectible()
+    {
+        foreach(GameObject go in Selection.gameObjects)
+        {
+            if(go.GetComponent<InspectableObject>()==null)Undo.AddComponent<InspectableObject>(go);
+            if(go.GetComponent<InspectableCollectible>()==null)Undo.AddComponent<InspectableCollectible>(go);
+            if(go.GetComponentInChildren<Collider>(true)==null)Undo.AddComponent<BoxCollider>(go);
+            EditorUtility.SetDirty(go);
+        }
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+    }
+
+    [MenuItem("Tools/Object Inspection/Add 4721 Hotspot To Selected")]
+    public static void AddExampleHotspot()
+    {
+        if(Selection.activeTransform==null){Debug.LogError("Select the inspected model or one of its children first.");return;}
+        GameObject hotspot=new GameObject("BackNumberHotspot");
+        Undo.RegisterCreatedObjectUndo(hotspot,"Add 4721 Inspect Hotspot");
+        hotspot.transform.SetParent(Selection.activeTransform,false);
+        BoxCollider collider=hotspot.AddComponent<BoxCollider>();collider.isTrigger=true;collider.size=new Vector3(.12f,.08f,.025f);
+        hotspot.AddComponent<InspectableHotspot>();
+        Selection.activeGameObject=hotspot;
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        Debug.Log("BackNumberHotspot created with Zoomed Text 4721. Move it over the rear detail and point local +Z away from the item surface.");
+    }
+
     private static InspectableUIController CreateCanvas()
     {
-        GameObject canvasGo=new GameObject("InspectCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster),typeof(InspectableUIController));
+        GameObject canvasGo=new GameObject("ObjectInspectionCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster),typeof(InspectableUIController));
         Undo.RegisterCreatedObjectUndo(canvasGo,"Create InspectCanvas");
         Canvas canvas=canvasGo.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.overrideSorting=true;canvas.sortingOrder=300;
         CanvasScaler scaler=canvasGo.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
-        GameObject panel=UI("InspectPanel",canvasGo.transform,new Color(.025f,.022f,.02f,.55f));Stretch(panel.GetComponent<RectTransform>(),0,0,1,1);
+        GameObject panel=UI("ObjectInspectionOverlay",canvasGo.transform,new Color(.025f,.022f,.02f,.55f));Stretch(panel.GetComponent<RectTransform>(),0,0,1,1);
         GameObject imageGo=RawUI("Object3DPreview",panel.transform);Stretch(imageGo.GetComponent<RectTransform>(),.08f,.13f,.64f,.88f);
         RawImage image=imageGo.GetComponent<RawImage>();
         TMP_Text description=Text("DescriptionText",panel.transform,"A detail that may be worth remembering.",30,TextAlignmentOptions.MidlineLeft);Stretch(description.rectTransform,.70f,.32f,.92f,.74f);
@@ -76,18 +136,19 @@ public static class InspectableSceneInstaller
         TMP_Text rotate=CreateRotatePrompt(panel.transform);
         CreatePreviewStudio(out Camera previewCamera,out Transform previewPivot);
         InspectableUIController controller=canvasGo.GetComponent<InspectableUIController>();controller.Configure(panel,image,description,prompt,rotate,previewCamera,previewPivot);
+        InstallHotspotExtension(canvasGo,panel.transform,image,controller,previewCamera);
         return controller;
     }
 
     private static InspectableUIController UpgradeExistingCanvas(GameObject canvasGo)
     {
         InspectableUIController controller=canvasGo.GetComponent<InspectableUIController>();
-        Transform panel=canvasGo.transform.Find("InspectPanel");
+        Transform panel=canvasGo.transform.Find("ObjectInspectionOverlay")??canvasGo.transform.Find("InspectPanel");
         if(controller==null||panel==null)return controller;
         Transform oldPrompt=panel.Find("PutBackPrompt");
         if(oldPrompt!=null)Undo.DestroyObjectImmediate(oldPrompt.gameObject);
         TMP_Text prompt=CreatePutBackPrompt(panel);
-        Transform directImage=panel.Find("Object3DPreview");
+        Transform directImage=panel.Find("InspectedObject3DViewport")??panel.Find("Object3DPreview");
         if(directImage==null)directImage=panel.Find("ObjectSpriteUI");
         Transform oldFrame=panel.Find("ObjectImageFrame");
         if(directImage==null&&oldFrame!=null)
@@ -108,8 +169,8 @@ public static class InspectableSceneInstaller
             directImage=imageGo.transform;
         }
         Image oldImage=directImage.GetComponent<Image>();if(oldImage!=null)Undo.DestroyObjectImmediate(oldImage);
-        RawImage image=directImage.GetComponent<RawImage>();if(image==null)image=Undo.AddComponent<RawImage>(directImage.gameObject);directImage.name="Object3DPreview";image.color=Color.white;
-        Transform descriptionTransform=panel.Find("DescriptionText");
+        RawImage image=directImage.GetComponent<RawImage>();if(image==null)image=Undo.AddComponent<RawImage>(directImage.gameObject);directImage.name="InspectedObject3DViewport";image.color=Color.white;
+        Transform descriptionTransform=panel.Find("ObjectDescriptionText")??panel.Find("DescriptionText");
         Transform descriptionFrame=panel.Find("DescriptionFrame");
         if(descriptionTransform==null&&descriptionFrame!=null)
         {
@@ -123,7 +184,78 @@ public static class InspectableSceneInstaller
         TMP_Text rotate=CreateRotatePrompt(panel);
         CreatePreviewStudio(out Camera previewCamera,out Transform previewPivot);
         controller.Configure(panel.gameObject,image,description,prompt,rotate,previewCamera,previewPivot);
+        InstallHotspotExtension(canvasGo,panel,image,controller,previewCamera);
         return controller;
+    }
+
+    private static InspectableUIController CreateCollectibleCanvas()
+    {
+        GameObject canvasGo=new GameObject("CollectibleInspectionCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster),typeof(InspectableUIController));
+        Undo.RegisterCreatedObjectUndo(canvasGo,"Create Collectible Inspection Canvas");
+        Canvas canvas=canvasGo.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.overrideSorting=true;canvas.sortingOrder=301;
+        CanvasScaler scaler=canvasGo.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
+        GameObject panel=UI("CollectibleInspectionOverlay",canvasGo.transform,new Color(.025f,.022f,.02f,.55f));Stretch(panel.GetComponent<RectTransform>(),0,0,1,1);
+        GameObject imageGo=RawUI("CollectibleObject3DViewport",panel.transform);Stretch(imageGo.GetComponent<RectTransform>(),.08f,.13f,.64f,.88f);
+        TMP_Text description=Text("CollectibleDescriptionText",panel.transform,"A collectible object.",30,TextAlignmentOptions.MidlineLeft);Stretch(description.rectTransform,.70f,.32f,.92f,.74f);
+        TMP_Text collect=CreatePutBackPrompt(panel.transform);collect.transform.parent.name="CollectPrompt";collect.name="CollectActionText";collect.text="Collect";
+        TMP_Text rotate=CreateRotatePrompt(panel.transform);
+        CreateCollectiblePreviewStudio(out Camera previewCamera,out Transform previewPivot);
+        InspectableUIController controller=canvasGo.GetComponent<InspectableUIController>();controller.Configure(panel,imageGo.GetComponent<RawImage>(),description,collect,rotate,previewCamera,previewPivot);
+        return controller;
+    }
+
+    private static void InstallHotspotExtension(GameObject canvasGo,Transform panel,RawImage viewport,InspectableUIController inspectController,Camera previewCamera)
+    {
+        Transform buttonTransform=panel.Find("HotspotMagnifierButton");
+        Button magnifierButton;
+        Image magnifierIcon;
+        if(buttonTransform==null)
+        {
+            GameObject buttonGo=UI("HotspotMagnifierButton",panel,Color.clear);buttonTransform=buttonGo.transform;
+            RectTransform rect=buttonGo.GetComponent<RectTransform>();rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);rect.sizeDelta=new Vector2(68,68);rect.anchoredPosition=Vector2.zero;
+            magnifierButton=buttonGo.AddComponent<Button>();
+            GameObject iconGo=UI("MagnifierIcon",buttonGo.transform,Color.yellow);Stretch(iconGo.GetComponent<RectTransform>(),.12f,.12f,.88f,.88f);
+            magnifierIcon=iconGo.GetComponent<Image>();magnifierIcon.sprite=CreateMagnifierSprite();magnifierIcon.preserveAspect=true;magnifierIcon.raycastTarget=false;
+        }
+        else
+        {
+            magnifierButton=buttonTransform.GetComponent<Button>();if(magnifierButton==null)magnifierButton=Undo.AddComponent<Button>(buttonTransform.gameObject);
+            Transform iconTransform=buttonTransform.Find("MagnifierIcon");
+            if(iconTransform==null){GameObject iconGo=UI("MagnifierIcon",buttonTransform,Color.yellow);Stretch(iconGo.GetComponent<RectTransform>(),.12f,.12f,.88f,.88f);iconTransform=iconGo.transform;}
+            magnifierIcon=iconTransform.GetComponent<Image>();magnifierIcon.sprite=CreateMagnifierSprite();magnifierIcon.preserveAspect=true;magnifierIcon.raycastTarget=false;
+        }
+
+        Transform overlayTransform=panel.Find("HotspotZoomOverlay");
+        if(overlayTransform==null)
+        {
+            GameObject overlayGo=UI("HotspotZoomOverlay",panel,new Color(0,0,0,0));overlayTransform=overlayGo.transform;Stretch(overlayGo.GetComponent<RectTransform>(),0,0,1,1);
+            overlayGo.GetComponent<Image>().raycastTarget=true;
+        }
+
+        Transform imageTransform=overlayTransform.Find("HotspotZoomImage");
+        if(imageTransform==null){GameObject imageGo=UI("HotspotZoomImage",overlayTransform,Color.white);imageTransform=imageGo.transform;Stretch(imageGo.GetComponent<RectTransform>(),.09f,.13f,.67f,.88f);}
+        Image zoomImage=imageTransform.GetComponent<Image>();zoomImage.preserveAspect=true;zoomImage.raycastTarget=false;
+
+        Transform textTransform=overlayTransform.Find("HotspotZoomText");
+        TMP_Text zoomText;
+        if(textTransform==null){zoomText=Text("HotspotZoomText",overlayTransform,"4721",54,TextAlignmentOptions.Center);Stretch(zoomText.rectTransform,.70f,.28f,.93f,.72f);zoomText.fontStyle=FontStyles.Bold;}
+        else zoomText=textTransform.GetComponent<TMP_Text>();
+
+        Transform backTransform=overlayTransform.Find("HotspotZoomBackButton");
+        Button backButton;
+        if(backTransform==null)
+        {
+            GameObject backGo=UI("HotspotZoomBackButton",overlayTransform,new Color(.18f,.14f,.10f,.9f));backTransform=backGo.transform;Stretch(backGo.GetComponent<RectTransform>(),.76f,.07f,.93f,.16f);
+            backButton=backGo.AddComponent<Button>();TMP_Text label=Text("BackButtonText",backGo.transform,"Back / Esc",23,TextAlignmentOptions.Center);Stretch(label.rectTransform,0,0,1,1);
+        }
+        else {backButton=backTransform.GetComponent<Button>();if(backButton==null)backButton=Undo.AddComponent<Button>(backTransform.gameObject);}
+
+        InspectZoomController zoomController=canvasGo.GetComponent<InspectZoomController>();
+        if(zoomController==null)zoomController=Undo.AddComponent<InspectZoomController>(canvasGo);
+        zoomController.Configure(canvasGo.GetComponent<Canvas>(),panel.GetComponent<RectTransform>(),viewport,previewCamera,magnifierButton,magnifierIcon,overlayTransform.gameObject,zoomImage,zoomText,backButton);
+        inspectController.ConfigureZoomController(zoomController);
+        buttonTransform.gameObject.SetActive(false);overlayTransform.gameObject.SetActive(false);
+        EditorUtility.SetDirty(zoomController);EditorUtility.SetDirty(inspectController);
     }
 
     private static TMP_Text CreatePutBackPrompt(Transform panel)
@@ -148,28 +280,43 @@ public static class InspectableSceneInstaller
 
     private static void CreatePreviewStudio(out Camera camera,out Transform pivot)
     {
-        GameObject studio=GameObject.Find("InspectPreviewStudio");
+        GameObject studio=GameObject.Find("ObjectInspection3DStudio")??GameObject.Find("InspectPreviewStudio");
         if(studio==null){studio=new GameObject("InspectPreviewStudio");Undo.RegisterCreatedObjectUndo(studio,"Create 3D Preview Studio");studio.transform.position=new Vector3(1000,1000,1000);}
-        Transform pivotTransform=studio.transform.Find("ModelPivot");if(pivotTransform==null){GameObject p=new GameObject("ModelPivot");p.transform.SetParent(studio.transform,false);pivotTransform=p.transform;}
-        Transform cameraTransform=studio.transform.Find("PreviewCamera");
+        Transform pivotTransform=studio.transform.Find("InspectedModelPivot")??studio.transform.Find("ModelPivot");if(pivotTransform==null){GameObject p=new GameObject("InspectedModelPivot");p.transform.SetParent(studio.transform,false);pivotTransform=p.transform;}
+        Transform cameraTransform=studio.transform.Find("ObjectPreviewCamera")??studio.transform.Find("PreviewCamera");
         if(cameraTransform==null){GameObject c=new GameObject("PreviewCamera",typeof(Camera));c.transform.SetParent(studio.transform,false);cameraTransform=c.transform;cameraTransform.localPosition=new Vector3(0,0,-4);cameraTransform.localRotation=Quaternion.identity;}
-        camera=cameraTransform.GetComponent<Camera>();camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.025f,.022f,.02f,0);camera.cullingMask=1<<31;camera.fieldOfView=35;camera.allowHDR=false;camera.allowMSAA=false;camera.enabled=false;
-        Transform lightTransform=studio.transform.Find("PreviewLight");if(lightTransform==null){GameObject l=new GameObject("PreviewLight",typeof(Light));l.transform.SetParent(studio.transform,false);lightTransform=l.transform;lightTransform.localRotation=Quaternion.Euler(35,-30,0);Light light=l.GetComponent<Light>();light.type=LightType.Directional;light.intensity=1.4f;}
+        camera=cameraTransform.GetComponent<Camera>();camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;camera.cullingMask=1<<31;camera.fieldOfView=35;camera.allowHDR=false;camera.allowMSAA=false;camera.enabled=false;
+        Transform lightTransform=studio.transform.Find("ObjectPreviewLight")??studio.transform.Find("PreviewLight");if(lightTransform==null){GameObject l=new GameObject("ObjectPreviewLight",typeof(Light));l.transform.SetParent(studio.transform,false);lightTransform=l.transform;lightTransform.localRotation=Quaternion.Euler(35,-30,0);Light light=l.GetComponent<Light>();light.type=LightType.Directional;light.intensity=1.4f;}
         pivot=pivotTransform;
     }
 
+    private static void CreateCollectiblePreviewStudio(out Camera camera,out Transform pivot)
+    {
+        GameObject studio=GameObject.Find("CollectibleInspection3DStudio");
+        if(studio==null){studio=new GameObject("CollectibleInspection3DStudio");Undo.RegisterCreatedObjectUndo(studio,"Create Collectible Inspection 3D Studio");studio.transform.position=new Vector3(1010,1000,1000);}
+        Transform pivotTransform=studio.transform.Find("CollectibleModelPivot");if(pivotTransform==null){GameObject p=new GameObject("CollectibleModelPivot");p.transform.SetParent(studio.transform,false);pivotTransform=p.transform;}
+        Transform cameraTransform=studio.transform.Find("CollectiblePreviewCamera");if(cameraTransform==null){GameObject c=new GameObject("CollectiblePreviewCamera",typeof(Camera));c.transform.SetParent(studio.transform,false);cameraTransform=c.transform;cameraTransform.localPosition=new Vector3(0,0,-4);cameraTransform.localRotation=Quaternion.identity;}
+        camera=cameraTransform.GetComponent<Camera>();camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;camera.cullingMask=1<<31;camera.fieldOfView=35;camera.allowHDR=false;camera.allowMSAA=false;camera.enabled=false;
+        Transform lightTransform=studio.transform.Find("CollectiblePreviewLight");if(lightTransform==null){GameObject l=new GameObject("CollectiblePreviewLight",typeof(Light));l.transform.SetParent(studio.transform,false);lightTransform=l.transform;lightTransform.localRotation=Quaternion.Euler(35,-30,0);Light light=l.GetComponent<Light>();light.type=LightType.Directional;light.intensity=1.4f;}
+        pivot=pivotTransform;
+    }
+
+    private static Transform GetOrCreateUIRoot(){GameObject root=GameObject.Find("UI_ROOT");if(root==null){root=new GameObject("UI_ROOT");Undo.RegisterCreatedObjectUndo(root,"Create UI Root");}return root.transform;}
+    private static void ParentUnder(Transform child,Transform parent){if(child!=null&&child.parent!=parent)Undo.SetTransformParent(child,parent,"Group inspection UI under UI_ROOT");}
+
     private static Sprite CreateMagnifierSprite()
     {
+        Sprite existing=AssetDatabase.LoadAssetAtPath<Sprite>(MagnifierIconPath);
+        if(existing!=null)return existing;
         if(!Directory.Exists("Assets/UI"))Directory.CreateDirectory("Assets/UI");
         const int size=64;Texture2D tex=new Texture2D(size,size,TextureFormat.RGBA32,false);Color clear=new Color(0,0,0,0),white=Color.white;
         Color[] pixels=new Color[size*size];for(int i=0;i<pixels.Length;i++)pixels[i]=clear;
         Vector2 center=new Vector2(26,37);float radius=15;
-        for(int y=0;y<size;y++)for(int x=0;x<size;x++)
-        {float d=Vector2.Distance(new Vector2(x,y),center);if(d>radius-4f&&d<radius+4f)pixels[y*size+x]=white;}
+        for(int y=0;y<size;y++)for(int x=0;x<size;x++){float d=Vector2.Distance(new Vector2(x,y),center);if(d>radius-4f&&d<radius+4f)pixels[y*size+x]=white;}
         for(int i=0;i<23;i++)for(int w=-4;w<=4;w++){int x=37+i,y=26-i+w;if(x>=0&&x<size&&y>=0&&y<size)pixels[y*size+x]=white;}
-        tex.SetPixels(pixels);tex.Apply();File.WriteAllBytes(IconPath,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(IconPath,ImportAssetOptions.ForceUpdate);
-        TextureImporter importer=(TextureImporter)AssetImporter.GetAtPath(IconPath);importer.textureType=TextureImporterType.Sprite;importer.spritePixelsPerUnit=64;importer.alphaIsTransparency=true;importer.SaveAndReimport();
-        return AssetDatabase.LoadAssetAtPath<Sprite>(IconPath);
+        tex.SetPixels(pixels);tex.Apply();File.WriteAllBytes(MagnifierIconPath,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(MagnifierIconPath,ImportAssetOptions.ForceUpdate);
+        TextureImporter importer=(TextureImporter)AssetImporter.GetAtPath(MagnifierIconPath);importer.textureType=TextureImporterType.Sprite;importer.spritePixelsPerUnit=64;importer.alphaIsTransparency=true;importer.SaveAndReimport();
+        return AssetDatabase.LoadAssetAtPath<Sprite>(MagnifierIconPath);
     }
 
     private static GameObject UI(string name,Transform parent,Color color)

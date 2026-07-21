@@ -5,7 +5,7 @@ public sealed class DiarySlot : MonoBehaviour, IDropHandler
 {
     [Header("Slot Identity")]
     [SerializeField, Tooltip("Only this fragment ID is accepted.")] private int correctFragmentId;
-    private DiaryPuzzleManager puzzleManager;
+    [SerializeField, Tooltip("Manager notified when this slot is filled.")] private DiaryPuzzleManager puzzleManager;
     public bool IsFilled { get; private set; }
     public void Configure(int id, DiaryPuzzleManager manager) { correctFragmentId = id; puzzleManager = manager; }
     public void OnDrop(PointerEventData eventData)
