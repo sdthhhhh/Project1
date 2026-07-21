@@ -40,7 +40,10 @@ public sealed class InspectableRaycaster : MonoBehaviour
         }
         hovered=null;
         if (Physics.Raycast(transform.position,transform.forward,out RaycastHit hit,inspectDistance,inspectableLayers,QueryTriggerInteraction.Ignore))
-            hovered=hit.collider.GetComponentInParent<InspectableObject>();
+        {
+            InspectableObject candidate=hit.collider.GetComponentInParent<InspectableObject>();
+            if(candidate!=null&&candidate.CanInspect)hovered=candidate;
+        }
         SetMagnifier(hovered!=null);
         if (hovered!=null && Input.GetMouseButtonDown(0)) OpenInspection(hovered);
     }

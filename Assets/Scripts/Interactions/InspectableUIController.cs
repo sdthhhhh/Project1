@@ -17,6 +17,9 @@ public sealed class InspectableUIController : MonoBehaviour
     [SerializeField, Min(.05f), Tooltip("Mouse drag rotation sensitivity.")] private float rotationSensitivity=.35f;
     [SerializeField, Min(.1f), Tooltip("Target maximum model size inside the studio.")] private float fittedModelSize=2f;
     [SerializeField, Range(0f,1f), Tooltip("Transparency of the full inspection Canvas background. Lower values reveal more of the game scene.")] private float canvasBackgroundAlpha=.55f;
+    [Header("Preview Background")]
+    [SerializeField,Tooltip("Removes the RenderTexture background so the inspection Canvas shows through.")]private bool transparentPreviewBackground=true;
+    [SerializeField,Tooltip("Background used when Transparent Preview Background is disabled.")]private Color previewFallbackColor=new Color(.12f,.10f,.08f,1f);
     private RenderTexture renderTexture;private Material transparentPreviewMaterial;private GameObject previewInstance;private InspectableObject currentTarget;private bool rotationMode;private Vector3 lastMouse;
     public bool IsOpen => inspectPanel != null && inspectPanel.activeSelf;
 
@@ -72,16 +75,16 @@ public sealed class InspectableUIController : MonoBehaviour
         if(previewCamera==null||previewPivot==null||objectPreview==null){Debug.LogError("InspectableUIController: 3D preview references are missing. Run Tools/Object Inspection/Install Scene UI.");return;}
         DestroyPreview();
         if(renderTexture==null){renderTexture=new RenderTexture(textureResolution,textureResolution,24,RenderTextureFormat.ARGB32){name="InspectableObjectRenderTexture"};renderTexture.Create();}
-        previewCamera.clearFlags=CameraClearFlags.SolidColor;previewCamera.backgroundColor=new Color(1f,0f,1f,1f);
+        previewCamera.clearFlags=CameraClearFlags.SolidColor;previewCamera.backgroundColor=transparentPreviewBackground?new Color(1f,0f,1f,1f):previewFallbackColor;
         previewCamera.allowHDR=false;previewCamera.allowMSAA=false;
         previewCamera.targetTexture=renderTexture;previewCamera.enabled=true;objectPreview.texture=renderTexture;objectPreview.color=Color.white;
-        if(transparentPreviewMaterial==null)
+        if(transparentPreviewBackground&&transparentPreviewMaterial==null)
         {
             Shader shader=Shader.Find("UI/InspectablePreviewTransparent");
             if(shader!=null)transparentPreviewMaterial=new Material(shader){name="InspectablePreviewTransparent_Runtime"};
             else Debug.LogError("InspectableUIController: UI/InspectablePreviewTransparent shader was not found.");
         }
-        objectPreview.material=transparentPreviewMaterial;
+        objectPreview.material=transparentPreviewBackground?transparentPreviewMaterial:null;
         previewPivot.localRotation=Quaternion.identity;
         previewInstance=Instantiate(target.PreviewModel,previewPivot);previewInstance.name="PreviewModel_Instance";previewInstance.transform.localPosition=Vector3.zero;previewInstance.transform.localRotation=Quaternion.identity;
         PrepareClone(previewInstance.transform);
@@ -128,9 +131,10 @@ public sealed class InspectableUIController : MonoBehaviour
     private static void PrepareClone(Transform root)
     {
         foreach(Transform t in root.GetComponentsInChildren<Transform>(true))t.gameObject.layer=31;
+        foreach(Renderer renderer in root.GetComponentsInChildren<Renderer>(true))renderer.enabled=true;
         foreach(Collider c in root.GetComponentsInChildren<Collider>(true))c.enabled=false;
         foreach(Rigidbody rb in root.GetComponentsInChildren<Rigidbody>(true)){rb.isKinematic=true;rb.useGravity=false;}
-        foreach(MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
+        foreach(MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))if(behaviour!=null)behaviour.enabled=false;
     }
 
     private void DestroyPreview(){if(previewInstance!=null)Destroy(previewInstance);previewInstance=null;}

@@ -12,11 +12,6 @@ public class InteractionUI : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color interactColor = Color.yellow;
 
-    [Header("Interact Text")]
-    [SerializeField] private GameObject interactTextObject;
-    [SerializeField] private TMP_Text interactText;
-    [SerializeField] private string message = "Press E to interact";
-
     [Header("Status Text")]
     [SerializeField] private GameObject statusTextObject;
     [SerializeField] private TMP_Text statusText;
@@ -31,28 +26,22 @@ public class InteractionUI : MonoBehaviour
         if (FindObjectOfType<ItemRestorationSystem>() == null)
             gameObject.AddComponent<ItemRestorationSystem>();
 
-        crosshairImage.color = normalColor;
+        if(crosshairImage!=null)crosshairImage.color = normalColor;
 
-        interactTextObject.SetActive(false);
-        interactText.text = message;
-
-        statusTextObject.SetActive(false);
+        if(statusTextObject!=null)statusTextObject.SetActive(false);
     }
 
     public void ShowInteract(string text)
     {
-        if (statusTextObject.activeSelf)
+        if (statusTextObject!=null&&statusTextObject.activeSelf)
             return;
 
-        crosshairImage.color = interactColor;
-        interactTextObject.SetActive(true);
-        interactText.text = text;
+        if(crosshairImage!=null)crosshairImage.color = interactColor;
     }
 
     public void HideInteract()
     {
-        crosshairImage.color = normalColor;
-        interactTextObject.SetActive(false);
+        if(crosshairImage!=null)crosshairImage.color = normalColor;
     }
 
     public void ShowStatus(string text)
@@ -67,11 +56,11 @@ public class InteractionUI : MonoBehaviour
 
     private IEnumerator StatusRoutine(string text)
     {
-        statusText.text = text;
-        statusTextObject.SetActive(true);
+        if(statusText!=null)statusText.text = text;
+        if(statusTextObject!=null)statusTextObject.SetActive(true);
 
         yield return new WaitForSeconds(statusDuration);
 
-        statusTextObject.SetActive(false);
+        if(statusTextObject!=null)statusTextObject.SetActive(false);
     }
 }

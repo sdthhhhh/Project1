@@ -20,7 +20,10 @@ Shader "UI/InspectablePreviewTransparent"
             {
                 fixed4 c=tex2D(_MainTex,i.uv);
                 float distanceFromKey=distance(c.rgb,float3(1,0,1));
-                c.a*=smoothstep(0.06,0.22,distanceFromKey);
+                float distanceFromBlack=length(c.rgb);
+                float keyAlpha=smoothstep(0.06,0.22,distanceFromKey);
+                float blackFallbackAlpha=smoothstep(0.008,0.035,distanceFromBlack);
+                c.a*=min(keyAlpha,blackFallbackAlpha);
                 return c;
             }
             ENDCG
