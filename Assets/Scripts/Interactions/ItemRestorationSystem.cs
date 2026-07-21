@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>按 MovableItems/Deskroom 下的同名数字，自动建立六件物品的拾取和归位流程。</summary>
 public sealed class ItemRestorationSystem : MonoBehaviour
@@ -12,7 +10,6 @@ public sealed class ItemRestorationSystem : MonoBehaviour
     private Drawer rewardDrawer;
     private GameObject medicalReport;
     private bool completed;
-    private bool photoFrameRegistered;
 
     private sealed class State
     {
@@ -20,13 +17,13 @@ public sealed class ItemRestorationSystem : MonoBehaviour
         public string displayName;
         public bool collected;
         public bool placed;
-        public TMP_Text ui;
     }
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(this); return; }
         Instance = this;
+        GameObject oldInventory=GameObject.Find("RestorationInventory");if(oldInventory!=null)Destroy(oldInventory);
     }
 
     private IEnumerator Start()
@@ -48,17 +45,13 @@ public sealed class ItemRestorationSystem : MonoBehaviour
 
         Dictionary<string, Transform> movable = FindNumbered(movableRoot.transform);
         Dictionary<string, Transform> correct = FindNumbered(correctRoot.transform);
-        CreateInventoryUI();
-
-        states["1"].displayName = "Photo Frame";
-        UpdateRow(states["1"]);
+        for(int number=2;number<=6;number++)states[number.ToString()]=new State{id=number.ToString(),displayName="Item "+number};
 
         for (int number = 2; number <= 6; number++)
         {
             string id = number.ToString();
             State state = states[id];
             state.displayName = GetDisplayName(movable, id);
-            UpdateRow(state);
 
             if (!movable.TryGetValue(id, out Transform source) || !correct.TryGetValue(id, out Transform target))
             {
@@ -67,11 +60,16 @@ public sealed class ItemRestorationSystem : MonoBehaviour
             }
 
             EnsureCollider(source.gameObject);
-            source.gameObject.AddComponent<RestorationPickup>().Configure(id);
+            InspectableObject sourceInspect=source.GetComponent<InspectableObject>();
+            if(sourceInspect==null){sourceInspect=source.gameObject.AddComponent<InspectableObject>();sourceInspect.ConfigurePreview(source.gameObject,$"A misplaced object marked {id}.",Vector3.zero);}
+            sourceInspect.SetCanInspect(true);
+            RestorationInspectablePickup pickup=source.GetComponent<RestorationInspectablePickup>();if(pickup==null)pickup=source.gameObject.AddComponent<RestorationInspectablePickup>();pickup.Configure(id);
+            RestorationPickup oldPickup=source.GetComponent<RestorationPickup>();if(oldPickup!=null)Destroy(oldPickup);
 
             SetVisible(target.gameObject, false);
             EnsureCollider(target.gameObject);
-            target.gameObject.AddComponent<RestorationPlace>().Configure(id);
+            InspectableObject targetInspect=target.GetComponent<InspectableObject>();if(targetInspect==null){targetInspect=target.gameObject.AddComponent<InspectableObject>();targetInspect.ConfigurePreview(target.gameObject,$"The restored position for item {id}.",Vector3.zero);}targetInspect.SetCanInspect(false);
+            RestorationPlace place=target.GetComponent<RestorationPlace>();if(place==null)place=target.gameObject.AddComponent<RestorationPlace>();place.Configure(id);
         }
 
         rewardDrawer = FindDrawerBottom();
@@ -118,66 +116,24 @@ public sealed class ItemRestorationSystem : MonoBehaviour
         return "Item " + id;
     }
 
-    private void CreateInventoryUI()
-    {
-        GameObject hud = GameObject.Find("HUDCanvas");
-        Canvas canvas = hud != null ? hud.GetComponent<Canvas>() : null;
-        if (canvas == null) return;
-        GameObject panel = new GameObject("RestorationInventory", typeof(RectTransform), typeof(Image), typeof(VerticalLayoutGroup));
-        panel.transform.SetParent(canvas.transform, false);
-        RectTransform rect = panel.GetComponent<RectTransform>();
-        rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f); rect.pivot = new Vector2(0f, 1f);
-        rect.anchoredPosition = new Vector2(24f, -24f); rect.sizeDelta = new Vector2(300f, 250f);
-        panel.GetComponent<Image>().color = new Color(0f, 0f, 0f, .58f);
-        VerticalLayoutGroup layout = panel.GetComponent<VerticalLayoutGroup>();
-        layout.padding = new RectOffset(18, 18, 14, 14); layout.spacing = 8; layout.childForceExpandHeight = true;
-
-        for (int i = 1; i <= 6; i++)
-        {
-            GameObject row = new GameObject("ItemStatus" + i, typeof(RectTransform), typeof(TextMeshProUGUI));
-            row.transform.SetParent(panel.transform, false);
-            TMP_Text text = row.GetComponent<TMP_Text>(); text.fontSize = 22; text.color = Color.white; text.text = "____________";
-            if (!states.TryGetValue(i.ToString(), out State state))
-            {
-                state = new State { id = i.ToString(), displayName = "Item " + i };
-                states[i.ToString()] = state;
-            }
-            state.ui = text;
-        }
-    }
-
     public bool CanPlace(string id) => states.TryGetValue(id, out State s) && s.collected && !s.placed;
-
-    private void Update()
-    {
-        if (photoFrameRegistered || !FramePlacePoint.IsPhotoFramePlaced || !states.TryGetValue("1", out State state)) return;
-        photoFrameRegistered = true;
-        state.collected = true;
-        state.placed = true;
-        UpdateRow(state);
-        CheckComplete();
-    }
 
     public void Collect(string id, GameObject source)
     {
         if (!states.TryGetValue(id, out State state) || state.collected) return;
         state.collected = true;
         source.SetActive(false);
-        UpdateRow(state);
+        InteractionUI.Instance?.ShowStatus(state.displayName+" collected");
     }
 
     public void Place(string id, GameObject target)
     {
         if (!CanPlace(id)) return;
         State state = states[id]; state.placed = true;
-        SetVisible(target, true); UpdateRow(state); CheckComplete();
-    }
-
-    private void UpdateRow(State state)
-    {
-        if (state.ui == null) return;
-        state.ui.text = state.collected ? state.displayName : "____________";
-        state.ui.color = state.placed ? Color.yellow : Color.white;
+        SetVisible(target, true);
+        InspectableObject inspectable=target.GetComponent<InspectableObject>();if(inspectable!=null)inspectable.SetCanInspect(false);
+        RestorationPlace place=target.GetComponent<RestorationPlace>();if(place!=null)Destroy(place);
+        InteractionUI.Instance?.ShowStatus(state.displayName+" restored");CheckComplete();
     }
 
     private void CheckComplete()
@@ -222,6 +178,13 @@ public sealed class RestorationPickup : MonoBehaviour, IInteractable
     public void Interact() => ItemRestorationSystem.Instance?.Collect(id, gameObject);
 }
 
+public sealed class RestorationInspectablePickup : MonoBehaviour,IInspectableCollectible
+{
+    [SerializeField]private string id;
+    public void Configure(string value)=>id=value;
+    public void CollectFromInspection()=>ItemRestorationSystem.Instance?.Collect(id,gameObject);
+}
+
 public sealed class RestorationPlace : MonoBehaviour, IInteractable
 {
     private string id;
@@ -230,7 +193,7 @@ public sealed class RestorationPlace : MonoBehaviour, IInteractable
     public void Configure(string value)
     {
         id = value;
-        CreateDustHint();
+        if(Application.isPlaying)CreateDustHint();
     }
 
     public string GetInteractText()
@@ -246,6 +209,7 @@ public sealed class RestorationPlace : MonoBehaviour, IInteractable
         {
             ItemRestorationSystem.Instance.Place(id, gameObject);
             if (dustHint != null) Destroy(dustHint);
+            enabled=false;
         }
         else
         {
