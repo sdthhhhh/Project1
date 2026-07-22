@@ -27,9 +27,12 @@ public sealed class InspectableRaycaster : MonoBehaviour
     [SerializeField, Tooltip("Separate hand/collect inspection Canvas.")] private InspectableUIController collectibleInspectUI;
     [SerializeField, Tooltip("Separate password entry Canvas for doors.")] private DoorPasswordUIController doorPasswordUI;
 
-    private Sprite normalSprite; private Color normalColor; private Vector2 normalSize; private InspectableObject hovered; private BeerRestoreController hoveredRestoreTarget;private DoorPasswordLock hoveredDoorLock;
+    private Sprite normalSprite; private Color normalColor; private Vector2 normalSize; private InspectableObject hovered; private BeerRestoreController hoveredRestoreTarget; private PhotoRestoreController hoveredPhotoRestoreTarget; private DoorPasswordLock hoveredDoorLock;
     private FirstPersonMovement movement; private FirstPersonLook look; private PlayerInteraction playerInteraction;
     private Transform bodyTransform, lookTransform; private Quaternion lockedBodyRotation, lockedLookRotation; private bool controlsLocked;
+    private CrosshairMode crosshairMode;
+
+    private enum CrosshairMode { Normal, Magnifier, Hand, DoorLock }
 
     public void Configure(Image crosshair, Sprite magnifier, Sprite hand, InspectableUIController ui, InspectableUIController collectibleUI)
     { crosshairImage=crosshair;magnifierSprite=magnifier;handSprite=hand;inspectUI=ui;collectibleInspectUI=collectibleUI;CacheReferences();CacheNormalCrosshair(); }
@@ -66,7 +69,7 @@ public sealed class InspectableRaycaster : MonoBehaviour
             }
             return;
         }
-        hovered=null;hoveredRestoreTarget=null;hoveredDoorLock=null;
+        hovered=null;hoveredRestoreTarget=null;hoveredPhotoRestoreTarget=null;hoveredDoorLock=null;
         if (Physics.Raycast(transform.position,transform.forward,out RaycastHit hit,inspectDistance,inspectableLayers,QueryTriggerInteraction.Collide))
         {
             hoveredDoorLock=hit.collider.GetComponentInParent<DoorPasswordLock>();
@@ -79,18 +82,36 @@ public sealed class InspectableRaycaster : MonoBehaviour
                 }
                 else
                 {
-                    InspectableObject candidate=hit.collider.GetComponentInParent<InspectableObject>();
-                    if(candidate!=null&&candidate.CanInspect)hovered=candidate;
+                    PhotoRestoreController photoRestore=hit.collider.GetComponentInParent<PhotoRestoreController>();
+                    if(photoRestore!=null)
+                    {
+                        if(photoRestore.CanClickRestoreTarget(hit.collider))hoveredPhotoRestoreTarget=photoRestore;
+                    }
+                    else
+                    {
+                        InspectableObject candidate=hit.collider.GetComponentInParent<InspectableObject>();
+                        if(candidate!=null&&candidate.CanInspect)hovered=candidate;
+                    }
                 }
             }
         }
         bool collectible=hovered!=null&&hovered.GetComponent<IInspectableCollectible>()!=null;
-        if(hoveredDoorLock!=null)SetDoorCrosshair(true);else SetCrosshair(hovered!=null||hoveredRestoreTarget!=null,collectible||hoveredRestoreTarget!=null);
+        if(hoveredDoorLock!=null)
+        {
+            if(hoveredDoorLock.IsUnlocked)SetCrosshair(true,true);
+            else SetDoorCrosshair(true);
+        }
+        else SetCrosshair(hovered!=null||hoveredRestoreTarget!=null||hoveredPhotoRestoreTarget!=null,collectible||hoveredRestoreTarget!=null||hoveredPhotoRestoreTarget!=null);
         if(Input.GetMouseButtonDown(0))
         {
-            if(hoveredDoorLock!=null)OpenDoorPassword(hoveredDoorLock);
+            if(hoveredDoorLock!=null)
+            {
+                if(hoveredDoorLock.IsUnlocked)hoveredDoorLock.OpenDoor();
+                else OpenDoorPassword(hoveredDoorLock);
+            }
             else if(hovered!=null)OpenInspection(hovered,collectible);
             else if(hoveredRestoreTarget!=null)hoveredRestoreTarget.OnRestoreTargetClicked();
+            else if(hoveredPhotoRestoreTarget!=null)hoveredPhotoRestoreTarget.OnRestoreTargetClicked();
         }
     }
 
@@ -108,19 +129,42 @@ public sealed class InspectableRaycaster : MonoBehaviour
     }
     private void SetCrosshair(bool active,bool useHand)
     {
-        if (crosshairImage==null) return;
-        crosshairImage.sprite=active?(useHand&&handSprite!=null?handSprite:magnifierSprite!=null?magnifierSprite:normalSprite):normalSprite;
-        crosshairImage.color=active?(useHand?handColor:magnifierColor):normalColor;
-        crosshairImage.rectTransform.sizeDelta=active?(useHand?handSize:magnifierSize):normalSize;
-        crosshairImage.preserveAspect=true;
+        crosshairMode=active?(useHand?CrosshairMode.Hand:CrosshairMode.Magnifier):CrosshairMode.Normal;
+        ApplyCrosshairMode();
     }
 
     private void SetDoorCrosshair(bool active)
     {
+        crosshairMode=active?CrosshairMode.DoorLock:CrosshairMode.Normal;
+        ApplyCrosshairMode();
+    }
+
+    private void ApplyCrosshairMode()
+    {
         if(crosshairImage==null)return;
-        crosshairImage.sprite=active&&doorLockSprite!=null?doorLockSprite:normalSprite;
-        crosshairImage.color=active?doorLockColor:normalColor;
-        crosshairImage.rectTransform.sizeDelta=active?doorLockSize:normalSize;
+        switch(crosshairMode)
+        {
+            case CrosshairMode.Magnifier:
+                crosshairImage.sprite=magnifierSprite!=null?magnifierSprite:normalSprite;
+                crosshairImage.color=Color.red;
+                crosshairImage.rectTransform.sizeDelta=magnifierSize;
+                break;
+            case CrosshairMode.Hand:
+                crosshairImage.sprite=handSprite!=null?handSprite:normalSprite;
+                crosshairImage.color=Color.red;
+                crosshairImage.rectTransform.sizeDelta=handSize;
+                break;
+            case CrosshairMode.DoorLock:
+                crosshairImage.sprite=doorLockSprite!=null?doorLockSprite:normalSprite;
+                crosshairImage.color=Color.red;
+                crosshairImage.rectTransform.sizeDelta=doorLockSize;
+                break;
+            default:
+                crosshairImage.sprite=normalSprite;
+                crosshairImage.color=normalColor;
+                crosshairImage.rectTransform.sizeDelta=normalSize;
+                break;
+        }
         crosshairImage.preserveAspect=true;
     }
 
@@ -138,5 +182,13 @@ public sealed class InspectableRaycaster : MonoBehaviour
         controlsLocked=false;if(movement!=null)movement.enabled=true;if(look!=null)look.enabled=true;if(playerInteraction!=null)playerInteraction.enabled=true;
         Cursor.visible=false;Cursor.lockState=CursorLockMode.Locked;
     }
-    private void LateUpdate(){if(!controlsLocked)return;if(bodyTransform!=null)bodyTransform.rotation=lockedBodyRotation;if(lookTransform!=null)lookTransform.localRotation=lockedLookRotation;}
+    private void LateUpdate()
+    {
+        // InteractionUI also owns this Image and may tint it during Update.
+        // Reapply the active inspection mode last so every hover stays red.
+        ApplyCrosshairMode();
+        if(!controlsLocked)return;
+        if(bodyTransform!=null)bodyTransform.rotation=lockedBodyRotation;
+        if(lookTransform!=null)lookTransform.localRotation=lockedLookRotation;
+    }
 }

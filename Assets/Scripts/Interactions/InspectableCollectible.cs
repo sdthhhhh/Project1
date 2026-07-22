@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 
 /// <summary>
 /// Add this beside InspectableObject to make any scene item collectible from the
@@ -15,12 +16,19 @@ public sealed class InspectableCollectible : MonoBehaviour, IInspectableCollecti
     private UnityEvent onCollected;
 
     public bool IsCollected { get; private set; }
+    public event Action Collected;
+
+    public void Configure(bool hideSceneObjectAfterCollect)
+    {
+        hideAfterCollect = hideSceneObjectAfterCollect;
+    }
 
     public void CollectFromInspection()
     {
         if (IsCollected) return;
         IsCollected = true;
         onCollected?.Invoke();
+        Collected?.Invoke();
         if (hideAfterCollect) gameObject.SetActive(false);
     }
 }

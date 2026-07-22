@@ -15,11 +15,19 @@ public sealed class DoorPasswordUIController : MonoBehaviour
     private DoorPasswordLock currentLock;private Action onClosed;
     public bool IsOpen=>panel!=null&&panel.activeSelf;
 
+    private void Awake(){BindButtons();}
+    private void OnEnable(){BindButtons();}
+
+    private void BindButtons()
+    {
+        if(submitButton!=null){submitButton.onClick.RemoveListener(Submit);submitButton.onClick.AddListener(Submit);}
+        if(closeButton!=null){closeButton.onClick.RemoveListener(Hide);closeButton.onClick.AddListener(Hide);}
+    }
+
     public void Configure(GameObject root,TMP_Text title,TMP_InputField input,TMP_Text feedback,Button submit,Button close)
     {
         panel=root;titleText=title;passwordInput=input;feedbackText=feedback;submitButton=submit;closeButton=close;
-        submitButton?.onClick.RemoveAllListeners();submitButton?.onClick.AddListener(Submit);
-        closeButton?.onClick.RemoveAllListeners();closeButton?.onClick.AddListener(Hide);
+        BindButtons();
         if(panel!=null)panel.SetActive(false);
     }
 

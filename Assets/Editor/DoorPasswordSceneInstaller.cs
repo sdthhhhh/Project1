@@ -18,7 +18,12 @@ public static class DoorPasswordSceneInstaller
         EditorApplication.playModeStateChanged-=OnPlayModeStateChanged;EditorApplication.playModeStateChanged+=OnPlayModeStateChanged;
     }
     private static void OnPlayModeStateChanged(PlayModeStateChange state){if(state==PlayModeStateChange.EnteredEditMode)EditorApplication.delayCall+=InstallIfNeeded;}
-    private static void InstallIfNeeded(){if(!Application.isPlaying&&GameObject.Find("DoorPasswordCanvas")==null)Install();}
+    private static void InstallIfNeeded()
+    {
+        if(Application.isPlaying)return;
+        if(GameObject.Find("DoorPasswordCanvas")==null)Install();
+        else {SimplifyExistingCanvas();InstallDoorFolderLocks();}
+    }
 
     [MenuItem("Tools/Door Password/Install Password UI")]
     public static void Install()
@@ -34,6 +39,7 @@ public static class DoorPasswordSceneInstaller
         raycaster.ConfigureDoorPassword(icon,controller);
         Transform root=GetOrCreateUIRoot();if(controller.transform.parent!=root)Undo.SetTransformParent(controller.transform,root,"Group Door Password UI");
         EditorUtility.SetDirty(raycaster);EditorUtility.SetDirty(controller);EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();
+        InstallDoorFolderLocks();
         Debug.Log("DoorPasswordCanvas installed under UI_ROOT. Select lock colliders and use Tools/Door Password/Mark Selected As Password Locks.");
     }
 
@@ -49,19 +55,77 @@ public static class DoorPasswordSceneInstaller
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
     }
 
+    [MenuItem("Tools/Door Password/Install Locks Under Door Folder")]
+    public static void InstallDoorFolderLocks()
+    {
+        if(Application.isPlaying)return;
+        GameObject doorFolder=FindSceneGameObject("Door");
+        if(doorFolder==null)return;
+
+        int configured=0;
+        foreach(Transform candidate in doorFolder.GetComponentsInChildren<Transform>(true))
+        {
+            if(candidate==doorFolder.transform||candidate.name.IndexOf("lock",System.StringComparison.OrdinalIgnoreCase)<0)continue;
+            DoorPasswordLock passwordLock=candidate.GetComponent<DoorPasswordLock>();
+            if(passwordLock==null)passwordLock=Undo.AddComponent<DoorPasswordLock>(candidate.gameObject);
+            Collider collider=candidate.GetComponent<Collider>();
+            if(collider==null){BoxCollider box=Undo.AddComponent<BoxCollider>(candidate.gameObject);box.size=new Vector3(.25f,.25f,.12f);box.isTrigger=true;collider=box;}
+            passwordLock.ConfigureDoor(ResolveDoorTransform(candidate,doorFolder.transform));
+            EditorUtility.SetDirty(passwordLock);EditorUtility.SetDirty(collider);configured++;
+        }
+
+        if(configured==0){Debug.LogWarning("Door Password: a Door folder was found, but no child name containing 'lock' was found.");return;}
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();
+        Debug.Log($"Door Password: configured {configured} lock object(s) below Door. Locked Crosshair uses the lock icon; unlocked Crosshair uses the shared hand icon.");
+    }
+
+    private static Transform ResolveDoorTransform(Transform lockTransform,Transform doorFolder)
+    {
+        if(lockTransform.parent!=null&&lockTransform.parent!=doorFolder&&lockTransform.parent.name.IndexOf("lock",System.StringComparison.OrdinalIgnoreCase)<0)
+            return lockTransform.parent;
+        foreach(Transform child in doorFolder)
+            if(child!=lockTransform&&child.name.IndexOf("door",System.StringComparison.OrdinalIgnoreCase)>=0)return child;
+        return doorFolder;
+    }
+
     private static DoorPasswordUIController CreateCanvas()
     {
         GameObject canvasGo=new GameObject("DoorPasswordCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster),typeof(DoorPasswordUIController));Undo.RegisterCreatedObjectUndo(canvasGo,"Create Door Password Canvas");
         Canvas canvas=canvasGo.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.overrideSorting=true;canvas.sortingOrder=320;
         CanvasScaler scaler=canvasGo.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
-        GameObject overlay=UI("DoorPasswordOverlay",canvasGo.transform,new Color(0,0,0,.68f));Stretch(overlay.GetComponent<RectTransform>(),0,0,1,1);
-        GameObject card=UI("PasswordCard",overlay.transform,new Color(.08f,.065f,.05f,.98f));RectTransform cardRect=card.GetComponent<RectTransform>();cardRect.anchorMin=new Vector2(.34f,.27f);cardRect.anchorMax=new Vector2(.66f,.73f);cardRect.offsetMin=cardRect.offsetMax=Vector2.zero;
-        TMP_Text title=Text("DoorTitle",card.transform,"Locked Door",42,TextAlignmentOptions.Center);Stretch(title.rectTransform,.08f,.75f,.92f,.94f);title.fontStyle=FontStyles.Bold;
-        TMP_InputField input=CreateInput(card.transform);
-        TMP_Text feedback=Text("PasswordFeedback",card.transform,"Enter password",24,TextAlignmentOptions.Center);Stretch(feedback.rectTransform,.12f,.35f,.88f,.48f);
-        Button submit=CreateButton("SubmitButton",card.transform,"UNLOCK",new Vector4(.14f,.12f,.86f,.29f));
-        Button close=CreateButton("CloseButton",card.transform,"CLOSE / ESC",new Vector4(.14f,.04f,.86f,.14f));
-        DoorPasswordUIController controller=canvasGo.GetComponent<DoorPasswordUIController>();controller.Configure(overlay,title,input,feedback,submit,close);return controller;
+        GameObject overlay=UI("DoorPasswordOverlay",canvasGo.transform,new Color(0,0,0,.58f));Stretch(overlay.GetComponent<RectTransform>(),0,0,1,1);
+        TMP_InputField input=CreateInput(overlay.transform);SetAnchors(input.GetComponent<RectTransform>(),.35f,.56f,.65f,.65f);
+        Button submit=CreateButton("SubmitButton",overlay.transform,"UNLOCK",new Vector4(.35f,.45f,.65f,.53f));
+        Button close=CreateButton("CloseButton",overlay.transform,"CLOSE",new Vector4(.35f,.35f,.65f,.43f));
+        DoorPasswordUIController controller=canvasGo.GetComponent<DoorPasswordUIController>();controller.Configure(overlay,null,input,null,submit,close);return controller;
+    }
+
+    private static void SimplifyExistingCanvas()
+    {
+        GameObject canvasGo=GameObject.Find("DoorPasswordCanvas");if(canvasGo==null)return;
+        DoorPasswordUIController controller=canvasGo.GetComponent<DoorPasswordUIController>();
+        Transform overlay=FindNamed(canvasGo.transform,"DoorPasswordOverlay");
+        TMP_InputField input=FindNamed(canvasGo.transform,"PasswordInput")?.GetComponent<TMP_InputField>();
+        Button submit=FindNamed(canvasGo.transform,"SubmitButton")?.GetComponent<Button>();
+        Button close=FindNamed(canvasGo.transform,"CloseButton")?.GetComponent<Button>();
+        if(controller==null||overlay==null||input==null||submit==null||close==null){Debug.LogError("Door Password: existing Canvas is missing PasswordInput, SubmitButton or CloseButton.");return;}
+
+        Undo.SetTransformParent(input.transform,overlay,"Simplify Password UI");
+        Undo.SetTransformParent(submit.transform,overlay,"Simplify Password UI");
+        Undo.SetTransformParent(close.transform,overlay,"Simplify Password UI");
+        SetAnchors(input.GetComponent<RectTransform>(),.35f,.56f,.65f,.65f);
+        SetAnchors(submit.GetComponent<RectTransform>(),.35f,.45f,.65f,.53f);
+        SetAnchors(close.GetComponent<RectTransform>(),.35f,.35f,.65f,.43f);
+
+        for(int i=overlay.childCount-1;i>=0;i--)
+        {
+            Transform child=overlay.GetChild(i);
+            if(child!=input.transform&&child!=submit.transform&&child!=close.transform)Undo.DestroyObjectImmediate(child.gameObject);
+        }
+
+        controller.Configure(overlay.gameObject,null,input,null,submit,close);EditorUtility.SetDirty(controller);
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();
+        Debug.Log("DoorPasswordCanvas simplified: PasswordInput, SubmitButton and CloseButton only. Mouse button listeners are bound at runtime.");
     }
 
     private static TMP_InputField CreateInput(Transform parent)
@@ -87,7 +151,10 @@ public static class DoorPasswordSceneInstaller
     private static GameObject UI(string name,Transform parent,Color color){GameObject go=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));go.transform.SetParent(parent,false);go.GetComponent<Image>().color=color;return go;}
     private static TMP_Text Text(string name,Transform parent,string value,float size,TextAlignmentOptions alignment){GameObject go=new GameObject(name,typeof(RectTransform),typeof(TextMeshProUGUI));go.transform.SetParent(parent,false);TMP_Text text=go.GetComponent<TMP_Text>();text.text=value;text.fontSize=size;text.alignment=alignment;text.color=new Color(.92f,.88f,.78f);return text;}
     private static void Stretch(RectTransform rect,float x1,float y1,float x2,float y2){rect.anchorMin=new Vector2(x1,y1);rect.anchorMax=new Vector2(x2,y2);rect.offsetMin=rect.offsetMax=Vector2.zero;}
+    private static void SetAnchors(RectTransform rect,float x1,float y1,float x2,float y2){if(rect==null)return;rect.anchorMin=new Vector2(x1,y1);rect.anchorMax=new Vector2(x2,y2);rect.offsetMin=rect.offsetMax=Vector2.zero;}
+    private static Transform FindNamed(Transform root,string objectName){foreach(Transform item in root.GetComponentsInChildren<Transform>(true))if(item.name==objectName)return item;return null;}
     private static Transform GetOrCreateUIRoot(){GameObject root=GameObject.Find("UI_ROOT");if(root==null){root=new GameObject("UI_ROOT");Undo.RegisterCreatedObjectUndo(root,"Create UI Root");}return root.transform;}
     private static T FindSceneObject<T>(string name)where T:Component{foreach(T item in Resources.FindObjectsOfTypeAll<T>())if(item.gameObject.scene.IsValid()&&item.gameObject.name==name)return item;return null;}
+    private static GameObject FindSceneGameObject(string name){foreach(GameObject item in Resources.FindObjectsOfTypeAll<GameObject>())if(item.scene.IsValid()&&item.name==name)return item;return null;}
 }
 #endif
