@@ -23,6 +23,8 @@ public sealed class BeerRestoreController : MonoBehaviour
 
     private InspectableObject collectibleInspectable;
 
+    public AudioClip clip; // sfx bgm
+
     private void Awake()
     {
         ValidateReferences();
@@ -64,6 +66,8 @@ public sealed class BeerRestoreController : MonoBehaviour
     {
         if(!HasPiece||IsRestored)return;
         Restore();
+        AudioSource audisour = new AudioSource();
+        audisour.PlayOneShot(clip);
     }
 
     private void InitializeState()
