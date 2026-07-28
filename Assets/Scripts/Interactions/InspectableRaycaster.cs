@@ -27,7 +27,7 @@ public sealed class InspectableRaycaster : MonoBehaviour
     [SerializeField, HideInInspector, Tooltip("Obsolete second canvas. Migrated to inspectUI when present.")] private InspectableUIController collectibleInspectUI;
     [SerializeField, Tooltip("Separate password entry Canvas for doors.")] private DoorPasswordUIController doorPasswordUI;
 
-    private Sprite normalSprite; private Color normalColor; private Vector2 normalSize; private InspectableObject hovered; private BeerRestoreController hoveredRestoreTarget; private PhotoRestoreController hoveredPhotoRestoreTarget; private DoorPasswordLock hoveredDoorLock;
+    private Sprite normalSprite; private Color normalColor; private Vector2 normalSize; private InspectableObject hovered; private BeerRestoreController hoveredRestoreTarget; private PhotoRestoreController hoveredPhotoRestoreTarget; private DoorPasswordLock hoveredDoorLock; private ClickMoveObject hoveredMoveTarget;
     private FirstPersonMovement movement; private FirstPersonLook look; private PlayerInteraction playerInteraction;
     private Transform bodyTransform, lookTransform; private Quaternion lockedBodyRotation, lockedLookRotation; private bool controlsLocked;
     private CrosshairMode crosshairMode;
@@ -116,27 +116,36 @@ public sealed class InspectableRaycaster : MonoBehaviour
         hoveredRestoreTarget = null;
         hoveredPhotoRestoreTarget = null;
         hoveredDoorLock = null;
+        hoveredMoveTarget = null;
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, inspectDistance, inspectableLayers, QueryTriggerInteraction.Collide))
         {
             hoveredDoorLock = hit.collider.GetComponentInParent<DoorPasswordLock>();
             if (hoveredDoorLock == null)
             {
-                BeerRestoreController restore = hit.collider.GetComponentInParent<BeerRestoreController>();
-                if (restore != null)
+                ClickMoveObject moveTarget = hit.collider.GetComponentInParent<ClickMoveObject>();
+                if (moveTarget != null && moveTarget.CanInteract)
                 {
-                    if (restore.CanClickRestoreTarget(hit.collider)) hoveredRestoreTarget = restore;
+                    hoveredMoveTarget = moveTarget;
                 }
                 else
                 {
-                    PhotoRestoreController photoRestore = hit.collider.GetComponentInParent<PhotoRestoreController>();
-                    if (photoRestore != null)
+                    BeerRestoreController restore = hit.collider.GetComponentInParent<BeerRestoreController>();
+                    if (restore != null)
                     {
-                        if (photoRestore.CanClickRestoreTarget(hit.collider)) hoveredPhotoRestoreTarget = photoRestore;
+                        if (restore.CanClickRestoreTarget(hit.collider)) hoveredRestoreTarget = restore;
                     }
                     else
                     {
-                        InspectableObject candidate = hit.collider.GetComponentInParent<InspectableObject>();
-                        if (candidate != null && candidate.CanInspect) hovered = candidate;
+                        PhotoRestoreController photoRestore = hit.collider.GetComponentInParent<PhotoRestoreController>();
+                        if (photoRestore != null && photoRestore.CanClickRestoreTarget(hit.collider))
+                        {
+                            hoveredPhotoRestoreTarget = photoRestore;
+                        }
+                        else
+                        {
+                            InspectableObject candidate = hit.collider.GetComponentInParent<InspectableObject>();
+                            if (candidate != null && candidate.CanInspect) hovered = candidate;
+                        }
                     }
                 }
             }
@@ -148,7 +157,8 @@ public sealed class InspectableRaycaster : MonoBehaviour
             if (hoveredDoorLock.IsUnlocked) SetCrosshair(true, true);
             else SetDoorCrosshair(true);
         }
-        else SetCrosshair(hovered != null || hoveredRestoreTarget != null || hoveredPhotoRestoreTarget != null, collectible || hoveredRestoreTarget != null || hoveredPhotoRestoreTarget != null);
+        else SetCrosshair(hovered != null || hoveredRestoreTarget != null || hoveredPhotoRestoreTarget != null || hoveredMoveTarget != null,
+            collectible || hoveredRestoreTarget != null || hoveredPhotoRestoreTarget != null || hoveredMoveTarget != null);
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -157,6 +167,7 @@ public sealed class InspectableRaycaster : MonoBehaviour
                 if (hoveredDoorLock.IsUnlocked) hoveredDoorLock.OpenDoor();
                 else OpenDoorPassword(hoveredDoorLock);
             }
+            else if (hoveredMoveTarget != null) hoveredMoveTarget.Move();
             else if (hovered != null) OpenInspection(hovered);
             else if (hoveredRestoreTarget != null) hoveredRestoreTarget.OnRestoreTargetClicked();
             else if (hoveredPhotoRestoreTarget != null) hoveredPhotoRestoreTarget.OnRestoreTargetClicked();
