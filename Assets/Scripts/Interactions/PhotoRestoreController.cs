@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Controls the Photoes reveal puzzle while reusing the existing hand Crosshair,
-/// CollectibleInspectionCanvas, E rotation and Q collection flow.
+/// Controls the Photoes reveal puzzle while reusing the shared inspection Canvas,
+/// hand Crosshair, E rotation and Q collection flow.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class PhotoRestoreController : MonoBehaviour

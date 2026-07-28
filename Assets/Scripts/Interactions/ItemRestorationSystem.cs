@@ -64,7 +64,6 @@ public sealed class ItemRestorationSystem : MonoBehaviour
             if(sourceInspect==null){sourceInspect=source.gameObject.AddComponent<InspectableObject>();sourceInspect.ConfigurePreview(source.gameObject,$"A misplaced object marked {id}.",Vector3.zero);}
             sourceInspect.SetCanInspect(true);
             RestorationInspectablePickup pickup=source.GetComponent<RestorationInspectablePickup>();if(pickup==null)pickup=source.gameObject.AddComponent<RestorationInspectablePickup>();pickup.Configure(id);
-            RestorationPickup oldPickup=source.GetComponent<RestorationPickup>();if(oldPickup!=null)Destroy(oldPickup);
 
             SetVisible(target.gameObject, false);
             EnsureCollider(target.gameObject);
@@ -168,14 +167,6 @@ public sealed class ItemRestorationSystem : MonoBehaviour
             if (obj.scene.IsValid() && obj.name == objectName) return obj;
         return null;
     }
-}
-
-public sealed class RestorationPickup : MonoBehaviour, IInteractable
-{
-    private string id;
-    public void Configure(string value) => id = value;
-    public string GetInteractText() => "Press E to interact";
-    public void Interact() => ItemRestorationSystem.Instance?.Collect(id, gameObject);
 }
 
 public sealed class RestorationInspectablePickup : MonoBehaviour,IInspectableCollectible

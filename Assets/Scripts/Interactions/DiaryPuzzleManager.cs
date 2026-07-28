@@ -49,7 +49,7 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
 
         if (panel == null || bookPanel == null)
         {
-            Debug.LogError("DiaryPuzzleManager: permanent diary UI is missing. Use Tools > Diary Whitebox > Install Permanent Puzzle UI.", this);
+            Debug.LogError("DiaryPuzzleManager: permanent diary UI is missing from the scene.", this);
             return;
         }
 

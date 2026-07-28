@@ -77,7 +77,7 @@ public sealed class InspectableUIController : MonoBehaviour
 
     private void CreatePreview(InspectableObject target)
     {
-        if(previewCamera==null||previewPivot==null||objectPreview==null){Debug.LogError("InspectableUIController: 3D preview references are missing. Run Tools/Object Inspection/Install Scene UI.");return;}
+        if(previewCamera==null||previewPivot==null||objectPreview==null){Debug.LogError("InspectableUIController: 3D preview references are missing.",this);return;}
         DestroyPreview();
         if(renderTexture==null)
         {

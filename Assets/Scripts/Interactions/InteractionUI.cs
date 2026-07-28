@@ -28,6 +28,7 @@ public class InteractionUI : MonoBehaviour
     {
         Instance = this;
 
+        // Not serialized in scenes today; keep creating it at runtime until it is placed explicitly.
         if (FindObjectOfType<ItemRestorationSystem>() == null)
             gameObject.AddComponent<ItemRestorationSystem>();
 
