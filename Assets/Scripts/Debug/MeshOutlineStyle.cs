@@ -33,8 +33,14 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     [SerializeField] private bool drawHardEdges = true;
     [SerializeField, Range(20f, 90f)] private float hardEdgeAngleDegrees = 60f;
     [SerializeField, Range(0.005f, 0.08f)] private float creaseWidth = 0.015f;
-    [SerializeField, Range(0.05f, 0.25f), Tooltip("Outline cannot exceed this fraction of the thinnest bounds axis.")]
+    [SerializeField, Range(0.05f, 0.25f), Tooltip("Outline cannot exceed this fraction of the cap axis (thickness, or average size for thin sheets).")]
     private float maxRelativeToMinAxis = 0.12f;
+    [SerializeField, Range(0f, 0.02f), Tooltip("Minimum outline width in WORLD units so tiny/thin meshes stay visible. 0 = default 0.003.")]
+    private float minWorldOutlineWidth = 0.003f;
+    [SerializeField, Range(0f, 0.2f), Tooltip("If min/max bounds axis is below this, treat as a thin sheet (cards/photos): scale-inflate outline instead of sealed extrusion. 0 = default 0.12.")]
+    private float thinSheetAspectThreshold = 0.12f;
+    [SerializeField, Tooltip("Force thin-sheet inflate outline (photos/cards), ignoring aspect ratio.")]
+    private bool forceThinSheetOutline;
     [SerializeField] private Color bodyColor = new Color(0.09f, 0.09f, 0.1f, 1f);
     [SerializeField, Tooltip("Rebuild outline shells when Play starts (generated helpers are DontSave).")]
     private bool buildOnAwake = true;
@@ -100,18 +106,72 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         return Mathf.Max(1e-6f, Mathf.Min(size.x, Mathf.Min(size.y, size.z)));
     }
 
+    private static float MaxAxis(Vector3 size)
+    {
+        return Mathf.Max(1e-6f, Mathf.Max(size.x, Mathf.Max(size.y, size.z)));
+    }
+
+    /// <summary>
+    /// Thin sheets (cards, mirrors, posters): min/max aspect is tiny, so capping by thickness
+    /// crushes outline width. Use average size as the cap axis instead.
+    /// </summary>
+    private float ResolveCapAxis(Vector3 size, float minAxis, float avg)
+    {
+        float maxAxis = MaxAxis(size);
+        float aspect = minAxis / maxAxis;
+        float threshold = thinSheetAspectThreshold > 1e-8f ? thinSheetAspectThreshold : 0.12f;
+        if (aspect < threshold)
+            return avg;
+        return minAxis;
+    }
+
+    private bool IsThinSheet(Mesh sourceMesh)
+    {
+        if (forceThinSheetOutline)
+            return true;
+        if (sourceMesh == null)
+            return false;
+        Vector3 size = sourceMesh.bounds.size;
+        float minAxis = MinAxis(size);
+        float maxAxis = MaxAxis(size);
+        float threshold = thinSheetAspectThreshold > 1e-8f ? thinSheetAspectThreshold : 0.12f;
+        return (minAxis / maxAxis) < threshold;
+    }
+
+    /// <summary>Mark this object as a photo/card so Rebuild uses thin-sheet inflate outline.</summary>
+    public void SetForceThinSheetOutline(bool enabled)
+    {
+        forceThinSheetOutline = enabled;
+    }
+
+    /// <summary>
+    /// Uniform scale so Cull-Front backfaces form a visible rim (works face-on for cards/photos).
+    /// </summary>
+    private float ResolveThinSheetInflateScale(Mesh sourceMesh, float localOutline)
+    {
+        float maxAxis = MaxAxis(sourceMesh.bounds.size);
+        float pad = Mathf.Max(localOutline, 1e-5f) * 2f;
+        return 1f + pad / Mathf.Max(1e-6f, maxAxis);
+    }
+
     private float ResolveLocalOutlineWidth(Mesh sourceMesh)
     {
         Vector3 size = sourceMesh.bounds.size;
         float avg = Mathf.Max(1e-6f, CharacteristicSize(size));
         float minAxis = MinAxis(size);
+        float capAxis = ResolveCapAxis(size, minAxis, avg);
 
+        float local;
         if (!scaleWidthToBounds)
-            return Mathf.Min(outlineWidth, minAxis * maxRelativeToMinAxis);
+            local = Mathf.Min(outlineWidth, capAxis * maxRelativeToMinAxis);
+        else
+        {
+            float raw = avg * outlineWidthFactor;
+            float cap = capAxis * maxRelativeToMinAxis;
+            local = Mathf.Min(raw, cap);
+        }
 
-        float raw = avg * outlineWidthFactor;
-        float cap = minAxis * maxRelativeToMinAxis;
-        return Mathf.Min(raw, cap);
+        return ApplyMinWorldWidth(local);
     }
 
     private float ResolveLocalCreaseWidth(Mesh sourceMesh)
@@ -119,13 +179,37 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         Vector3 size = sourceMesh.bounds.size;
         float avg = Mathf.Max(1e-6f, CharacteristicSize(size));
         float minAxis = MinAxis(size);
+        float capAxis = ResolveCapAxis(size, minAxis, avg);
 
+        float local;
         if (!scaleWidthToBounds)
-            return Mathf.Min(creaseWidth, minAxis * maxRelativeToMinAxis * 0.75f);
+            local = Mathf.Min(creaseWidth, capAxis * maxRelativeToMinAxis * 0.75f);
+        else
+        {
+            float raw = avg * creaseWidthFactor;
+            float cap = capAxis * maxRelativeToMinAxis * 0.75f;
+            local = Mathf.Min(raw, cap);
+        }
 
-        float raw = avg * creaseWidthFactor;
-        float cap = minAxis * maxRelativeToMinAxis * 0.75f;
-        return Mathf.Min(raw, cap);
+        // Crease caps are already thinner; still apply the same world floor so fine lines stay visible.
+        return ApplyMinWorldWidth(local);
+    }
+
+    /// <summary>
+    /// Tiny/thin meshes get crushed by min-axis caps; floor width in world space so they stay visible.
+    /// Missing/0 serialized value (old scene components) defaults to 0.003.
+    /// </summary>
+    private float ApplyMinWorldWidth(float localWidth)
+    {
+        float floorWorld = minWorldOutlineWidth > 1e-8f ? minWorldOutlineWidth : 0.003f;
+
+        Vector3 ls = transform.lossyScale;
+        float sx = Mathf.Abs(ls.x);
+        float sy = Mathf.Abs(ls.y);
+        float sz = Mathf.Abs(ls.z);
+        float scale = Mathf.Max(1e-6f, Mathf.Min(sx, Mathf.Min(sy, sz)));
+        float minLocal = floorWorld / scale;
+        return Mathf.Max(localWidth, minLocal);
     }
 
     [ContextMenu("Generate Outline")]
@@ -365,36 +449,46 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         {
             if (dense)
             {
-                // Only exception vs pre-oversize bake: ultra-dense meshes use Cull-Front share
-                // so Generate does not freeze / allocate multi-GB sealed shells.
+                // Ultra-dense meshes: Cull-Front share-mesh (avoid multi-GB sealed builds).
                 shellMat = new Material(shellShader);
                 shellMat.SetFloat("_OutlineWidth", localOutline);
                 MarkGenerated(shellMat);
                 shellUsesShaderExtrusion = true;
                 CreateShellObject(sourceMesh, shellMat);
             }
+            else if (IsThinSheet(sourceMesh))
+            {
+                // Cards / photos: sealed face extrusion is nearly invisible face-on.
+                // Share mesh + uniform inflate + Cull Front → reliable rim.
+                shellMat = new Material(shellShader);
+                shellMat.SetFloat("_OutlineWidth", 0f);
+                MarkGenerated(shellMat);
+                shellUsesShaderExtrusion = false;
+                CreateShellObject(sourceMesh, shellMat);
+                float inflate = ResolveThinSheetInflateScale(sourceMesh, localOutline);
+                shell.transform.localScale = new Vector3(inflate, inflate, inflate);
+            }
+            else
+            {
+                // Same path as Tool Generate: sealed face slabs + fins + corners.
+                shellMesh = BuildSealedOutlineShell(sourceMesh, localOutline);
+                if (shellMesh != null)
+                {
+                    MarkGenerated(shellMesh);
+                    shellMat = new Material(shellShader);
+                    shellMat.SetFloat("_OutlineWidth", 0f);
+                    MarkGenerated(shellMat);
+                    CreateShellObject(shellMesh, shellMat);
+                }
                 else
                 {
-                    // Same path as Tool Generate: sealed face slabs + fins + corners.
-                    shellMesh = BuildSealedOutlineShell(sourceMesh, localOutline);
-                    if (shellMesh != null)
-                    {
-                        MarkGenerated(shellMesh);
-                        shellMat = new Material(shellShader);
-                        shellMat.SetFloat("_OutlineWidth", 0f);
-                        MarkGenerated(shellMat);
-                        CreateShellObject(shellMesh, shellMat);
-                    }
-                    else
-                    {
-                        // Dense / degenerate / non-readable leftovers: Cull-Front share-mesh.
-                        shellMat = new Material(shellShader);
-                        shellMat.SetFloat("_OutlineWidth", localOutline);
-                        MarkGenerated(shellMat);
-                        shellUsesShaderExtrusion = true;
-                        CreateShellObject(sourceMesh, shellMat);
-                    }
+                    shellMat = new Material(shellShader);
+                    shellMat.SetFloat("_OutlineWidth", localOutline);
+                    MarkGenerated(shellMat);
+                    shellUsesShaderExtrusion = true;
+                    CreateShellObject(sourceMesh, shellMat);
                 }
+            }
         }
 
         // Creases match the pre-oversize path (skip on dense — too heavy).

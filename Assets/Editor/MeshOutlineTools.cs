@@ -27,6 +27,84 @@ public sealed class MeshOutlineTools : EditorWindow
         win.Show();
     }
 
+    [MenuItem("Tools/Mesh Outline/Photos → Thin-Sheet Outline + Generate")]
+    public static void MenuPhotosThinSheet()
+    {
+        ApplyThinSheetToPhotosInActiveScene();
+    }
+
+    /// <summary>
+    /// Find MeshOutlineStyle under Photo paths / photo-like names, force thin-sheet inflate, Rebuild.
+    /// </summary>
+    public static void ApplyThinSheetToPhotosInActiveScene()
+    {
+        var styles = GetStylesInActiveScene();
+        var photos = new List<MeshOutlineStyle>();
+        for (int i = 0; i < styles.Count; i++)
+        {
+            if (IsPhotoOutlineTarget(styles[i]))
+                photos.Add(styles[i]);
+        }
+
+        if (photos.Count == 0)
+        {
+            Debug.LogWarning("Mesh Outline: no photo-like MeshOutlineStyle found.");
+            return;
+        }
+
+        try
+        {
+            for (int i = 0; i < photos.Count; i++)
+            {
+                if (i % 10 == 0)
+                    EditorUtility.DisplayProgressBar("Mesh Outline", "Photos thin-sheet…", (float)i / photos.Count);
+
+                MeshOutlineStyle style = photos[i];
+                var so = new SerializedObject(style);
+                so.FindProperty("forceThinSheetOutline").boolValue = true;
+                so.FindProperty("drawSilhouette").boolValue = true;
+                SerializedProperty minWorld = so.FindProperty("minWorldOutlineWidth");
+                if (minWorld != null && minWorld.floatValue < 0.005f)
+                    minWorld.floatValue = 0.008f;
+                SerializedProperty factor = so.FindProperty("outlineWidthFactor");
+                if (factor != null && factor.floatValue < 0.03f)
+                    factor.floatValue = 0.04f;
+                so.ApplyModifiedPropertiesWithoutUndo();
+
+                style.Rebuild();
+                EditorUtility.SetDirty(style);
+            }
+        }
+        finally
+        {
+            EditorUtility.ClearProgressBar();
+        }
+
+        MarkActiveSceneDirty();
+        Debug.Log($"Mesh Outline: applied thin-sheet inflate to {photos.Count} photos.");
+    }
+
+    private static bool IsPhotoOutlineTarget(MeshOutlineStyle style)
+    {
+        if (style == null)
+            return false;
+
+        Transform t = style.transform;
+        while (t != null)
+        {
+            string n = t.name;
+            if (n.IndexOf("photo", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || n.IndexOf("paintingmodel", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || n.IndexOf("日记碎片", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return true;
+            }
+            t = t.parent;
+        }
+
+        return false;
+    }
+
     [MenuItem("Tools/Mesh Outline/Enable Read/Write For Outline Meshes")]
     public static void MenuEnableReadable()
     {
@@ -92,6 +170,8 @@ public sealed class MeshOutlineTools : EditorWindow
         {
             if (GUILayout.Button("Enable Read/Write For Outline Meshes", GUILayout.Height(28f)))
                 EnableReadWriteForOutlineMeshes(showDialog: true);
+            if (GUILayout.Button("Photos → Thin-Sheet Outline + Generate", GUILayout.Height(32f)))
+                ApplyThinSheetToPhotosInActiveScene();
             if (GUILayout.Button("Generate Outlines", GUILayout.Height(36f)))
                 GenerateExistingInActiveScene();
             if (GUILayout.Button("Clear Generated", GUILayout.Height(32f)))
