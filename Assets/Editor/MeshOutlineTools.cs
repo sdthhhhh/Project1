@@ -5,8 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Mesh outline tools. "Memory" = which objects already have MeshOutlineStyle.
-/// Generate / Clear / Preview only touch those components — never auto-add to bare meshes.
+/// Component = who has outlines. Tool only Generates / Clears runtime shells (DontSave).
+/// Never auto-adds MeshOutlineStyle to bare meshes unless you use Add To Selection.
 /// </summary>
 public sealed class MeshOutlineTools : EditorWindow
 {
@@ -23,11 +23,17 @@ public sealed class MeshOutlineTools : EditorWindow
     public static void Open()
     {
         var win = GetWindow<MeshOutlineTools>("Mesh Outline");
-        win.minSize = new Vector2(340f, 420f);
+        win.minSize = new Vector2(340f, 400f);
         win.Show();
     }
 
-    [MenuItem("Tools/Mesh Outline/Generate (Only With Component)")]
+    [MenuItem("Tools/Mesh Outline/Enable Read/Write For Outline Meshes")]
+    public static void MenuEnableReadable()
+    {
+        EnableReadWriteForOutlineMeshes(showDialog: true);
+    }
+
+    [MenuItem("Tools/Mesh Outline/Generate (Component Only)")]
     public static void MenuGenerate()
     {
         GenerateExistingInActiveScene();
@@ -39,18 +45,6 @@ public sealed class MeshOutlineTools : EditorWindow
         ClearGeneratedInActiveScene();
     }
 
-    [MenuItem("Tools/Mesh Outline/Editor: Original Colors")]
-    public static void MenuOriginalColors()
-    {
-        SetEditorPreviewMode(keepOriginal: true);
-    }
-
-    [MenuItem("Tools/Mesh Outline/Editor: Comic Preview")]
-    public static void MenuComicPreview()
-    {
-        SetEditorPreviewMode(keepOriginal: false);
-    }
-
     private void OnGUI()
     {
         scroll = EditorGUILayout.BeginScrollView(scroll);
@@ -58,9 +52,11 @@ public sealed class MeshOutlineTools : EditorWindow
         var tracked = GetStylesInActiveScene();
 
         EditorGUILayout.HelpBox(
-            "记住谁有描边 = 场景里是否挂了 MeshOutlineStyle。\n" +
-            "Generate / Clear / 预览切换 都只处理已挂组件的物体；没挂的一律不动。\n" +
-            "保存场景后这份名单会一起保存。",
+            "名单 = MeshOutlineStyle 组件。\n" +
+            "Generate（Edit）：密封描边（DontSave）。\n" +
+            "Clear：删生成物。\n" +
+            "Play：同样密封 Rebuild（需 Mesh Read/Write）。\n" +
+            "首次请先点 Enable Read/Write。",
             MessageType.Info);
 
         EditorGUILayout.LabelField("Tracked in active scene", tracked.Count.ToString(), EditorStyles.boldLabel);
@@ -70,9 +66,7 @@ public sealed class MeshOutlineTools : EditorWindow
         {
             listScroll = EditorGUILayout.BeginScrollView(listScroll, GUILayout.Height(140f));
             if (tracked.Count == 0)
-            {
-                EditorGUILayout.LabelField("(none — add MeshOutlineStyle, or use Add Component below)");
-            }
+                EditorGUILayout.LabelField("(none)");
             else
             {
                 for (int i = 0; i < tracked.Count; i++)
@@ -93,46 +87,30 @@ public sealed class MeshOutlineTools : EditorWindow
             EditorGUILayout.EndScrollView();
         }
 
-        EditorGUILayout.Space(8f);
-        EditorGUILayout.LabelField("Generate / Clear (component only)", EditorStyles.boldLabel);
-
+        EditorGUILayout.Space(10f);
         using (new EditorGUI.DisabledScope(tracked.Count == 0))
         {
-            if (GUILayout.Button("Generate Outlines", GUILayout.Height(32f)))
+            if (GUILayout.Button("Enable Read/Write For Outline Meshes", GUILayout.Height(28f)))
+                EnableReadWriteForOutlineMeshes(showDialog: true);
+            if (GUILayout.Button("Generate Outlines", GUILayout.Height(36f)))
                 GenerateExistingInActiveScene();
-            if (GUILayout.Button("Clear Generated Helpers", GUILayout.Height(28f)))
+            if (GUILayout.Button("Clear Generated", GUILayout.Height(32f)))
                 ClearGeneratedInActiveScene();
         }
 
-        EditorGUILayout.Space(8f);
-        EditorGUILayout.LabelField("Edit Preview (component only)", EditorStyles.boldLabel);
-        using (new EditorGUI.DisabledScope(tracked.Count == 0))
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            if (GUILayout.Button("Original Colors", GUILayout.Height(28f)))
-                SetEditorPreviewMode(keepOriginal: true);
-            if (GUILayout.Button("Comic Preview", GUILayout.Height(28f)))
-                SetEditorPreviewMode(keepOriginal: false);
-        }
-
-        EditorGUILayout.Space(8f);
+        EditorGUILayout.Space(10f);
         showAddComponent = EditorGUILayout.Foldout(showAddComponent, "Add MeshOutlineStyle (manual)", true);
         if (showAddComponent)
         {
-            EditorGUILayout.HelpBox(
-                "只有这里才会给物体新挂组件。全场景一键挂上已移除，避免误伤。",
-                MessageType.None);
             tone = (MeshOutlineStyle.OutlineTone)EditorGUILayout.EnumPopup("Tone", tone);
             outlineWidthFactor = EditorGUILayout.Slider("Width Factor", outlineWidthFactor, 0.005f, 0.08f);
-
             if (GUILayout.Button("Add Component To Selection + Generate"))
                 AddComponentToSelection(outlineWidthFactor, tone);
-
-            if (GUILayout.Button("Remove Components From Scene…"))
+            if (GUILayout.Button("Remove All Components From Scene…"))
             {
                 if (EditorUtility.DisplayDialog(
                         "Remove MeshOutlineStyle?",
-                        "Restores original materials when cached, then removes MeshOutlineStyle from the active scene.",
+                        "Clear generated helpers, restore materials when cached, remove components.",
                         "Remove",
                         "Cancel"))
                 {
@@ -163,62 +141,34 @@ public sealed class MeshOutlineTools : EditorWindow
 
     private static void ConfigureDefaults(MeshOutlineStyle style, float widthFactor, MeshOutlineStyle.OutlineTone outlineTone)
     {
-        style.Configure(outlineTone, widthFactor, DefaultBody, hardEdges: false);
-        style.KeepOriginalColorsInEditor = true;
+        style.Configure(outlineTone, widthFactor, DefaultBody, hardEdges: true);
         var so = new SerializedObject(style);
         SerializedProperty build = so.FindProperty("buildOnAwake");
         SerializedProperty sil = so.FindProperty("drawSilhouette");
         SerializedProperty hard = so.FindProperty("drawHardEdges");
         if (build != null) build.boolValue = true;
         if (sil != null) sil.boolValue = true;
-        if (hard != null) hard.boolValue = false;
+        if (hard != null) hard.boolValue = true;
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    public static void SetEditorPreviewMode(bool keepOriginal)
-    {
-        var styles = GetStylesInActiveScene();
-        try
-        {
-            for (int i = 0; i < styles.Count; i++)
-            {
-                if (i % 20 == 0)
-                {
-                    EditorUtility.DisplayProgressBar(
-                        "Mesh Outline",
-                        keepOriginal ? "Original colors…" : "Comic preview…",
-                        (float)i / Mathf.Max(1, styles.Count));
-                }
-
-                styles[i].KeepOriginalColorsInEditor = keepOriginal;
-                styles[i].Rebuild();
-                EditorUtility.SetDirty(styles[i]);
-            }
-        }
-        finally
-        {
-            EditorUtility.ClearProgressBar();
-        }
-
-        MarkActiveSceneDirty();
-        Debug.Log($"Mesh Outline: editor preview → {(keepOriginal ? "Original Colors" : "Comic")} ({styles.Count} with component).");
-    }
-
-    /// <summary>Rebuild outlines only for objects that already have MeshOutlineStyle.</summary>
     public static void GenerateExistingInActiveScene()
     {
         var styles = GetStylesInActiveScene();
         if (styles.Count == 0)
         {
-            Debug.LogWarning("Mesh Outline: no MeshOutlineStyle in active scene — nothing to generate.");
+            Debug.LogWarning("Mesh Outline: no MeshOutlineStyle in active scene.");
             return;
         }
+
+        // Play Mode sealed extrusion needs CPU mesh data.
+        EnableReadWriteForOutlineMeshes(showDialog: false);
 
         try
         {
             for (int i = 0; i < styles.Count; i++)
             {
-                if (i % 20 == 0)
+                if (i % 15 == 0)
                     EditorUtility.DisplayProgressBar("Mesh Outline", "Generate…", (float)i / styles.Count);
                 styles[i].Rebuild();
                 EditorUtility.SetDirty(styles[i]);
@@ -230,7 +180,112 @@ public sealed class MeshOutlineTools : EditorWindow
         }
 
         MarkActiveSceneDirty();
-        Debug.Log($"Mesh Outline: generated {styles.Count} (component-only).");
+        Debug.Log($"Mesh Outline: generated {styles.Count} (DontSave helpers; components kept).");
+    }
+
+    /// <summary>
+    /// Sealed outline needs mesh.GetVertices/GetTriangles. Non-readable meshes fail in Play Mode.
+    /// </summary>
+    public static int EnableReadWriteForOutlineMeshes(bool showDialog)
+    {
+        var styles = GetStylesInActiveScene();
+        var paths = new HashSet<string>();
+        int already = 0;
+        int skippedBuiltin = 0;
+
+        for (int i = 0; i < styles.Count; i++)
+        {
+            MeshFilter filter = styles[i] != null ? styles[i].GetComponent<MeshFilter>() : null;
+            Mesh mesh = filter != null ? filter.sharedMesh : null;
+            if (mesh == null)
+                continue;
+
+            if (mesh.isReadable)
+            {
+                already++;
+                continue;
+            }
+
+            string path = AssetDatabase.GetAssetPath(mesh);
+            if (string.IsNullOrEmpty(path) || !path.StartsWith("Assets/", System.StringComparison.Ordinal))
+            {
+                skippedBuiltin++;
+                continue;
+            }
+
+            paths.Add(path);
+        }
+
+        if (paths.Count == 0)
+        {
+            if (showDialog)
+            {
+                EditorUtility.DisplayDialog(
+                    "Mesh Outline",
+                    already > 0
+                        ? $"All outline meshes already readable ({already}). Builtin/skipped: {skippedBuiltin}."
+                        : "No importable outline meshes found.",
+                    "OK");
+            }
+            return 0;
+        }
+
+        if (showDialog &&
+            !EditorUtility.DisplayDialog(
+                "Enable Read/Write?",
+                $"Will set Read/Write Enabled on {paths.Count} model/mesh assets used by MeshOutlineStyle.\n" +
+                "This is required for Play Mode sealed outlines (same as Tool).\n\nReimport may take a minute.",
+                "Enable",
+                "Cancel"))
+        {
+            return 0;
+        }
+
+        int changed = 0;
+        try
+        {
+            int n = 0;
+            foreach (string path in paths)
+            {
+                n++;
+                EditorUtility.DisplayProgressBar("Mesh Outline", "Read/Write… " + path, (float)n / paths.Count);
+
+                ModelImporter modelImporter = AssetImporter.GetAtPath(path) as ModelImporter;
+                if (modelImporter != null)
+                {
+                    if (!modelImporter.isReadable)
+                    {
+                        modelImporter.isReadable = true;
+                        modelImporter.SaveAndReimport();
+                        changed++;
+                    }
+                    continue;
+                }
+
+                // Standalone .asset meshes: toggle via SerializedObject if possible.
+                var importer = AssetImporter.GetAtPath(path);
+                if (importer == null)
+                    continue;
+                var so = new SerializedObject(importer);
+                SerializedProperty readable = so.FindProperty("m_IsReadable");
+                if (readable != null && !readable.boolValue)
+                {
+                    readable.boolValue = true;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    importer.SaveAndReimport();
+                    changed++;
+                }
+            }
+        }
+        finally
+        {
+            EditorUtility.ClearProgressBar();
+        }
+
+        Debug.Log($"Mesh Outline: enabled Read/Write on {changed} assets (already readable refs≈{already}, builtin/skipped={skippedBuiltin}).");
+        if (showDialog)
+            EditorUtility.DisplayDialog("Mesh Outline", $"Enabled Read/Write on {changed} assets.", "OK");
+        return changed;
     }
 
     public static void ClearGeneratedInActiveScene()
@@ -262,7 +317,7 @@ public sealed class MeshOutlineTools : EditorWindow
         GameObject[] selected = Selection.gameObjects;
         if (selected == null || selected.Length == 0)
         {
-            Debug.LogWarning("Mesh Outline: select one or more objects first.");
+            Debug.LogWarning("Mesh Outline: select objects first.");
             return;
         }
 
@@ -298,14 +353,13 @@ public sealed class MeshOutlineTools : EditorWindow
         var styles = GetStylesInActiveScene();
         for (int i = 0; i < styles.Count; i++)
         {
-            MeshOutlineStyle style = styles[i];
-            if (style == null) continue;
-            style.ClearGenerated();
-            Undo.DestroyObjectImmediate(style);
+            if (styles[i] == null) continue;
+            styles[i].ClearGenerated();
+            Undo.DestroyObjectImmediate(styles[i]);
         }
 
         MarkActiveSceneDirty();
-        Debug.Log($"Mesh Outline: removed {styles.Count} MeshOutlineStyle components.");
+        Debug.Log($"Mesh Outline: removed {styles.Count} components.");
     }
 
     private static void MarkActiveSceneDirty()

@@ -3,15 +3,15 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 /// <summary>
-/// Mesh outline with:
-/// 1) silhouette via face-slab extrusion + edge fins + corner patches (seals hard edges)
-/// 2) sharp/crease tubes with corner plugs for structural read
-/// Does not use ScreenSpaceOutlines.
+/// Mesh outline (component = who gets outlines; generated shells are Never saved into git).
+/// Edit Tool Generate and Play Mode both use sealed Rebuild(); Play spreads builds across frames.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class MeshOutlineStyle : MonoBehaviour
 {
-    public const string OutlinePipeline = "light-shader-v1";
+    public const string OutlinePipeline = "sealed-runtime-v2";
+
+    private const int MaxSealedShellTris = 80000;
 
     public enum OutlineTone
     {
@@ -36,10 +36,8 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     [SerializeField, Range(0.05f, 0.25f), Tooltip("Outline cannot exceed this fraction of the thinnest bounds axis.")]
     private float maxRelativeToMinAxis = 0.12f;
     [SerializeField] private Color bodyColor = new Color(0.09f, 0.09f, 0.1f, 1f);
-    [SerializeField, Tooltip("Rebuild outline shells when Play starts (needed because preview shells are DontSave).")]
+    [SerializeField, Tooltip("Rebuild outline shells when Play starts (generated helpers are DontSave).")]
     private bool buildOnAwake = true;
-    [SerializeField, Tooltip("In Edit Mode keep original materials; Play Mode applies black OutlineBody.")]
-    private bool keepOriginalColorsInEditor = true;
     [SerializeField] private Material[] cachedOriginalMaterials;
 
     private static readonly Color ToneBlack = new Color(0.05f, 0.05f, 0.055f, 1f);
@@ -54,12 +52,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     private Mesh creaseMesh;
     private Mesh shellMesh;
     private bool builtThisPlaySession;
-
-    public bool KeepOriginalColorsInEditor
-    {
-        get => keepOriginalColorsInEditor;
-        set => keepOriginalColorsInEditor = value;
-    }
+    private bool shellUsesShaderExtrusion;
 
     public OutlineTone Tone
     {
@@ -99,7 +92,6 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
     private static float CharacteristicSize(Vector3 size)
     {
-        // Average axis — less dominated by one long side.
         return (size.x + size.y + size.z) / 3f;
     }
 
@@ -108,9 +100,6 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         return Mathf.Max(1e-6f, Mathf.Min(size.x, Mathf.Min(size.y, size.z)));
     }
 
-    /// <summary>
-    /// Local-space outline width for the extrusion shader (scales with the mesh itself).
-    /// </summary>
     private float ResolveLocalOutlineWidth(Mesh sourceMesh)
     {
         Vector3 size = sourceMesh.bounds.size;
@@ -139,52 +128,32 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         return Mathf.Min(raw, cap);
     }
 
-    [ContextMenu("Rebuild Outline")]
+    [ContextMenu("Generate Outline")]
     public void RebuildFromMenu()
     {
         Rebuild();
     }
 
-    [ContextMenu("Restore Original Materials (Editor)")]
-    public void RestoreOriginalMaterialsMenu()
+    [ContextMenu("Clear Generated Outline")]
+    public void ClearGeneratedMenu()
     {
-        MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
-        if (sourceRenderer == null) return;
-        CacheOriginalMaterialsIfNeeded(sourceRenderer);
-        RestoreOriginalMaterials(sourceRenderer);
-        SafeDestroy(bodyMat);
-        bodyMat = null;
+        ClearGenerated();
     }
 
-    private void Awake()
+    /// <summary>Diagnostics: sealed shells successfully created this Play session.</summary>
+    public static int PlaySealedBuiltCount { get; private set; }
+    /// <summary>Diagnostics: fell back to Cull-Front share-mesh this Play session.</summary>
+    public static int PlayLightFallbackCount { get; private set; }
+
+    public static void NotePlaySealedBuilt() { PlaySealedBuiltCount++; }
+    public static void NotePlayLightFallback() { PlayLightFallbackCount++; }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetPlayBuildStats()
     {
-        // Edit-mode preview shells use DontSave and are stripped when entering Play.
-        // Always regenerate at runtime (ignore serialized false from older scenes).
-        if (Application.isPlaying)
-            Rebuild();
+        PlaySealedBuiltCount = 0;
+        PlayLightFallbackCount = 0;
     }
-
-    private void OnEnable()
-    {
-        if (Application.isPlaying && !builtThisPlaySession)
-            Rebuild();
-    }
-
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        // After script reload / inspector tweak: keep edit-mode bodies on original colors.
-        if (Application.isPlaying || !keepOriginalColorsInEditor)
-            return;
-
-        MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
-        if (sourceRenderer == null)
-            return;
-
-        if (LooksLikeOutlineBody(sourceRenderer.sharedMaterial) && HasCachedOriginals())
-            RestoreOriginalMaterials(sourceRenderer);
-    }
-#endif
 
     private void OnDestroy()
     {
@@ -193,14 +162,27 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
     private void Cleanup()
     {
-        // Drop tracked refs first. Never destroy cachedOriginalMaterials.
+        Mesh sourceMesh = null;
+        MeshFilter sourceFilter = GetComponent<MeshFilter>();
+        if (sourceFilter != null)
+            sourceMesh = sourceFilter.sharedMesh;
+
+        // Never destroy the object's own mesh asset (light path shares it on OutlineShell).
+        if (shell != null)
+        {
+            MeshFilter shellFilter = shell.GetComponent<MeshFilter>();
+            if (shellFilter != null && shellFilter.sharedMesh != null && shellFilter.sharedMesh == sourceMesh)
+                shellFilter.sharedMesh = null;
+        }
+
         SafeDestroy(shell);
         SafeDestroy(creases);
         SafeDestroy(bodyMat);
         SafeDestroy(shellMat);
         SafeDestroy(creaseMat);
         SafeDestroy(creaseMesh);
-        SafeDestroy(shellMesh);
+        if (shellMesh != null && shellMesh != sourceMesh)
+            SafeDestroy(shellMesh);
         shell = null;
         creases = null;
         bodyMat = null;
@@ -208,8 +190,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         creaseMat = null;
         creaseMesh = null;
         shellMesh = null;
-
-        // Editor Rebuild used to leave orphans (Destroy is delayed). Sweep by name.
+        shellUsesShaderExtrusion = false;
         PurgeGeneratedChildren(transform);
     }
 
@@ -217,7 +198,11 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     {
         if (root == null) return;
 
-        // Copy list because we destroy while iterating.
+        Mesh sourceMesh = null;
+        MeshFilter rootFilter = root.GetComponent<MeshFilter>();
+        if (rootFilter != null)
+            sourceMesh = rootFilter.sharedMesh;
+
         var toDelete = new List<GameObject>();
         for (int i = 0; i < root.childCount; i++)
         {
@@ -229,20 +214,28 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         }
 
         for (int i = 0; i < toDelete.Count; i++)
-            SafeDestroy(toDelete[i]);
+        {
+            GameObject go = toDelete[i];
+            if (go == null) continue;
+            MeshFilter mf = go.GetComponent<MeshFilter>();
+            if (mf != null && mf.sharedMesh != null && mf.sharedMesh == sourceMesh)
+                mf.sharedMesh = null;
+            SafeDestroy(go);
+        }
     }
 
     private static void SafeDestroy(Object obj)
     {
         if (obj == null) return;
 #if UNITY_EDITOR
-        if (!Application.isPlaying)
-        {
-            Object.DestroyImmediate(obj);
-            return;
-        }
-#endif
+        // Immediate in Editor (Edit + Play): deferred Destroy can wipe a brand-new
+        // OutlineShell/mesh created later in the same Rebuild() call / frame.
+        // Do NOT pass allowDestroyingAssets=true — that can nuke shared mesh assets.
+        Object.DestroyImmediate(obj);
+        return;
+#else
         Object.Destroy(obj);
+#endif
     }
 
     private static bool LooksLikeOutlineBody(Material mat)
@@ -264,7 +257,6 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         if (current == null || current.Length == 0)
             return;
 
-        // Don't cache the comic body itself as "original".
         if (LooksLikeOutlineBody(current[0]))
         {
 #if UNITY_EDITOR
@@ -296,9 +288,46 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         sourceRenderer.sharedMaterials = cachedOriginalMaterials;
     }
 
+    /// <summary>
+    /// Fast Cull-Front outline for Play-Mode streaming (far / pending objects).
+    /// Near objects should call Rebuild() for sealed quality.
+    /// </summary>
+    public void RebuildLightPlaceholder()
+    {
+        if (gameObject.name == "OutlineShell" || gameObject.name == "OutlineCreases")
+            return;
+
+        MeshFilter sourceFilter = GetComponent<MeshFilter>();
+        MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
+        if (sourceFilter == null || sourceFilter.sharedMesh == null || sourceRenderer == null)
+            return;
+
+        Shader bodyShader = Shader.Find("Custom/URP/OutlineBody");
+        Shader shellShader = Shader.Find("Custom/URP/OutlineShell");
+        if (bodyShader == null || shellShader == null)
+            return;
+
+        CacheOriginalMaterialsIfNeeded(sourceRenderer);
+        Cleanup();
+
+        bodyMat = new Material(bodyShader);
+        sourceRenderer.sharedMaterial = bodyMat;
+
+        Mesh sourceMesh = sourceFilter.sharedMesh;
+        float localOutline = ResolveLocalOutlineWidth(sourceMesh);
+        shellUsesShaderExtrusion = true;
+
+        shellMat = new Material(shellShader);
+        shellMat.SetFloat("_OutlineWidth", localOutline);
+        MarkGenerated(shellMat);
+        CreateShellObject(sourceMesh, shellMat);
+
+        ApplyColors(localOutline);
+        builtThisPlaySession = Application.isPlaying;
+    }
+
     public void Rebuild()
     {
-        // Never build on the generated helper objects themselves.
         if (gameObject.name == "OutlineShell" || gameObject.name == "OutlineCreases")
             return;
 
@@ -321,52 +350,116 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         CacheOriginalMaterialsIfNeeded(sourceRenderer);
         Cleanup();
 
-        bool useComicBody = Application.isPlaying || !keepOriginalColorsInEditor;
-        if (useComicBody)
-        {
-            bodyMat = new Material(bodyShader);
-            sourceRenderer.sharedMaterial = bodyMat;
-        }
-        else
-        {
-            RestoreOriginalMaterials(sourceRenderer);
-        }
+        // Comic body stays on the renderer (small). Only helper meshes/GOs are DontSave.
+        bodyMat = new Material(bodyShader);
+        sourceRenderer.sharedMaterial = bodyMat;
 
         Mesh sourceMesh = sourceFilter.sharedMesh;
         float localOutline = ResolveLocalOutlineWidth(sourceMesh);
+        float localCrease = ResolveLocalCreaseWidth(sourceMesh);
+        int triCount = CountMeshTriangles(sourceMesh);
+        bool dense = triCount > MaxSealedShellTris;
+        shellUsesShaderExtrusion = false;
 
         if (drawSilhouette)
         {
-            // Lightweight for all meshes: share source mesh + Cull-Front shader extrusion.
-            shellMat = new Material(shellShader);
-            shellMat.SetFloat("_OutlineWidth", localOutline);
-            MarkGenerated(shellMat);
+            if (dense)
+            {
+                // Only exception vs pre-oversize bake: ultra-dense meshes use Cull-Front share
+                // so Generate does not freeze / allocate multi-GB sealed shells.
+                shellMat = new Material(shellShader);
+                shellMat.SetFloat("_OutlineWidth", localOutline);
+                MarkGenerated(shellMat);
+                shellUsesShaderExtrusion = true;
+                CreateShellObject(sourceMesh, shellMat);
+            }
+                else
+                {
+                    // Same path as Tool Generate: sealed face slabs + fins + corners.
+                    shellMesh = BuildSealedOutlineShell(sourceMesh, localOutline);
+                    if (shellMesh != null)
+                    {
+                        MarkGenerated(shellMesh);
+                        shellMat = new Material(shellShader);
+                        shellMat.SetFloat("_OutlineWidth", 0f);
+                        MarkGenerated(shellMat);
+                        CreateShellObject(shellMesh, shellMat);
+                    }
+                    else
+                    {
+                        // Dense / degenerate / non-readable leftovers: Cull-Front share-mesh.
+                        shellMat = new Material(shellShader);
+                        shellMat.SetFloat("_OutlineWidth", localOutline);
+                        MarkGenerated(shellMat);
+                        shellUsesShaderExtrusion = true;
+                        CreateShellObject(sourceMesh, shellMat);
+                    }
+                }
+        }
 
-            shell = new GameObject("OutlineShell");
-            MarkGenerated(shell);
-            shell.transform.SetParent(transform, false);
-            shell.transform.localPosition = Vector3.zero;
-            shell.transform.localRotation = Quaternion.identity;
-            shell.transform.localScale = Vector3.one;
-            shell.layer = gameObject.layer;
+        // Creases match the pre-oversize path (skip on dense — too heavy).
+        if (drawHardEdges && !dense)
+        {
+            creaseMat = new Material(shellShader);
+            creaseMat.renderQueue = (int)RenderQueue.Geometry + 30;
+            creaseMat.SetFloat("_OutlineWidth", 0f);
+            MarkGenerated(creaseMat);
+            creaseMesh = BuildCreaseMesh(sourceMesh, hardEdgeAngleDegrees, localCrease);
+            if (creaseMesh != null)
+            {
+                MarkGenerated(creaseMesh);
+                creases = new GameObject("OutlineCreases");
+                MarkGenerated(creases);
+                creases.transform.SetParent(transform, false);
+                creases.transform.localPosition = Vector3.zero;
+                creases.transform.localRotation = Quaternion.identity;
+                creases.transform.localScale = Vector3.one;
+                creases.layer = gameObject.layer;
 
-            MeshFilter shellFilter = shell.AddComponent<MeshFilter>();
-            shellFilter.sharedMesh = sourceMesh;
+                MeshFilter creaseFilter = creases.AddComponent<MeshFilter>();
+                creaseFilter.sharedMesh = creaseMesh;
 
-            MeshRenderer shellRenderer = shell.AddComponent<MeshRenderer>();
-            shellRenderer.sharedMaterial = shellMat;
-            shellRenderer.shadowCastingMode = ShadowCastingMode.Off;
-            shellRenderer.receiveShadows = false;
+                MeshRenderer creaseRenderer = creases.AddComponent<MeshRenderer>();
+                creaseRenderer.sharedMaterial = creaseMat;
+                creaseRenderer.shadowCastingMode = ShadowCastingMode.Off;
+                creaseRenderer.receiveShadows = false;
+            }
         }
 
         ApplyColors(localOutline);
         builtThisPlaySession = Application.isPlaying;
     }
 
+    private void CreateShellObject(Mesh mesh, Material mat)
+    {
+        shell = new GameObject("OutlineShell");
+        MarkGenerated(shell);
+        shell.transform.SetParent(transform, false);
+        shell.transform.localPosition = Vector3.zero;
+        shell.transform.localRotation = Quaternion.identity;
+        shell.transform.localScale = Vector3.one;
+        shell.layer = gameObject.layer;
+
+        MeshFilter shellFilter = shell.AddComponent<MeshFilter>();
+        shellFilter.sharedMesh = mesh;
+
+        MeshRenderer shellRenderer = shell.AddComponent<MeshRenderer>();
+        shellRenderer.sharedMaterial = mat;
+        shellRenderer.shadowCastingMode = ShadowCastingMode.Off;
+        shellRenderer.receiveShadows = false;
+    }
+
     private static void MarkGenerated(Object obj)
     {
         if (obj == null) return;
-        obj.hideFlags |= HideFlags.DontSave;
+        // Edit-only: keep Tool preview out of the saved scene.
+        // In Play Mode, DontSave / DontSaveInEditor will wipe runtime shells.
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+            obj.hideFlags |= HideFlags.DontSave;
+        else
+            obj.hideFlags &= ~(HideFlags.DontSave | HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild);
+#endif
     }
 
     public void ApplyColors()
@@ -386,7 +479,12 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         if (shellMat != null)
         {
             shellMat.SetColor("_OutlineColor", outline);
-            shellMat.SetFloat("_OutlineWidth", localOutlineWidth);
+            shellMat.SetFloat("_OutlineWidth", shellUsesShaderExtrusion ? localOutlineWidth : 0f);
+        }
+        if (creaseMat != null)
+        {
+            creaseMat.SetColor("_OutlineColor", outline);
+            creaseMat.SetFloat("_OutlineWidth", 0f);
         }
     }
 
@@ -405,16 +503,44 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     /// - each triangle becomes an outward face slab (faceNormal * width)
     /// - shared edges get a bridging fin between the two slabs
     /// - vertices with 3+ distinct face normals get a corner patch
-    /// This fills the open V where hard-edged faces would otherwise separate.
     /// </summary>
+    private static int CountMeshTriangles(Mesh mesh)
+    {
+        if (mesh == null)
+            return 0;
+
+        var tris = new List<int>(64);
+        mesh.GetTriangles(tris, 0);
+        if (tris.Count >= 3)
+            return tris.Count / 3;
+
+        int[] legacy = mesh.triangles;
+        return legacy != null ? legacy.Length / 3 : 0;
+    }
+
     private static Mesh BuildSealedOutlineShell(Mesh source, float width)
     {
         if (source == null || width <= 1e-6f)
             return null;
 
-        Vector3[] srcVerts = source.vertices;
-        int[] tris = source.triangles;
-        if (srcVerts == null || tris == null || tris.Length < 3)
+        // Prefer Get* APIs — more reliable than .triangles/.vertices for some Play Mode meshes.
+        var srcVertList = new List<Vector3>(source.vertexCount);
+        source.GetVertices(srcVertList);
+        var triList = new List<int>();
+        source.GetTriangles(triList, 0);
+        if (srcVertList.Count == 0 || triList.Count < 3)
+            return null;
+
+        Vector3[] srcVerts = srcVertList.ToArray();
+        int[] tris = triList.ToArray();
+
+        // Play Mode can briefly expose index buffers before vertex positions are ready
+        // (all zeros) — that yields an empty sealed mesh and looks like a light fallback.
+        float maxSqr = 0f;
+        int probe = Mathf.Min(srcVerts.Length, 64);
+        for (int i = 0; i < probe; i++)
+            maxSqr = Mathf.Max(maxSqr, srcVerts[i].sqrMagnitude);
+        if (maxSqr <= 1e-12f)
             return null;
 
         int triCount = tris.Length / 3;
