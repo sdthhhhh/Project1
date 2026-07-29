@@ -11,6 +11,8 @@ using UnityEngine.Rendering;
 [DisallowMultipleComponent]
 public sealed class MeshOutlineStyle : MonoBehaviour
 {
+    public const string OutlinePipeline = "light-shader-v1";
+
     public enum OutlineTone
     {
         Black,
@@ -34,7 +36,11 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     [SerializeField, Range(0.05f, 0.25f), Tooltip("Outline cannot exceed this fraction of the thinnest bounds axis.")]
     private float maxRelativeToMinAxis = 0.12f;
     [SerializeField] private Color bodyColor = new Color(0.09f, 0.09f, 0.1f, 1f);
-    [SerializeField] private bool buildOnAwake = false;
+    [SerializeField, Tooltip("Rebuild outline shells when Play starts (needed because preview shells are DontSave).")]
+    private bool buildOnAwake = true;
+    [SerializeField, Tooltip("In Edit Mode keep original materials; Play Mode applies black OutlineBody.")]
+    private bool keepOriginalColorsInEditor = true;
+    [SerializeField] private Material[] cachedOriginalMaterials;
 
     private static readonly Color ToneBlack = new Color(0.05f, 0.05f, 0.055f, 1f);
     private static readonly Color ToneWhite = new Color(0.93f, 0.94f, 0.96f, 1f);
@@ -47,6 +53,13 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     private Material creaseMat;
     private Mesh creaseMesh;
     private Mesh shellMesh;
+    private bool builtThisPlaySession;
+
+    public bool KeepOriginalColorsInEditor
+    {
+        get => keepOriginalColorsInEditor;
+        set => keepOriginalColorsInEditor = value;
+    }
 
     public OutlineTone Tone
     {
@@ -73,6 +86,15 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         drawHardEdges = hardEdges;
         creaseWidthFactor = Mathf.Clamp(newCreaseWidthFactor, 0.002f, 0.05f);
         hardEdgeAngleDegrees = Mathf.Clamp(newHardEdgeAngleDegrees, 20f, 90f);
+    }
+
+    /// <summary>Remove generated shells and comic body; restore cached originals when possible.</summary>
+    public void ClearGenerated()
+    {
+        MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
+        Cleanup();
+        if (sourceRenderer != null)
+            RestoreOriginalMaterials(sourceRenderer);
     }
 
     private static float CharacteristicSize(Vector3 size)
@@ -123,11 +145,46 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         Rebuild();
     }
 
+    [ContextMenu("Restore Original Materials (Editor)")]
+    public void RestoreOriginalMaterialsMenu()
+    {
+        MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
+        if (sourceRenderer == null) return;
+        CacheOriginalMaterialsIfNeeded(sourceRenderer);
+        RestoreOriginalMaterials(sourceRenderer);
+        SafeDestroy(bodyMat);
+        bodyMat = null;
+    }
+
     private void Awake()
     {
-        if (buildOnAwake)
+        // Edit-mode preview shells use DontSave and are stripped when entering Play.
+        // Always regenerate at runtime (ignore serialized false from older scenes).
+        if (Application.isPlaying)
             Rebuild();
     }
+
+    private void OnEnable()
+    {
+        if (Application.isPlaying && !builtThisPlaySession)
+            Rebuild();
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        // After script reload / inspector tweak: keep edit-mode bodies on original colors.
+        if (Application.isPlaying || !keepOriginalColorsInEditor)
+            return;
+
+        MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
+        if (sourceRenderer == null)
+            return;
+
+        if (LooksLikeOutlineBody(sourceRenderer.sharedMaterial) && HasCachedOriginals())
+            RestoreOriginalMaterials(sourceRenderer);
+    }
+#endif
 
     private void OnDestroy()
     {
@@ -136,7 +193,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
     private void Cleanup()
     {
-        // Drop tracked refs first.
+        // Drop tracked refs first. Never destroy cachedOriginalMaterials.
         SafeDestroy(shell);
         SafeDestroy(creases);
         SafeDestroy(bodyMat);
@@ -188,6 +245,57 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         Object.Destroy(obj);
     }
 
+    private static bool LooksLikeOutlineBody(Material mat)
+    {
+        return mat != null && mat.shader != null && mat.shader.name.Contains("OutlineBody");
+    }
+
+    private bool HasCachedOriginals()
+    {
+        return cachedOriginalMaterials != null && cachedOriginalMaterials.Length > 0 && cachedOriginalMaterials[0] != null;
+    }
+
+    private void CacheOriginalMaterialsIfNeeded(MeshRenderer sourceRenderer)
+    {
+        if (HasCachedOriginals() || sourceRenderer == null)
+            return;
+
+        Material[] current = sourceRenderer.sharedMaterials;
+        if (current == null || current.Length == 0)
+            return;
+
+        // Don't cache the comic body itself as "original".
+        if (LooksLikeOutlineBody(current[0]))
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                GameObject prefab = UnityEditor.PrefabUtility.GetCorrespondingObjectFromSource(gameObject);
+                if (prefab != null)
+                {
+                    MeshRenderer prefabMr = prefab.GetComponent<MeshRenderer>();
+                    if (prefabMr != null && prefabMr.sharedMaterials != null && prefabMr.sharedMaterials.Length > 0
+                        && !LooksLikeOutlineBody(prefabMr.sharedMaterials[0]))
+                    {
+                        cachedOriginalMaterials = (Material[])prefabMr.sharedMaterials.Clone();
+                        return;
+                    }
+                }
+            }
+#endif
+            return;
+        }
+
+        cachedOriginalMaterials = (Material[])current.Clone();
+    }
+
+    private void RestoreOriginalMaterials(MeshRenderer sourceRenderer)
+    {
+        if (sourceRenderer == null || !HasCachedOriginals())
+            return;
+        sourceRenderer.sharedMaterials = cachedOriginalMaterials;
+    }
+
     public void Rebuild()
     {
         // Never build on the generated helper objects themselves.
@@ -210,68 +318,55 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             return;
         }
 
+        CacheOriginalMaterialsIfNeeded(sourceRenderer);
         Cleanup();
 
-        bodyMat = new Material(bodyShader);
-        sourceRenderer.sharedMaterial = bodyMat;
+        bool useComicBody = Application.isPlaying || !keepOriginalColorsInEditor;
+        if (useComicBody)
+        {
+            bodyMat = new Material(bodyShader);
+            sourceRenderer.sharedMaterial = bodyMat;
+        }
+        else
+        {
+            RestoreOriginalMaterials(sourceRenderer);
+        }
 
         Mesh sourceMesh = sourceFilter.sharedMesh;
         float localOutline = ResolveLocalOutlineWidth(sourceMesh);
-        float localCrease = ResolveLocalCreaseWidth(sourceMesh);
 
         if (drawSilhouette)
         {
-            // Face slabs + edge fins + corner patches — seals dihedral gaps hard normals leave.
-            shellMesh = BuildSealedOutlineShell(sourceMesh, localOutline);
-            if (shellMesh != null)
-            {
-                shellMat = new Material(shellShader);
-                shellMat.SetFloat("_OutlineWidth", 0f); // already extruded in mesh
+            // Lightweight for all meshes: share source mesh + Cull-Front shader extrusion.
+            shellMat = new Material(shellShader);
+            shellMat.SetFloat("_OutlineWidth", localOutline);
+            MarkGenerated(shellMat);
 
-                shell = new GameObject("OutlineShell");
-                shell.transform.SetParent(transform, false);
-                shell.transform.localPosition = Vector3.zero;
-                shell.transform.localRotation = Quaternion.identity;
-                shell.transform.localScale = Vector3.one;
-                shell.layer = gameObject.layer;
+            shell = new GameObject("OutlineShell");
+            MarkGenerated(shell);
+            shell.transform.SetParent(transform, false);
+            shell.transform.localPosition = Vector3.zero;
+            shell.transform.localRotation = Quaternion.identity;
+            shell.transform.localScale = Vector3.one;
+            shell.layer = gameObject.layer;
 
-                MeshFilter shellFilter = shell.AddComponent<MeshFilter>();
-                shellFilter.sharedMesh = shellMesh;
+            MeshFilter shellFilter = shell.AddComponent<MeshFilter>();
+            shellFilter.sharedMesh = sourceMesh;
 
-                MeshRenderer shellRenderer = shell.AddComponent<MeshRenderer>();
-                shellRenderer.sharedMaterial = shellMat;
-                shellRenderer.shadowCastingMode = ShadowCastingMode.Off;
-                shellRenderer.receiveShadows = false;
-            }
-        }
-
-        if (drawHardEdges)
-        {
-            creaseMat = new Material(shellShader);
-            creaseMat.renderQueue = (int)RenderQueue.Geometry + 30;
-            // Crease mesh is in local space; disable world extrusion on this material.
-            creaseMat.SetFloat("_OutlineWidth", 0f);
-            creaseMesh = BuildCreaseMesh(sourceMesh, hardEdgeAngleDegrees, localCrease);
-            if (creaseMesh != null)
-            {
-                creases = new GameObject("OutlineCreases");
-                creases.transform.SetParent(transform, false);
-                creases.transform.localPosition = Vector3.zero;
-                creases.transform.localRotation = Quaternion.identity;
-                creases.transform.localScale = Vector3.one;
-                creases.layer = gameObject.layer;
-
-                MeshFilter creaseFilter = creases.AddComponent<MeshFilter>();
-                creaseFilter.sharedMesh = creaseMesh;
-
-                MeshRenderer creaseRenderer = creases.AddComponent<MeshRenderer>();
-                creaseRenderer.sharedMaterial = creaseMat;
-                creaseRenderer.shadowCastingMode = ShadowCastingMode.Off;
-                creaseRenderer.receiveShadows = false;
-            }
+            MeshRenderer shellRenderer = shell.AddComponent<MeshRenderer>();
+            shellRenderer.sharedMaterial = shellMat;
+            shellRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            shellRenderer.receiveShadows = false;
         }
 
         ApplyColors(localOutline);
+        builtThisPlaySession = Application.isPlaying;
+    }
+
+    private static void MarkGenerated(Object obj)
+    {
+        if (obj == null) return;
+        obj.hideFlags |= HideFlags.DontSave;
     }
 
     public void ApplyColors()
@@ -291,12 +386,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         if (shellMat != null)
         {
             shellMat.SetColor("_OutlineColor", outline);
-            shellMat.SetFloat("_OutlineWidth", 0f);
-        }
-        if (creaseMat != null)
-        {
-            creaseMat.SetColor("_OutlineColor", outline);
-            creaseMat.SetFloat("_OutlineWidth", 0f);
+            shellMat.SetFloat("_OutlineWidth", localOutlineWidth);
         }
     }
 
