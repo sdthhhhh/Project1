@@ -408,6 +408,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
         ApplyColors(localOutline);
         builtThisPlaySession = Application.isPlaying;
+        SyncGeneratedVisibility();
     }
 
     public void Rebuild()
@@ -522,6 +523,52 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
         ApplyColors(localOutline);
         builtThisPlaySession = Application.isPlaying;
+        SyncGeneratedVisibility();
+    }
+
+    private void LateUpdate()
+    {
+        // Photos hide via MeshRenderer.enabled (GO stays active). Shells created later must follow.
+        if (shell == null && creases == null)
+            return;
+        SyncGeneratedVisibility();
+    }
+
+    private void OnEnable()
+    {
+        SyncGeneratedVisibility();
+    }
+
+    /// <summary>
+    /// Match OutlineShell / OutlineCreases to this object's body renderer + active state.
+    /// Safe to call before helpers exist (no-op) and again right after Rebuild.
+    /// </summary>
+    public void SyncGeneratedVisibility()
+    {
+        MeshRenderer body = GetComponent<MeshRenderer>();
+        bool want = isActiveAndEnabled && body != null && body.enabled;
+        ApplyGeneratedVisibility(want);
+    }
+
+    private void ApplyGeneratedVisibility(bool want)
+    {
+        if (shell != null)
+        {
+            if (shell.activeSelf != want)
+                shell.SetActive(want);
+            MeshRenderer shellRenderer = shell.GetComponent<MeshRenderer>();
+            if (shellRenderer != null && shellRenderer.enabled != want)
+                shellRenderer.enabled = want;
+        }
+
+        if (creases != null)
+        {
+            if (creases.activeSelf != want)
+                creases.SetActive(want);
+            MeshRenderer creaseRenderer = creases.GetComponent<MeshRenderer>();
+            if (creaseRenderer != null && creaseRenderer.enabled != want)
+                creaseRenderer.enabled = want;
+        }
     }
 
     private void CreateShellObject(Mesh mesh, Material mat)

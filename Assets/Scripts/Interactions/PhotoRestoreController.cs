@@ -97,6 +97,8 @@ public sealed class PhotoRestoreController : MonoBehaviour
 
         if (restoreTargetRenderer != null) restoreTargetRenderer.enabled = false;
         if (restoreTargetCollider != null) restoreTargetCollider.enabled = true;
+
+        SyncPhotoOutlineVisibility();
     }
 
     private void RestorePhotoes()
@@ -114,15 +116,51 @@ public sealed class PhotoRestoreController : MonoBehaviour
             if (photoColliders[i] != null) photoColliders[i].enabled = originalColliderStates[i];
 
         if (restoreTargetRenderer != null) restoreTargetRenderer.enabled = true;
+
+        SyncPhotoOutlineVisibility();
     }
 
     private void CachePhotoComponents()
     {
-        photoRenderers = photoesRoot != null ? photoesRoot.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
-        photoColliders = photoesRoot != null ? photoesRoot.GetComponentsInChildren<Collider>(true) : new Collider[0];
+        if (photoesRoot == null)
+        {
+            photoRenderers = new Renderer[0];
+            photoColliders = new Collider[0];
+            originalColliderStates = new bool[0];
+            return;
+        }
+
+        // Body renderers only — OutlineShell/Creases sync via MeshOutlineStyle (may be created later).
+        var renderers = photoesRoot.GetComponentsInChildren<Renderer>(true);
+        var bodyRenderers = new System.Collections.Generic.List<Renderer>(renderers.Length);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+            string n = r.gameObject.name;
+            if (n == "OutlineShell" || n == "OutlineCreases")
+                continue;
+            bodyRenderers.Add(r);
+        }
+
+        photoRenderers = bodyRenderers.ToArray();
+        photoColliders = photoesRoot.GetComponentsInChildren<Collider>(true);
         originalColliderStates = new bool[photoColliders.Length];
         for (int i = 0; i < photoColliders.Length; i++)
             originalColliderStates[i] = photoColliders[i] != null && photoColliders[i].enabled;
+    }
+
+    private void SyncPhotoOutlineVisibility()
+    {
+        if (photoesRoot == null)
+            return;
+
+        MeshOutlineStyle[] styles = photoesRoot.GetComponentsInChildren<MeshOutlineStyle>(true);
+        for (int i = 0; i < styles.Length; i++)
+        {
+            if (styles[i] != null)
+                styles[i].SyncGeneratedVisibility();
+        }
     }
 
     private static bool IsPartOf(Transform candidate, GameObject root)
