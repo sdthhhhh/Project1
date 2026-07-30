@@ -21,6 +21,7 @@ public class FirstPersonLook : MonoBehaviour
     {
         // Lock the mouse cursor to the game screen.
         Cursor.lockState = CursorLockMode.Locked;
+        sensitivity = GameSettings.MouseSensitivity;
     }
 
     void Update()

@@ -197,8 +197,10 @@ public sealed class InspectZoomController : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             if (hotspot.OwnsCollider(hit.collider)) return false;
+            // Other parts of the same inspect preview (pot, sibling meshes) must not
+            // block nested hotspots — otherwise buried props become nearly impossible to zoom.
+            if (previewRoot != null && hit.transform.IsChildOf(previewRoot)) continue;
             if (hit.distance < distance - hotspot.OcclusionTolerance) return true;
-            if (previewRoot != null && hit.transform.IsChildOf(previewRoot)) return false;
         }
         return false;
     }
