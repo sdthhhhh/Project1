@@ -99,6 +99,19 @@ public sealed class InspectableRaycaster : MonoBehaviour
         InspectableUIController openUI = ActiveInspectUI != null && ActiveInspectUI.IsOpen ? ActiveInspectUI : null;
         if (openUI != null)
         {
+            if (DiaryAssemblyController.Instance != null && DiaryAssemblyController.Instance.IsOpen)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Q))
+                {
+                    DiaryAssemblyController.Instance.CloseAssembly();
+                    return;
+                }
+
+                if (Input.GetMouseButtonDown(0))
+                    DiaryAssemblyController.Instance.HandleAssemblyClick();
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (!openUI.TryCloseZoom()) CloseInspection(openUI);
@@ -192,6 +205,17 @@ public sealed class InspectableRaycaster : MonoBehaviour
     {
         ui.Hide();
         UnlockControls();
+    }
+
+    /// <summary>Closes the open inspect UI and restores player control (e.g. after diary puzzle completes).</summary>
+    public void ForceCloseInspection()
+    {
+        InspectableUIController openUI = ActiveInspectUI != null && ActiveInspectUI.IsOpen ? ActiveInspectUI : null;
+        if (openUI == null)
+            return;
+        if (openUI.IsZoomOpen)
+            openUI.TryCloseZoom();
+        CloseInspection(openUI);
     }
 
     private void OpenDoorPassword(DoorPasswordLock target)

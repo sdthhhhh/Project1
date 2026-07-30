@@ -36,6 +36,10 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
     private Quaternion lockedBodyRotation, lockedLookRotation;
     private Transform playerBody, lookTransform;
 
+    private const int DiaryBookCanvasSortOrder = 400;
+    private int savedCanvasSortOrder = int.MinValue;
+    private bool comicStyleApplied;
+
     private void Awake()
     {
         if (uiCanvas == null)
@@ -54,6 +58,7 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
         }
 
         BindButtons();
+        ApplyComicDiaryStyle();
         panel.SetActive(false);
         bookPanel.SetActive(false);
     }
@@ -74,17 +79,38 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
 
     public void OpenPuzzle()
     {
+        // Prefer 3D socket assembly on the diary FBX; fall back to legacy 2D panel only if missing.
+        DiaryAssemblyController assembly = FindObjectOfType<DiaryAssemblyController>();
+        if (assembly != null)
+        {
+            InspectableUIController ui = FindObjectOfType<InspectableUIController>();
+            assembly.Configure(ui, OpenBookAfterAssembly);
+            assembly.BeginAssembly();
+            return;
+        }
+
         if (panel == null) { Debug.LogError("DiaryPuzzleManager: permanent puzzle panel is missing.", this); return; }
         panel.SetActive(true);
         panel.transform.SetAsLastSibling();
         SetPlayerControl(false);
     }
 
+    private void OpenBookAfterAssembly()
+    {
+        StartCoroutine(ShowDiaryNextFrame());
+    }
+
+    /// <summary>Opens the completed diary book UI (used after 3D / inspect puzzle).</summary>
+    public void OpenCompletedBook()
+    {
+        StartCoroutine(ShowDiaryNextFrame());
+    }
+
     public void CheckCompletion()
     {
         if (panel == null) return;
         foreach (DiarySlot slot in panel.GetComponentsInChildren<DiarySlot>(true))
-            if (!slot.IsFilled) return;
+            if (slot.gameObject.activeInHierarchy && !slot.IsFilled) return;
         DiaryManager.Instance?.MarkPuzzleCompleted();
         panel.SetActive(false);
         StartCoroutine(ShowDiaryNextFrame());
@@ -92,12 +118,141 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
 
     private IEnumerator ShowDiaryNextFrame()
     {
+        // Make sure the inspect overlay is gone before the book UI appears.
+        ForceCloseAnyInspectUI();
         yield return null;
+        ForceCloseAnyInspectUI();
+
         SetPlayerControl(false);
         spreadIndex = 0;
+        BringBookCanvasToFront();
+        ApplyComicDiaryStyle();
         bookPanel.SetActive(true);
         bookPanel.transform.SetAsLastSibling();
         RefreshBook();
+    }
+
+    private static void ForceCloseAnyInspectUI()
+    {
+        InspectableRaycaster raycaster = Object.FindObjectOfType<InspectableRaycaster>();
+        if (raycaster != null)
+            raycaster.ForceCloseInspection();
+
+        InspectableUIController[] uis = Object.FindObjectsOfType<InspectableUIController>(true);
+        for (int i = 0; i < uis.Length; i++)
+        {
+            if (uis[i] != null && uis[i].IsOpen)
+                uis[i].Hide();
+        }
+
+        if (DiaryInspectPuzzleController.Instance != null && DiaryInspectPuzzleController.Instance.IsOpen)
+            DiaryInspectPuzzleController.Instance.Close();
+    }
+
+    private void BringBookCanvasToFront()
+    {
+        Canvas canvas = uiCanvas;
+        if (canvas == null && bookPanel != null)
+            canvas = bookPanel.GetComponentInParent<Canvas>();
+        if (canvas == null)
+            return;
+
+        if (savedCanvasSortOrder == int.MinValue)
+            savedCanvasSortOrder = canvas.sortingOrder;
+        canvas.sortingOrder = Mathf.Max(savedCanvasSortOrder, DiaryBookCanvasSortOrder);
+        canvas.overrideSorting = true;
+    }
+
+    private void RestoreBookCanvasSort()
+    {
+        Canvas canvas = uiCanvas;
+        if (canvas == null && bookPanel != null)
+            canvas = bookPanel.GetComponentInParent<Canvas>();
+        if (canvas == null || savedCanvasSortOrder == int.MinValue)
+            return;
+        canvas.sortingOrder = savedCanvasSortOrder;
+    }
+
+    /// <summary>Black pages, white frame, white text — matches the comic outline look.</summary>
+    private void ApplyComicDiaryStyle()
+    {
+        if (bookPanel == null || comicStyleApplied)
+            return;
+
+        Color black = new Color(0.04f, 0.04f, 0.045f, 1f);
+        Color white = new Color(0.95f, 0.95f, 0.96f, 1f);
+        Color dimWhite = new Color(0.82f, 0.82f, 0.84f, 1f);
+
+        SetGraphicColor(bookPanel.GetComponent<Image>(), new Color(0f, 0f, 0f, 0.82f));
+
+        Transform openBook = bookPanel.transform.Find("OpenDiaryBook");
+        if (openBook != null)
+        {
+            SetGraphicColor(openBook.GetComponent<Image>(), black);
+            EnsureWhiteFrame(openBook.gameObject, 4f);
+        }
+
+        SetNamedImage(bookPanel.transform, "LeftDiaryPage", black);
+        SetNamedImage(bookPanel.transform, "RightDiaryPage", black);
+        SetNamedImage(bookPanel.transform, "DiaryBookSpine", white);
+
+        if (leftPageText != null) leftPageText.color = white;
+        if (rightPageText != null) rightPageText.color = white;
+        if (pageNumberText != null) pageNumberText.color = dimWhite;
+
+        StyleButton(previousButton, black, white);
+        StyleButton(nextButton, black, white);
+        StyleButton(closeBookButton, black, white);
+
+        comicStyleApplied = true;
+    }
+
+    private static void SetNamedImage(Transform root, string name, Color color)
+    {
+        Transform t = root.Find(name);
+        if (t == null)
+        {
+            foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == name)
+                {
+                    t = child;
+                    break;
+                }
+            }
+        }
+        if (t != null)
+            SetGraphicColor(t.GetComponent<Image>(), color);
+    }
+
+    private static void SetGraphicColor(Graphic g, Color color)
+    {
+        if (g != null)
+            g.color = color;
+    }
+
+    private static void EnsureWhiteFrame(GameObject target, float distance)
+    {
+        if (target == null)
+            return;
+        Outline outline = target.GetComponent<Outline>();
+        if (outline == null)
+            outline = target.AddComponent<Outline>();
+        outline.effectColor = Color.white;
+        outline.effectDistance = new Vector2(distance, -distance);
+        outline.useGraphicAlpha = true;
+    }
+
+    private static void StyleButton(Button button, Color bg, Color text)
+    {
+        if (button == null)
+            return;
+        Image img = button.GetComponent<Image>();
+        SetGraphicColor(img, bg);
+        EnsureWhiteFrame(button.gameObject, 2f);
+        TMP_Text label = button.GetComponentInChildren<TMP_Text>(true);
+        if (label != null)
+            label.color = text;
     }
 
     private void BindButtons()
@@ -136,7 +291,19 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
 
     private void PreviousSpread() { if (spreadIndex > 0) { spreadIndex--; RefreshBook(); } }
     private void NextSpread() { if ((spreadIndex + 1) * 2 < diaryPages.Length) { spreadIndex++; RefreshBook(); } }
-    private void CloseBook() { bookPanel.SetActive(false); SetPlayerControl(true); }
+    private void CloseBook()
+    {
+        bookPanel.SetActive(false);
+        RestoreBookCanvasSort();
+        SetPlayerControl(true);
+    }
+
+    private void Update()
+    {
+        // Book reading also closes with Esc (same habit as item inspect).
+        if (bookPanel != null && bookPanel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+            CloseBook();
+    }
 
     private void RefreshBook()
     {

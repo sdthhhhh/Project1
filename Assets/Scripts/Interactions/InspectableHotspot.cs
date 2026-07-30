@@ -7,6 +7,7 @@ public sealed class InspectableHotspot : MonoBehaviour
     [SerializeField, Tooltip("Stable identifier used for notes or future save data.")] private string hotspotId = "BackNumber4721";
     [SerializeField, Tooltip("Prepared high-resolution close-up sprite. Optional when Zoomed Text is sufficient.")] private Sprite zoomedImage;
     [SerializeField, TextArea(2, 6), Tooltip("Text displayed beside the close-up. Leave empty to hide Zoom Text.")] private string zoomedText = "4721";
+    [SerializeField, Tooltip("If on, magnifier opens the diary cover puzzle instead of a photo close-up.")] private bool openDiaryPuzzle;
 
     [Header("Hotspot Geometry")]
     [SerializeField, Tooltip("Small collider positioned over the detail being investigated.")] private Collider hotspotCollider;
@@ -17,9 +18,18 @@ public sealed class InspectableHotspot : MonoBehaviour
     public string HotspotId => hotspotId;
     public Sprite ZoomedImage => zoomedImage;
     public string ZoomedText => zoomedText;
+    public bool OpenDiaryPuzzle => openDiaryPuzzle;
     public Collider HotspotCollider => hotspotCollider;
     public float VisibleDotThreshold => visibleDotThreshold;
     public float OcclusionTolerance => occlusionTolerance;
+
+    public void ConfigureDiaryPuzzle(string id, string text)
+    {
+        hotspotId = id;
+        zoomedText = text ?? string.Empty;
+        openDiaryPuzzle = true;
+        zoomedImage = null;
+    }
 
     private void Awake()
     {

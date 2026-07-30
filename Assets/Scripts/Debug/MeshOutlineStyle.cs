@@ -96,6 +96,59 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             RestoreOriginalMaterials(sourceRenderer);
     }
 
+    /// <summary>
+    /// Keep OutlineShell/Creases visible forever (e.g. inspect puzzle clones).
+    /// Clears internal refs and renames helpers so OnDestroy Cleanup will not delete them.
+    /// Note: shell/creases fields are non-serialized — Instantiated clones often have the
+    /// child GOs but null refs, so we resolve by name before renaming.
+    /// </summary>
+    public void DetachGeneratedHelpersKeepVisible()
+    {
+        MeshOutlinePlayBuilder.Cancel(this);
+
+        if (shell == null)
+        {
+            Transform shellTf = transform.Find("OutlineShell");
+            if (shellTf != null)
+                shell = shellTf.gameObject;
+        }
+
+        if (creases == null)
+        {
+            Transform creaseTf = transform.Find("OutlineCreases");
+            if (creaseTf != null)
+                creases = creaseTf.gameObject;
+        }
+
+        if (shell != null)
+        {
+            shell.SetActive(true);
+            MeshRenderer shellRenderer = shell.GetComponent<MeshRenderer>();
+            if (shellRenderer != null)
+                shellRenderer.enabled = true;
+            shell.name = "OutlineShell_Detached";
+            shell = null;
+        }
+
+        if (creases != null)
+        {
+            creases.SetActive(true);
+            MeshRenderer creaseRenderer = creases.GetComponent<MeshRenderer>();
+            if (creaseRenderer != null)
+                creaseRenderer.enabled = true;
+            creases.name = "OutlineCreases_Detached";
+            creases = null;
+        }
+
+        // Drop ownership only — materials stay on the renderers.
+        shellMesh = null;
+        creaseMesh = null;
+        bodyMat = null;
+        shellMat = null;
+        creaseMat = null;
+        enabled = false;
+    }
+
     private static float CharacteristicSize(Vector3 size)
     {
         return (size.x + size.y + size.z) / 3f;
@@ -461,13 +514,16 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             {
                 // Cards / photos: sealed face extrusion is nearly invisible face-on.
                 // Share mesh + uniform inflate + Cull Front → reliable rim.
+                // Scale around mesh bounds center (not pivot) so off-center pivots stay aligned.
                 shellMat = new Material(shellShader);
                 shellMat.SetFloat("_OutlineWidth", 0f);
                 MarkGenerated(shellMat);
                 shellUsesShaderExtrusion = false;
                 CreateShellObject(sourceMesh, shellMat);
                 float inflate = ResolveThinSheetInflateScale(sourceMesh, localOutline);
+                Vector3 center = sourceMesh.bounds.center;
                 shell.transform.localScale = new Vector3(inflate, inflate, inflate);
+                shell.transform.localPosition = center * (1f - inflate);
             }
             else
             {

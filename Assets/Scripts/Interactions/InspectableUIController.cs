@@ -24,16 +24,70 @@ public sealed class InspectableUIController : MonoBehaviour
     private RenderTexture renderTexture;private Material transparentPreviewMaterial;private GameObject previewInstance;private InspectableObject currentTarget;private bool rotationMode;private Vector3 lastMouse;
     public bool IsOpen => inspectPanel != null && inspectPanel.activeSelf;
     public bool IsZoomOpen => inspectZoomController != null && inspectZoomController.IsZoomOpen;
+    public bool IsUtilityOverlay { get; private set; }
 
     public void Configure(GameObject panel, RawImage preview, TMP_Text description, TMP_Text putBack, TMP_Text rotate, Camera camera, Transform pivot)
     {inspectPanel=panel;objectPreview=preview;descriptionText=description;putBackPrompt=putBack;rotatePrompt=rotate;previewCamera=camera;previewPivot=pivot;if(inspectPanel!=null)inspectPanel.SetActive(false);}
 
     public void ConfigureZoomController(InspectZoomController controller){inspectZoomController=controller;}
 
+    private float savedBackgroundAlpha = -1f;
+    private bool savedPreviewRaycast;
+    private bool savedPanelRaycast;
+
+    /// <summary>
+    /// Opens the shared item-inspect canvas as a dim overlay (no 3D preview). Esc/Q close via InspectableRaycaster.
+    /// </summary>
+    public void ShowUtilityOverlay(string description, string closePrompt = "Put Back")
+    {
+        if (inspectPanel == null)
+        {
+            Debug.LogError("InspectableUIController: inspect panel is missing.");
+            return;
+        }
+
+        currentTarget = null;
+        IsUtilityOverlay = true;
+        DestroyPreview();
+        if (previewCamera != null)
+            previewCamera.enabled = false;
+        if (objectPreview != null)
+        {
+            savedPreviewRaycast = objectPreview.raycastTarget;
+            objectPreview.enabled = false;
+            objectPreview.raycastTarget = false;
+        }
+
+        Image panelBackground = inspectPanel.GetComponent<Image>();
+        if (panelBackground != null)
+        {
+            savedPanelRaycast = panelBackground.raycastTarget;
+            panelBackground.raycastTarget = false;
+        }
+
+        savedBackgroundAlpha = canvasBackgroundAlpha;
+        canvasBackgroundAlpha = Mathf.Min(canvasBackgroundAlpha, 0.28f);
+
+        inspectPanel.SetActive(true);
+        inspectPanel.transform.SetAsLastSibling();
+        ApplyPanelBackgroundAlpha();
+        DisableLegacyDescriptionBackground();
+        if (descriptionText != null)
+            descriptionText.text = description ?? string.Empty;
+        if (putBackPrompt != null)
+            putBackPrompt.text = closePrompt ?? "Put Back";
+        if (rotatePrompt != null)
+            rotatePrompt.gameObject.SetActive(false);
+        rotationMode = false;
+    }
+
     public void Show(InspectableObject target)
     {
         if (target == null || inspectPanel == null) { Debug.LogError("InspectableUIController: Target or panel is missing."); return; }
         currentTarget=target;
+        IsUtilityOverlay = false;
+        if (objectPreview != null) objectPreview.enabled = true;
+        if (rotatePrompt != null) rotatePrompt.gameObject.SetActive(true);
         inspectPanel.SetActive(true); inspectPanel.transform.SetAsLastSibling();
         ApplyPanelBackgroundAlpha();DisableLegacyDescriptionBackground();
         CreatePreview(target);
@@ -46,7 +100,7 @@ public sealed class InspectableUIController : MonoBehaviour
     {
         if(!IsOpen)return;
         ApplyPanelBackgroundAlpha();
-        if(IsZoomOpen)return;
+        if(IsUtilityOverlay||IsZoomOpen)return;
         if(Input.GetKeyDown(KeyCode.E)){rotationMode=!rotationMode;UpdateRotatePrompt();}
         if(!rotationMode)return;
         if(Input.GetMouseButtonDown(0))lastMouse=Input.mousePosition;
@@ -75,6 +129,8 @@ public sealed class InspectableUIController : MonoBehaviour
 
     private void UpdateRotatePrompt(){if(rotatePrompt!=null){rotatePrompt.text=rotationMode?"Drag to Rotate":"Rotate";rotatePrompt.color=rotationMode?Color.yellow:new Color(.92f,.88f,.78f);}}
 
+    private bool previewUsingComicOutline;
+
     private void CreatePreview(InspectableObject target)
     {
         if(previewCamera==null||previewPivot==null||objectPreview==null){Debug.LogError("InspectableUIController: 3D preview references are missing.",this);return;}
@@ -85,21 +141,65 @@ public sealed class InspectableUIController : MonoBehaviour
             {name="InspectableObjectRenderTexture",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp,useMipMap=false,autoGenerateMips=false,antiAliasing=4};
             renderTexture.Create();
         }
+
+        // Comic MeshOutlineStyle (black body + white shell): opaque black RT so body isn't keyed out.
+        previewUsingComicOutline = UsesComicOutline(target);
         ApplyPreviewBackgroundSettings();
         previewCamera.allowHDR=false;previewCamera.allowMSAA=true;
         previewCamera.targetTexture=renderTexture;previewCamera.enabled=true;objectPreview.texture=renderTexture;objectPreview.color=Color.white;
+        if (!previewUsingComicOutline)
+            EnsurePreviewLightEnabled();
         previewPivot.localRotation=Quaternion.identity;
         previewInstance=Instantiate(target.PreviewModel,previewPivot);previewInstance.name="PreviewModel_Instance";previewInstance.transform.localPosition=Vector3.zero;previewInstance.transform.localRotation=Quaternion.identity;
         PrepareClone(previewInstance.transform);
         Renderer[] renderers=previewInstance.GetComponentsInChildren<Renderer>(true);if(renderers.Length==0){Debug.LogError("InspectableUIController: Preview model has no Renderer.");return;}
-        Bounds bounds=renderers[0].bounds;for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+        Bounds bounds=default;bool hasBounds=false;
+        for(int i=0;i<renderers.Length;i++)
+        {
+            // Outline helpers are larger than the body; including them makes a huge white frame.
+            string n=renderers[i].name;
+            if(IsOutlineHelperName(n))continue;
+            if(!hasBounds){bounds=renderers[i].bounds;hasBounds=true;}
+            else bounds.Encapsulate(renderers[i].bounds);
+        }
+        if(!hasBounds){bounds=renderers[0].bounds;hasBounds=true;}
         float largest=Mathf.Max(bounds.size.x,Mathf.Max(bounds.size.y,bounds.size.z));
         if(largest>.0001f)previewInstance.transform.localScale*=fittedModelSize/largest;
-        bounds=renderers[0].bounds;for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-        previewInstance.transform.position+=previewPivot.position-bounds.center;
+        hasBounds=false;
+        for(int i=0;i<renderers.Length;i++)
+        {
+            string n=renderers[i].name;
+            if(IsOutlineHelperName(n))continue;
+            if(!hasBounds){bounds=renderers[i].bounds;hasBounds=true;}
+            else bounds.Encapsulate(renderers[i].bounds);
+        }
+        if(hasBounds)previewInstance.transform.position+=previewPivot.position-bounds.center;
         if(target.PreviewPhoto!=null)ApplyPhotoToPreviewMaterial(target);
         previewPivot.localRotation=Quaternion.Euler(target.PreviewRotation);
         if(inspectZoomController!=null)inspectZoomController.BeginInspection(previewInstance);
+    }
+
+    private static bool UsesComicOutline(InspectableObject target)
+    {
+        if (target == null)
+            return false;
+        if (target.GetComponentInChildren<MeshOutlineStyle>(true) != null)
+            return true;
+        GameObject model = target.PreviewModel;
+        if (model == null)
+            return false;
+        foreach (MeshRenderer renderer in model.GetComponentsInChildren<MeshRenderer>(true))
+        {
+            Material[] mats = renderer.sharedMaterials;
+            if (mats == null)
+                continue;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                if (mats[i] != null && mats[i].shader != null && mats[i].shader.name.Contains("OutlineBody"))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void ApplyPhotoToPreviewMaterial(InspectableObject target)
@@ -132,24 +232,99 @@ public sealed class InspectableUIController : MonoBehaviour
         material.mainTexture=texture;
     }
 
-    private static void PrepareClone(Transform root)
+    private static bool IsOutlineHelperName(string n)
     {
-        foreach(Transform t in root.GetComponentsInChildren<Transform>(true))t.gameObject.layer=31;
-        // Preview colliders stay enabled on isolated layer 31 so hotspot occlusion checks can
-        // distinguish a visible surface detail from one hidden behind the item itself.
-        foreach(Rigidbody rb in root.GetComponentsInChildren<Rigidbody>(true)){rb.isKinematic=true;rb.useGravity=false;}
-        foreach(MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
+        return n == "OutlineShell" || n == "OutlineCreases"
+            || n == "OutlineShell_Detached" || n == "OutlineCreases_Detached";
     }
 
-    private void DestroyPreview(){if(previewInstance!=null)Destroy(previewInstance);previewInstance=null;}
+    private static void PrepareClone(Transform root)
+    {
+        // Keep black OutlineBody + white OutlineShell. Instantiated clones copy shell children
+        // but not MeshOutlineStyle's private refs — Detach resolves by name, then Destroy is
+        // safe (Cleanup won't purge renamed helpers). Rebuild if PlayBuilder hasn't run yet.
+        foreach (MeshOutlineStyle style in root.GetComponentsInChildren<MeshOutlineStyle>(true))
+        {
+            MeshOutlinePlayBuilder.Cancel(style);
+            if (style.transform.Find("OutlineShell") == null
+                && style.transform.Find("OutlineShell_Detached") == null)
+                style.Rebuild();
+            style.DetachGeneratedHelpersKeepVisible();
+            Object.Destroy(style);
+        }
+
+        foreach (DiaryAssemblyController c in root.GetComponentsInChildren<DiaryAssemblyController>(true))
+            Object.Destroy(c);
+        foreach (DiaryInspectPuzzleController c in root.GetComponentsInChildren<DiaryInspectPuzzleController>(true))
+            Object.Destroy(c);
+        foreach (BedroomDesk c in root.GetComponentsInChildren<BedroomDesk>(true))
+            Object.Destroy(c);
+        foreach (InspectableObject c in root.GetComponentsInChildren<InspectableObject>(true))
+            Object.Destroy(c);
+        foreach (DiaryFragment c in root.GetComponentsInChildren<DiaryFragment>(true))
+            Object.Destroy(c);
+
+        foreach (Transform t in root.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = 31;
+        foreach (Rigidbody rb in root.GetComponentsInChildren<Rigidbody>(true)) { rb.isKinematic = true; rb.useGravity = false; }
+        foreach (MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            if (behaviour is InspectableHotspot)
+                continue;
+            behaviour.enabled = false;
+        }
+        foreach (InspectableHotspot hotspot in root.GetComponentsInChildren<InspectableHotspot>(true))
+            hotspot.enabled = true;
+    }
+
+    public void SetInspectPrompts(string description, string putBackPromptText = null, bool showRotatePrompt = true)
+    {
+        if (descriptionText != null)
+            descriptionText.text = description ?? string.Empty;
+        if (putBackPromptText != null && putBackPrompt != null)
+            putBackPrompt.text = putBackPromptText;
+        if (rotatePrompt != null)
+            rotatePrompt.gameObject.SetActive(showRotatePrompt);
+        if (!showRotatePrompt)
+            rotationMode = false;
+    }
+
+    private void EnsurePreviewLightEnabled()
+    {
+        if (previewCamera == null)
+            return;
+        Light[] lights = previewCamera.GetComponentsInChildren<Light>(true);
+        if (lights == null || lights.Length == 0)
+        {
+            Transform studio = previewCamera.transform.parent;
+            if (studio != null)
+                lights = studio.GetComponentsInChildren<Light>(true);
+        }
+        if (lights == null)
+            return;
+        for (int i = 0; i < lights.Length; i++)
+        {
+            if (lights[i] != null)
+                lights[i].enabled = true;
+        }
+    }
+
+    private void DestroyPreview()
+    {
+        if(previewInstance!=null)Destroy(previewInstance);
+        previewInstance=null;
+        previewUsingComicOutline=false;
+    }
 
     private void ApplyPreviewBackgroundSettings()
     {
         if(previewCamera==null||objectPreview==null)return;
         previewCamera.clearFlags=CameraClearFlags.SolidColor;
-        if(!transparentPreviewBackground)
+
+        // Black body + white outline: solid black clear (no magenta/black chroma key).
+        if(previewUsingComicOutline || !transparentPreviewBackground)
         {
-            Color fallback=previewFallbackColor;fallback.a=1f;
+            Color fallback = previewUsingComicOutline ? new Color(0f, 0f, 0f, 1f) : previewFallbackColor;
+            fallback.a=1f;
             previewCamera.backgroundColor=fallback;
             objectPreview.material=null;
             return;
@@ -175,6 +350,27 @@ public sealed class InspectableUIController : MonoBehaviour
         collectible.CollectFromInspection();return true;
     }
     public bool TryCloseZoom(){if(inspectZoomController==null||!inspectZoomController.IsZoomOpen)return false;inspectZoomController.CloseZoom();return true;}
-    public void Hide(){InspectableObject finishedTarget=currentTarget;if(inspectZoomController!=null)inspectZoomController.StopInspection();DestroyPreview();currentTarget=null;rotationMode=false;if(previewCamera!=null)previewCamera.enabled=false;if(inspectPanel!=null)inspectPanel.SetActive(false);if(finishedTarget!=null)finishedTarget.NotifyInspectFinished();}
+    public void Hide()
+    {
+        InspectableObject finishedTarget=currentTarget;
+        if(inspectZoomController!=null)inspectZoomController.StopInspection();
+        DestroyPreview();
+        currentTarget=null;
+        rotationMode=false;
+        if(IsUtilityOverlay)
+        {
+            if(savedBackgroundAlpha>=0f)canvasBackgroundAlpha=savedBackgroundAlpha;
+            savedBackgroundAlpha=-1f;
+            Image panelBackground=inspectPanel!=null?inspectPanel.GetComponent<Image>():null;
+            if(panelBackground!=null)panelBackground.raycastTarget=savedPanelRaycast;
+            if(objectPreview!=null)objectPreview.raycastTarget=savedPreviewRaycast;
+        }
+        IsUtilityOverlay=false;
+        if(previewCamera!=null)previewCamera.enabled=false;
+        if(objectPreview!=null)objectPreview.enabled=true;
+        if(rotatePrompt!=null)rotatePrompt.gameObject.SetActive(true);
+        if(inspectPanel!=null)inspectPanel.SetActive(false);
+        if(finishedTarget!=null)finishedTarget.NotifyInspectFinished();
+    }
     private void OnDestroy(){DestroyPreview();if(renderTexture!=null){renderTexture.Release();Destroy(renderTexture);}if(transparentPreviewMaterial!=null)Destroy(transparentPreviewMaterial);}
 }

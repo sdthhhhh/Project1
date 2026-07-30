@@ -84,6 +84,10 @@ public sealed class MeshOutlinePlayBuilder : MonoBehaviour
                 continue;
             if (style.transform.Find("OutlineShell") != null)
                 continue;
+            if (style.transform.Find("OutlineShell_Detached") != null)
+                continue;
+            if (!style.isActiveAndEnabled)
+                continue;
             Enqueue(style);
         }
     }

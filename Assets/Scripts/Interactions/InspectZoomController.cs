@@ -28,6 +28,7 @@ public sealed class InspectZoomController : MonoBehaviour
     private InspectableHotspot currentHotspot;
     private Transform previewRoot;
     private bool inspecting;
+    private DiaryInspectPuzzleController activeDiaryPuzzle;
 
     public bool IsZoomOpen { get; private set; }
 
@@ -77,6 +78,11 @@ public sealed class InspectZoomController : MonoBehaviour
 
     public void StopInspection()
     {
+        if (activeDiaryPuzzle != null)
+        {
+            activeDiaryPuzzle.Close();
+            activeDiaryPuzzle = null;
+        }
         foreach (InspectableHotspot hotspot in hotspots)
             if (hotspot != null) hotspot.SetInspectMode(false);
         hotspots = Array.Empty<InspectableHotspot>();
@@ -93,6 +99,25 @@ public sealed class InspectZoomController : MonoBehaviour
         currentHotspot = hotspot;
         IsZoomOpen = true;
         if (magnifierButton != null) magnifierButton.gameObject.SetActive(false);
+
+        if (hotspot.OpenDiaryPuzzle)
+        {
+            DiaryInspectPuzzleController puzzle = DiaryInspectPuzzleController.Instance
+                ?? FindObjectOfType<DiaryInspectPuzzleController>();
+            if (puzzle != null && previewRoot != null && previewCamera != null)
+            {
+                activeDiaryPuzzle = puzzle;
+                puzzle.Open(
+                    previewCamera,
+                    previewRoot.parent != null ? previewRoot.parent : previewRoot,
+                    previewRoot.gameObject,
+                    hotspot,
+                    inspectedObjectViewport);
+                return;
+            }
+            Debug.LogWarning("InspectZoomController: diary puzzle hotspot clicked but DiaryInspectPuzzleController is missing.", this);
+        }
+
         if (zoomOverlay != null) { zoomOverlay.SetActive(true); zoomOverlay.transform.SetAsLastSibling(); }
         if (zoomImage != null)
         {
@@ -110,6 +135,11 @@ public sealed class InspectZoomController : MonoBehaviour
     public void CloseZoom()
     {
         if (!IsZoomOpen) return;
+        if (activeDiaryPuzzle != null)
+        {
+            activeDiaryPuzzle.Close();
+            activeDiaryPuzzle = null;
+        }
         IsZoomOpen = false;
         if (zoomOverlay != null) zoomOverlay.SetActive(false);
         if (zoomImage != null) { zoomImage.sprite = null; zoomImage.gameObject.SetActive(false); }
