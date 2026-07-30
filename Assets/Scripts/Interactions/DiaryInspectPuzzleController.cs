@@ -47,6 +47,10 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
     [SerializeField, TextArea(2, 4)] private string puzzleDescription =
         "Drag each fragment onto the diary.\nEsc — Back";
 
+    [Header("Reveal On Complete")]
+    [SerializeField, Tooltip("Activated when the cover puzzle is finished (e.g. DiaryFragment04). Does not open the diary book UI.")]
+    private GameObject[] revealOnComplete;
+
     private Camera previewCamera;
     private Transform previewPivot;
     private GameObject bookPreview;
@@ -68,7 +72,6 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
     private Quaternion savedCamWorldRot;
     private Quaternion savedPivotRotation;
     private bool cameraFramed;
-    private bool awaitingDiaryOpen;
 
     public bool IsOpen { get; private set; }
 
@@ -181,7 +184,6 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
 
         IsOpen = false;
         dragging = null;
-        awaitingDiaryOpen = false;
         pieces.Clear();
         filledIds.Clear();
 
@@ -210,13 +212,6 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
         // Keep the framed diary pose locked (no rotate).
         if (previewPivot != null)
             previewPivot.localRotation = Quaternion.Euler(puzzleBookEuler);
-
-        if (awaitingDiaryOpen)
-        {
-            if (Input.GetMouseButtonDown(0) && IsClickOnDiaryCover())
-                OpenDiaryFromCompletedCover();
-            return;
-        }
 
         if (dragging != null)
         {
@@ -718,7 +713,6 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
     private void CompletePuzzle()
     {
         DiaryManager.Instance?.MarkPuzzleCompleted();
-        awaitingDiaryOpen = true;
         dragging = null;
 
         for (int i = 0; i < pieces.Count; i++)
@@ -727,50 +721,27 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
                 pieces[i].Collider.enabled = false;
         }
 
-        const string donePrompt = "The cover is whole.\nClick the diary to open it.\nEsc — Back";
-        InteractionUI.Instance?.ShowStatus(donePrompt);
-        if (inspectUI != null)
-            inspectUI.SetInspectPrompts(donePrompt, "Back", showRotatePrompt: false);
-    }
+        SetRevealOnCompleteActive(true);
+        InteractionUI.Instance?.ShowStatus("The diary cover is complete.");
 
-    private bool IsClickOnDiaryCover()
-    {
-        if (bookPreview == null || previewCamera == null)
-            return false;
-        if (!TryGetPreviewMouseViewport(out Vector2 mouseVp))
-            return false;
-
-        Bounds bounds = GetBookBounds();
-        Vector3 centerVp = previewCamera.WorldToViewportPoint(bounds.center);
-        if (centerVp.z <= 0f)
-            return false;
-
-        Vector2 delta = new Vector2(mouseVp.x - centerVp.x, mouseVp.y - centerVp.y);
-        if (delta.magnitude <= snapViewportRadius * 1.15f)
-            return true;
-
-        if (TryGetPreviewRay(mouseVp, out Ray ray) && bounds.IntersectRay(ray))
-            return true;
-
-        return false;
-    }
-
-    private void OpenDiaryFromCompletedCover()
-    {
-        awaitingDiaryOpen = false;
-
-        // Close puzzle + inspect UI before the diary book opens (inspect canvas sorts above HUD).
+        // Close inspect / puzzle — do not open the diary book reading UI.
         Close();
         if (inspectUI != null)
             inspectUI.Hide();
-
         InspectableRaycaster raycaster = FindObjectOfType<InspectableRaycaster>();
         if (raycaster != null)
             raycaster.ForceCloseInspection();
+    }
 
-        DiaryPuzzleManager puzzleManager = FindObjectOfType<DiaryPuzzleManager>();
-        if (puzzleManager != null)
-            puzzleManager.OpenCompletedBook();
+    private void SetRevealOnCompleteActive(bool active)
+    {
+        if (revealOnComplete == null)
+            return;
+        for (int i = 0; i < revealOnComplete.Length; i++)
+        {
+            if (revealOnComplete[i] != null)
+                revealOnComplete[i].SetActive(active);
+        }
     }
 
     private PuzzlePiece FindPiece(Collider col)

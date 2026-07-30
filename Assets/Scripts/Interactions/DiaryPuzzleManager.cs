@@ -97,13 +97,13 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
 
     private void OpenBookAfterAssembly()
     {
-        StartCoroutine(ShowDiaryNextFrame());
+        // Cover reconstruction no longer opens the diary book reading UI.
     }
 
-    /// <summary>Opens the completed diary book UI (used after 3D / inspect puzzle).</summary>
+    /// <summary>Legacy entry — diary book UI is not opened from reconstruction anymore.</summary>
     public void OpenCompletedBook()
     {
-        StartCoroutine(ShowDiaryNextFrame());
+        Debug.Log("DiaryPuzzleManager.OpenCompletedBook skipped (reconstruction reveals fragment instead).", this);
     }
 
     public void CheckCompletion()
@@ -113,7 +113,7 @@ public sealed class DiaryPuzzleManager : MonoBehaviour
             if (slot.gameObject.activeInHierarchy && !slot.IsFilled) return;
         DiaryManager.Instance?.MarkPuzzleCompleted();
         panel.SetActive(false);
-        StartCoroutine(ShowDiaryNextFrame());
+        // Do not open diary book UI after reconstruction.
     }
 
     private IEnumerator ShowDiaryNextFrame()

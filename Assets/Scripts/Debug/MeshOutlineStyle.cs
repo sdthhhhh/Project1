@@ -20,6 +20,17 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         Red
     }
 
+    /// <summary>
+    /// How the white silhouette is built.
+    /// Auto = flat cards/photos inflate; rods/boxes stay on sealed extrusion (old Tool behavior).
+    /// </summary>
+    public enum SilhouetteMode
+    {
+        Auto = 0,
+        Sealed = 1,
+        ThinSheet = 2
+    }
+
     [SerializeField] private OutlineTone tone = OutlineTone.White;
     [SerializeField, Tooltip("If on, outline/crease widths scale with each mesh's size.")]
     private bool scaleWidthToBounds = true;
@@ -30,6 +41,8 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     [SerializeField, Range(0.005f, 0.12f), Tooltip("Absolute LOCAL width used when Scale Width To Bounds is off.")]
     private float outlineWidth = 0.02f;
     [SerializeField] private bool drawSilhouette = true;
+    [SerializeField, Tooltip("Auto: flat sheets inflate, rods/boxes sealed. Or force Sealed / ThinSheet manually.")]
+    private SilhouetteMode silhouetteMode = SilhouetteMode.Auto;
     [SerializeField] private bool drawHardEdges = true;
     [SerializeField, Range(20f, 90f)] private float hardEdgeAngleDegrees = 60f;
     [SerializeField, Range(0.005f, 0.08f)] private float creaseWidth = 0.015f;
@@ -37,11 +50,13 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     private float maxRelativeToMinAxis = 0.12f;
     [SerializeField, Range(0f, 0.02f), Tooltip("Minimum outline width in WORLD units so tiny/thin meshes stay visible. 0 = default 0.003.")]
     private float minWorldOutlineWidth = 0.003f;
-    [SerializeField, Range(0f, 0.2f), Tooltip("If min/max bounds axis is below this, treat as a thin sheet (cards/photos): scale-inflate outline instead of sealed extrusion. 0 = default 0.12.")]
+    [SerializeField, Range(0f, 0.2f), Tooltip("Auto thin-sheet: thickness/mid-axis below this (and not a thin rod). 0 = default 0.12.")]
     private float thinSheetAspectThreshold = 0.12f;
-    [SerializeField, Tooltip("Force thin-sheet inflate outline (photos/cards), ignoring aspect ratio.")]
+    [SerializeField, HideInInspector, Tooltip("Legacy; migrated into Silhouette Mode = ThinSheet.")]
     private bool forceThinSheetOutline;
     [SerializeField] private Color bodyColor = new Color(0.09f, 0.09f, 0.1f, 1f);
+    [SerializeField, Tooltip("Keep Lit/original materials on the mesh; only add outline shells (photos, textured props).")]
+    private bool preserveOriginalMaterials;
     [SerializeField, Tooltip("Rebuild outline shells when Play starts (generated helpers are DontSave).")]
     private bool buildOnAwake = true;
     [SerializeField] private Material[] cachedOriginalMaterials;
@@ -59,6 +74,14 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     private Mesh shellMesh;
     private bool builtThisPlaySession;
     private bool shellUsesShaderExtrusion;
+
+    public bool PreserveOriginalMaterials
+    {
+        get => preserveOriginalMaterials;
+        set => preserveOriginalMaterials = value;
+    }
+
+    public bool UsesComicBody => !preserveOriginalMaterials;
 
     public OutlineTone Tone
     {
@@ -167,34 +190,72 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     /// <summary>
     /// Thin sheets (cards, mirrors, posters): min/max aspect is tiny, so capping by thickness
     /// crushes outline width. Use average size as the cap axis instead.
+    /// Thin rods are NOT sheets — keep min-axis capping + sealed extrusion.
     /// </summary>
     private float ResolveCapAxis(Vector3 size, float minAxis, float avg)
     {
-        float maxAxis = MaxAxis(size);
-        float aspect = minAxis / maxAxis;
-        float threshold = thinSheetAspectThreshold > 1e-8f ? thinSheetAspectThreshold : 0.12f;
-        if (aspect < threshold)
+        if (LooksLikeFlatSheet(size))
             return avg;
         return minAxis;
     }
 
-    private bool IsThinSheet(Mesh sourceMesh)
+    private void MigrateLegacyThinSheetFlag()
     {
-        if (forceThinSheetOutline)
-            return true;
-        if (sourceMesh == null)
-            return false;
-        Vector3 size = sourceMesh.bounds.size;
-        float minAxis = MinAxis(size);
-        float maxAxis = MaxAxis(size);
-        float threshold = thinSheetAspectThreshold > 1e-8f ? thinSheetAspectThreshold : 0.12f;
-        return (minAxis / maxAxis) < threshold;
+        if (!forceThinSheetOutline)
+            return;
+        if (silhouetteMode == SilhouetteMode.Auto)
+            silhouetteMode = SilhouetteMode.ThinSheet;
+        forceThinSheetOutline = false;
     }
 
-    /// <summary>Mark this object as a photo/card so Rebuild uses thin-sheet inflate outline.</summary>
+    /// <summary>True when silhouette should use inflate+CullFront (cards), not sealed extrusion.</summary>
+    private bool ShouldUseThinSheetSilhouette(Mesh sourceMesh)
+    {
+        MigrateLegacyThinSheetFlag();
+        if (silhouetteMode == SilhouetteMode.ThinSheet)
+            return true;
+        if (silhouetteMode == SilhouetteMode.Sealed)
+            return false;
+        return sourceMesh != null && LooksLikeFlatSheet(sourceMesh.bounds.size);
+    }
+
+    /// <summary>
+    /// Flat card/poster: one axis much thinner than the other two.
+    /// Thin rod/pole: two axes small vs length — must NOT use inflate silhouette.
+    /// </summary>
+    private bool LooksLikeFlatSheet(Vector3 size)
+    {
+        float ax = Mathf.Abs(size.x);
+        float ay = Mathf.Abs(size.y);
+        float az = Mathf.Abs(size.z);
+        // Sort ascending without allocations.
+        float a = ax, b = ay, c = az;
+        if (a > b) { float t = a; a = b; b = t; }
+        if (b > c) { float t = b; b = c; c = t; }
+        if (a > b) { float t = a; a = b; b = t; }
+
+        a = Mathf.Max(1e-6f, a);
+        b = Mathf.Max(1e-6f, b);
+        c = Mathf.Max(1e-6f, c);
+
+        float threshold = thinSheetAspectThreshold > 1e-8f ? thinSheetAspectThreshold : 0.12f;
+        bool thinVsMid = (a / b) < threshold;
+        // Rods: mid << long (e.g. 0.1 vs 1.9). Sheets: mid ≈ long (e.g. 0.5 vs 0.7).
+        bool midComparableToLong = (b / c) > 0.35f;
+        return thinVsMid && midComparableToLong;
+    }
+
+    /// <summary>Force ThinSheet silhouette (photos/cards), or clear back to Auto when false.</summary>
     public void SetForceThinSheetOutline(bool enabled)
     {
-        forceThinSheetOutline = enabled;
+        silhouetteMode = enabled ? SilhouetteMode.ThinSheet : SilhouetteMode.Auto;
+        forceThinSheetOutline = false;
+    }
+
+    public void SetSilhouetteMode(SilhouetteMode mode)
+    {
+        silhouetteMode = mode;
+        forceThinSheetOutline = false;
     }
 
     /// <summary>
@@ -425,6 +486,36 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         sourceRenderer.sharedMaterials = cachedOriginalMaterials;
     }
 
+    private void ApplyBodyMaterials(MeshRenderer sourceRenderer)
+    {
+        if (sourceRenderer == null)
+            return;
+
+        if (preserveOriginalMaterials)
+        {
+            bodyMat = null;
+            if (HasCachedOriginals())
+                sourceRenderer.sharedMaterials = cachedOriginalMaterials;
+            return;
+        }
+
+        Shader bodyShader = Shader.Find("Custom/URP/OutlineBody");
+        if (bodyShader == null)
+            return;
+
+        // Comic body stays on the renderer (small). Only helper meshes/GOs are DontSave.
+        bodyMat = new Material(bodyShader);
+        sourceRenderer.sharedMaterial = bodyMat;
+    }
+
+    /// <summary>Editor/runtime helper: seed cached Lit materials before Rebuild with Preserve on.</summary>
+    public void SetCachedOriginalMaterials(Material[] materials)
+    {
+        if (materials == null || materials.Length == 0)
+            return;
+        cachedOriginalMaterials = (Material[])materials.Clone();
+    }
+
     /// <summary>
     /// Fast Cull-Front outline for Play-Mode streaming (far / pending objects).
     /// Near objects should call Rebuild() for sealed quality.
@@ -439,16 +530,13 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         if (sourceFilter == null || sourceFilter.sharedMesh == null || sourceRenderer == null)
             return;
 
-        Shader bodyShader = Shader.Find("Custom/URP/OutlineBody");
         Shader shellShader = Shader.Find("Custom/URP/OutlineShell");
-        if (bodyShader == null || shellShader == null)
+        if (shellShader == null)
             return;
 
         CacheOriginalMaterialsIfNeeded(sourceRenderer);
         Cleanup();
-
-        bodyMat = new Material(bodyShader);
-        sourceRenderer.sharedMaterial = bodyMat;
+        ApplyBodyMaterials(sourceRenderer);
 
         Mesh sourceMesh = sourceFilter.sharedMesh;
         float localOutline = ResolveLocalOutlineWidth(sourceMesh);
@@ -477,20 +565,26 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             return;
         }
 
-        Shader bodyShader = Shader.Find("Custom/URP/OutlineBody");
         Shader shellShader = Shader.Find("Custom/URP/OutlineShell");
-        if (bodyShader == null || shellShader == null)
+        if (shellShader == null)
         {
             Debug.LogError("MeshOutlineStyle: outline shaders missing.", this);
             return;
         }
 
+        if (!preserveOriginalMaterials)
+        {
+            Shader bodyShader = Shader.Find("Custom/URP/OutlineBody");
+            if (bodyShader == null)
+            {
+                Debug.LogError("MeshOutlineStyle: OutlineBody shader missing.", this);
+                return;
+            }
+        }
+
         CacheOriginalMaterialsIfNeeded(sourceRenderer);
         Cleanup();
-
-        // Comic body stays on the renderer (small). Only helper meshes/GOs are DontSave.
-        bodyMat = new Material(bodyShader);
-        sourceRenderer.sharedMaterial = bodyMat;
+        ApplyBodyMaterials(sourceRenderer);
 
         Mesh sourceMesh = sourceFilter.sharedMesh;
         float localOutline = ResolveLocalOutlineWidth(sourceMesh);
@@ -510,7 +604,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
                 shellUsesShaderExtrusion = true;
                 CreateShellObject(sourceMesh, shellMat);
             }
-            else if (IsThinSheet(sourceMesh))
+            else if (ShouldUseThinSheetSilhouette(sourceMesh))
             {
                 // Cards / photos: sealed face extrusion is nearly invisible face-on.
                 // Share mesh + uniform inflate + Cull Front → reliable rim.

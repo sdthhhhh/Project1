@@ -10,6 +10,10 @@ public sealed class InspectableUIController : MonoBehaviour
     [SerializeField, Tooltip("One-sentence description on the right.")] private TMP_Text descriptionText;
     [SerializeField, Tooltip("Bottom-right Q prompt.")] private TMP_Text putBackPrompt;
     [SerializeField, Tooltip("Bottom-right E rotate prompt.")] private TMP_Text rotatePrompt;
+    [SerializeField, Tooltip("Scrollable diary / text-page body shown instead of the 3D preview.")]
+    private GameObject textPageRoot;
+    [SerializeField, Tooltip("TMP body used for diary fragment pages.")]
+    private TMP_Text textPageBody;
     [Header("3D Preview Studio")]
     [SerializeField, Tooltip("Camera rendering only the preview model.")] private Camera previewCamera;
     [SerializeField, Tooltip("Pivot under which the temporary preview model is created.")] private Transform previewPivot;
@@ -22,9 +26,11 @@ public sealed class InspectableUIController : MonoBehaviour
     [SerializeField, Tooltip("Remove transparent, magenta-key, or URP pure-black pixels from the 3D viewport so the overlay behind it remains visible.")] private bool transparentPreviewBackground=true;
     [SerializeField, Tooltip("Solid viewport background used when Transparent Preview Background is disabled.")] private Color previewFallbackColor=new Color(.08f,.065f,.05f,1f);
     private RenderTexture renderTexture;private Material transparentPreviewMaterial;private GameObject previewInstance;private InspectableObject currentTarget;private bool rotationMode;private Vector3 lastMouse;
+    private bool textPageMode;
     public bool IsOpen => inspectPanel != null && inspectPanel.activeSelf;
     public bool IsZoomOpen => inspectZoomController != null && inspectZoomController.IsZoomOpen;
     public bool IsUtilityOverlay { get; private set; }
+    public bool IsTextPageMode => textPageMode;
 
     public void Configure(GameObject panel, RawImage preview, TMP_Text description, TMP_Text putBack, TMP_Text rotate, Camera camera, Transform pivot)
     {inspectPanel=panel;objectPreview=preview;descriptionText=description;putBackPrompt=putBack;rotatePrompt=rotate;previewCamera=camera;previewPivot=pivot;if(inspectPanel!=null)inspectPanel.SetActive(false);}
@@ -48,6 +54,8 @@ public sealed class InspectableUIController : MonoBehaviour
 
         currentTarget = null;
         IsUtilityOverlay = true;
+        textPageMode = false;
+        SetTextPageVisible(false);
         DestroyPreview();
         if (previewCamera != null)
             previewCamera.enabled = false;
@@ -86,21 +94,171 @@ public sealed class InspectableUIController : MonoBehaviour
         if (target == null || inspectPanel == null) { Debug.LogError("InspectableUIController: Target or panel is missing."); return; }
         currentTarget=target;
         IsUtilityOverlay = false;
-        if (objectPreview != null) objectPreview.enabled = true;
-        if (rotatePrompt != null) rotatePrompt.gameObject.SetActive(true);
+        EnsureTextPageUi();
+
+        DiaryFragment diaryPage = target.GetComponent<DiaryFragment>();
+        textPageMode = diaryPage != null;
+
         inspectPanel.SetActive(true); inspectPanel.transform.SetAsLastSibling();
         ApplyPanelBackgroundAlpha();DisableLegacyDescriptionBackground();
+
+        if (textPageMode)
+        {
+            ShowTextPage(diaryPage);
+            return;
+        }
+
+        SetTextPageVisible(false);
+        if (objectPreview != null) objectPreview.enabled = true;
+        if (rotatePrompt != null) rotatePrompt.gameObject.SetActive(true);
         CreatePreview(target);
         if (descriptionText != null) descriptionText.text = target.Description;
         if (putBackPrompt != null) putBackPrompt.text = target.GetComponent<IInspectableCollectible>()!=null?"Collect":"Put Back";
         rotationMode=false;UpdateRotatePrompt();
     }
 
+    private void ShowTextPage(DiaryFragment diaryPage)
+    {
+        DestroyPreview();
+        if (previewCamera != null)
+            previewCamera.enabled = false;
+        if (objectPreview != null)
+            objectPreview.enabled = false;
+        if (rotatePrompt != null)
+            rotatePrompt.gameObject.SetActive(false);
+        rotationMode = false;
+
+        SetTextPageVisible(true);
+        if (descriptionText != null)
+            descriptionText.text = "Diary Fragment " + diaryPage.FragmentId;
+        if (textPageBody != null)
+            textPageBody.text = string.IsNullOrWhiteSpace(diaryPage.DiaryText)
+                ? "(Empty page.)"
+                : diaryPage.DiaryText;
+        if (putBackPrompt != null)
+            putBackPrompt.text = "Collect";
+    }
+
+    private void SetTextPageVisible(bool visible)
+    {
+        if (textPageRoot != null)
+            textPageRoot.SetActive(visible);
+    }
+
+    private void EnsureTextPageUi()
+    {
+        if (textPageRoot != null && textPageBody != null)
+            return;
+        if (inspectPanel == null)
+            return;
+
+        Transform existing = inspectPanel.transform.Find("DiaryTextPage");
+        if (existing == null)
+        {
+            // Prefer beside the 3D viewport if present.
+            Transform viewport = objectPreview != null ? objectPreview.transform : null;
+            GameObject root = new GameObject("DiaryTextPage", typeof(RectTransform));
+            root.transform.SetParent(inspectPanel.transform, false);
+            if (viewport != null)
+                root.transform.SetSiblingIndex(viewport.GetSiblingIndex() + 1);
+
+            RectTransform rt = root.GetComponent<RectTransform>();
+            if (viewport is RectTransform vrt)
+            {
+                rt.anchorMin = vrt.anchorMin;
+                rt.anchorMax = vrt.anchorMax;
+                rt.pivot = vrt.pivot;
+                rt.anchoredPosition = vrt.anchoredPosition;
+                rt.sizeDelta = vrt.sizeDelta;
+                rt.offsetMin = vrt.offsetMin;
+                rt.offsetMax = vrt.offsetMax;
+            }
+            else
+            {
+                rt.anchorMin = new Vector2(0.08f, 0.18f);
+                rt.anchorMax = new Vector2(0.62f, 0.88f);
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+            }
+
+            Image bg = root.AddComponent<Image>();
+            bg.color = new Color(0.04f, 0.04f, 0.045f, 0.96f);
+            Outline outline = root.AddComponent<Outline>();
+            outline.effectColor = Color.white;
+            outline.effectDistance = new Vector2(3f, -3f);
+
+            GameObject scrollGo = new GameObject("Scroll", typeof(RectTransform));
+            scrollGo.transform.SetParent(root.transform, false);
+            RectTransform scrollRt = scrollGo.GetComponent<RectTransform>();
+            scrollRt.anchorMin = Vector2.zero;
+            scrollRt.anchorMax = Vector2.one;
+            scrollRt.offsetMin = new Vector2(24f, 24f);
+            scrollRt.offsetMax = new Vector2(-24f, -24f);
+            ScrollRect scroll = scrollGo.AddComponent<ScrollRect>();
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+
+            GameObject viewportGo = new GameObject("Viewport", typeof(RectTransform));
+            viewportGo.transform.SetParent(scrollGo.transform, false);
+            RectTransform viewportRt = viewportGo.GetComponent<RectTransform>();
+            viewportRt.anchorMin = Vector2.zero;
+            viewportRt.anchorMax = Vector2.one;
+            viewportRt.offsetMin = Vector2.zero;
+            viewportRt.offsetMax = Vector2.zero;
+            Image viewportImg = viewportGo.AddComponent<Image>();
+            viewportImg.color = new Color(1f, 1f, 1f, 0.02f);
+            viewportGo.AddComponent<Mask>().showMaskGraphic = false;
+            scroll.viewport = viewportRt;
+
+            GameObject contentGo = new GameObject("Content", typeof(RectTransform));
+            contentGo.transform.SetParent(viewportGo.transform, false);
+            RectTransform contentRt = contentGo.GetComponent<RectTransform>();
+            contentRt.anchorMin = new Vector2(0f, 1f);
+            contentRt.anchorMax = new Vector2(1f, 1f);
+            contentRt.pivot = new Vector2(0.5f, 1f);
+            contentRt.anchoredPosition = Vector2.zero;
+            contentRt.sizeDelta = new Vector2(0f, 0f);
+            ContentSizeFitter fitter = contentGo.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            scroll.content = contentRt;
+
+            GameObject textGo = new GameObject("Body", typeof(RectTransform));
+            textGo.transform.SetParent(contentGo.transform, false);
+            RectTransform textRt = textGo.GetComponent<RectTransform>();
+            textRt.anchorMin = new Vector2(0f, 1f);
+            textRt.anchorMax = new Vector2(1f, 1f);
+            textRt.pivot = new Vector2(0.5f, 1f);
+            textRt.anchoredPosition = Vector2.zero;
+            textRt.sizeDelta = new Vector2(0f, 0f);
+            TextMeshProUGUI tmp = textGo.AddComponent<TextMeshProUGUI>();
+            tmp.color = new Color(0.95f, 0.95f, 0.96f, 1f);
+            tmp.fontSize = 28f;
+            tmp.enableWordWrapping = true;
+            tmp.alignment = TextAlignmentOptions.TopLeft;
+            tmp.text = string.Empty;
+            ContentSizeFitter textFit = textGo.AddComponent<ContentSizeFitter>();
+            textFit.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            textFit.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            textPageRoot = root;
+            textPageBody = tmp;
+            root.SetActive(false);
+        }
+        else
+        {
+            textPageRoot = existing.gameObject;
+            if (textPageBody == null)
+                textPageBody = existing.GetComponentInChildren<TMP_Text>(true);
+        }
+    }
+
     private void Update()
     {
         if(!IsOpen)return;
         ApplyPanelBackgroundAlpha();
-        if(IsUtilityOverlay||IsZoomOpen)return;
+        if(IsUtilityOverlay||IsZoomOpen||textPageMode)return;
         if(Input.GetKeyDown(KeyCode.E)){rotationMode=!rotationMode;UpdateRotatePrompt();}
         if(!rotationMode)return;
         if(Input.GetMouseButtonDown(0))lastMouse=Input.mousePosition;
@@ -183,8 +341,15 @@ public sealed class InspectableUIController : MonoBehaviour
     {
         if (target == null)
             return false;
-        if (target.GetComponentInChildren<MeshOutlineStyle>(true) != null)
-            return true;
+
+        // Photos / textured props keep Lit materials + outline shells — not comic black body.
+        MeshOutlineStyle[] styles = target.GetComponentsInChildren<MeshOutlineStyle>(true);
+        for (int i = 0; i < styles.Length; i++)
+        {
+            if (styles[i] != null && styles[i].UsesComicBody)
+                return true;
+        }
+
         GameObject model = target.PreviewModel;
         if (model == null)
             return false;
@@ -357,6 +522,8 @@ public sealed class InspectableUIController : MonoBehaviour
         DestroyPreview();
         currentTarget=null;
         rotationMode=false;
+        textPageMode=false;
+        SetTextPageVisible(false);
         if(IsUtilityOverlay)
         {
             if(savedBackgroundAlpha>=0f)canvasBackgroundAlpha=savedBackgroundAlpha;

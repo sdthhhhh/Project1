@@ -173,13 +173,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &58379148 stripped
@@ -205,15 +208,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &60188458
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &60788660 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7648502956408741331, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -237,13 +271,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &62944729 stripped
@@ -269,15 +306,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &90556116
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &150363804
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,18 +480,13 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &226898123 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8513859187771203891, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-  m_PrefabInstance: {fileID: 1461483474}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &226898127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 226898123}
+  m_GameObject: {fileID: 8513859189163955937}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ead95f95d39ba74983547438cc2dd75, type: 3}
@@ -431,19 +494,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.01
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.025
   drawSilhouette: 1
+  silhouetteMode: 1
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
-  creaseWidth: 0.02
+  creaseWidth: 0.03
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.006
+  thinSheetAspectThreshold: 0.2
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &239340575
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &258388880
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &263212805 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3540495426589365078, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -463,17 +585,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.005
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.015
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &266660881 stripped
@@ -499,13 +624,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &285580293 stripped
@@ -531,20 +659,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
---- !u!4 &295413234 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-  m_PrefabInstance: {fileID: 1461483474}
+--- !u!21 &290667516
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &306715249 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2519092360280523269, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -568,15 +722,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &313297749
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &316181516
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &323841575 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4767400413853537203, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
@@ -600,15 +813,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: -6478536213147159724, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+--- !u!21 &331220854
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &332693942 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1861604965400755317, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -632,15 +876,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &349680181
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &352784457 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9217234437682292332, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -664,15 +939,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &353998587
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &385336900
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &402560439 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1891630423312683343, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -696,13 +1030,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &403307419 stripped
@@ -728,13 +1065,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &411100436
@@ -766,7 +1106,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 295413234}
+  - {fileID: 543450652272037945}
   - {fileID: 1777655286}
   - {fileID: 1919636105}
   m_Father: {fileID: 0}
@@ -794,13 +1134,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &427764439 stripped
@@ -826,13 +1169,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &428997249 stripped
@@ -858,15 +1204,102 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &450890822
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &454521091
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &471594590
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &476013360 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1998131547146259539, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -890,15 +1323,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &504220688
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &508204388
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &516407845 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8961359253771211100, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
@@ -922,15 +1414,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: -6478536213147159724, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+--- !u!21 &589144746
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &611938921 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3566207899841815972, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -954,15 +1477,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &615759179
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &620952837
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &621543072 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7422151822734960208, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -986,13 +1568,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &664523148
@@ -1012,7 +1597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &664523149
 Light:
   m_ObjectHideFlags: 0
@@ -1136,13 +1721,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &716906131
@@ -1204,13 +1792,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &736320886 stripped
@@ -1236,13 +1827,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1001 &741580409
@@ -1312,11 +1906,11 @@ PrefabInstance:
     - target: {fileID: -7023974396876390944, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: -6478536213147159724, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+      objectReference: {fileID: 1502414676}
     - target: {fileID: 882129737928793925, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: -6478536213147159724, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+      objectReference: {fileID: 1950362462}
     - target: {fileID: 919132149155446097, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
       propertyPath: m_Name
       value: Cama
@@ -1328,7 +1922,7 @@ PrefabInstance:
     - target: {fileID: 2786534777698132407, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: -6478536213147159724, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+      objectReference: {fileID: 1893875786}
     - target: {fileID: 4767400413853537203, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1356,6 +1950,34 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 323841579}
   m_SourcePrefab: {fileID: 100100000, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+--- !u!21 &749761135
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &764705435 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4906838889796845047, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1379,15 +2001,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &766856818
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &769872818
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,18 +2175,13 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &770710964 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -5568371526223589888, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-  m_PrefabInstance: {fileID: 1461483474}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &770710968
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 770710964}
+  m_GameObject: {fileID: 3655000509340154322}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ead95f95d39ba74983547438cc2dd75, type: 3}
@@ -1541,17 +2189,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.01
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.03
   drawSilhouette: 1
+  silhouetteMode: 1
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
-  creaseWidth: 0.02
+  creaseWidth: 0.03
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.006
+  thinSheetAspectThreshold: 0.2
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &779188282
@@ -1608,6 +2259,62 @@ MonoBehaviour:
   allowClickToSkipTyping: 1
   nextSceneName: SampleScene
   delayBeforeSceneLoad: 0.35
+--- !u!21 &784587277
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &789301506
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &793337228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,6 +2417,34 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!21 &805008512
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &821394584 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4504409719310791647, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1733,15 +2468,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &887803889
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &898869063 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9141816029861474070, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1765,15 +2531,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &928429098
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &940996745 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6248574976466802116, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1797,13 +2594,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &945168023 stripped
@@ -1829,13 +2629,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &949917242 stripped
@@ -1861,15 +2664,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &995309219
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1024516005 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7333631254909853010, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1893,15 +2727,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1025549716
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1049213800 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3410185793394415013, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1921,19 +2786,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.005
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.015
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1062278868
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1079496220
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1109037431 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4103881766339141800, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -1957,13 +2881,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1122841381 stripped
@@ -1989,15 +2916,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1156534355
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1001 &1156760505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2013,7 +2971,7 @@ PrefabInstance:
     - target: {fileID: -8867477870038081954, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1195272539}
     - target: {fileID: -8679921383154817045, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.21
@@ -2057,7 +3015,7 @@ PrefabInstance:
     - target: {fileID: -8574120244550949717, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 928429098}
     - target: {fileID: -8551654070373378105, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2069,19 +3027,19 @@ PrefabInstance:
     - target: {fileID: -8270237889823493819, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1755664497}
     - target: {fileID: -8143710011712545758, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 349680181}
     - target: {fileID: -8098802744336350861, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 749761135}
     - target: {fileID: -7791443408913176156, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 60188458}
     - target: {fileID: -7768796009490323730, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2093,7 +3051,7 @@ PrefabInstance:
     - target: {fileID: -7628274954807177987, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1668528196}
     - target: {fileID: -7515429101286732190, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2105,7 +3063,7 @@ PrefabInstance:
     - target: {fileID: -7414337214243103609, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 258388880}
     - target: {fileID: -7395704305543789238, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2113,11 +3071,11 @@ PrefabInstance:
     - target: {fileID: -7385189512676675294, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 995309219}
     - target: {fileID: -7308718804694308083, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 805008512}
     - target: {fileID: -7242450453789606078, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2129,11 +3087,11 @@ PrefabInstance:
     - target: {fileID: -6775338753947271977, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1952501068}
     - target: {fileID: -6673802680727711063, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1156534355}
     - target: {fileID: -6009921392208378166, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.05
@@ -2141,19 +3099,19 @@ PrefabInstance:
     - target: {fileID: -5971410051629635644, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1918305583}
     - target: {fileID: -5754732837579649886, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 615759179}
     - target: {fileID: -5293936662160175238, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 589144746}
     - target: {fileID: -5094067903517675252, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1590222423}
     - target: {fileID: -4960584510277547667, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2165,7 +3123,7 @@ PrefabInstance:
     - target: {fileID: -4873446893628210142, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 471594590}
     - target: {fileID: -4133703932355585839, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2173,15 +3131,15 @@ PrefabInstance:
     - target: {fileID: -3856571041627856340, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 2120145470}
     - target: {fileID: -3838950152313394470, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1821882434}
     - target: {fileID: -3797866689915996471, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1195207990}
     - target: {fileID: -3778644264426962316, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2197,11 +3155,11 @@ PrefabInstance:
     - target: {fileID: -3195828791156449804, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1478049884}
     - target: {fileID: -3171223004228123373, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1874586503}
     - target: {fileID: -3137722172632951806, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2209,7 +3167,7 @@ PrefabInstance:
     - target: {fileID: -2947538861075970057, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1830786954}
     - target: {fileID: -2874765826992384646, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2225,7 +3183,7 @@ PrefabInstance:
     - target: {fileID: -2473424575180118478, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 239340575}
     - target: {fileID: -2372847361076386092, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2233,7 +3191,7 @@ PrefabInstance:
     - target: {fileID: -2258909429528773002, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 313297749}
     - target: {fileID: -2251244191874932685, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2253,11 +3211,11 @@ PrefabInstance:
     - target: {fileID: -1806680513116206669, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1920285864}
     - target: {fileID: -1602238644875344336, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 887803889}
     - target: {fileID: -1599826595754709761, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2269,7 +3227,7 @@ PrefabInstance:
     - target: {fileID: -787141429326784033, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1079496220}
     - target: {fileID: -652209905907201759, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2281,7 +3239,7 @@ PrefabInstance:
     - target: {fileID: -383518810844267698, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 316181516}
     - target: {fileID: 26844662620191305, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2289,7 +3247,7 @@ PrefabInstance:
     - target: {fileID: 137163846023927305, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1319111267}
     - target: {fileID: 281855664364225751, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2305,11 +3263,11 @@ PrefabInstance:
     - target: {fileID: 497116252660537134, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1314089221}
     - target: {fileID: 895425838269697267, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 450890822}
     - target: {fileID: 919132149155446097, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Name
       value: 26 3 Erica
@@ -2321,11 +3279,11 @@ PrefabInstance:
     - target: {fileID: 945454400225530728, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 508204388}
     - target: {fileID: 976723959910379622, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 353998587}
     - target: {fileID: 1292043252959764498, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2333,7 +3291,7 @@ PrefabInstance:
     - target: {fileID: 1512191506632812556, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1620287391}
     - target: {fileID: 1835210009659533079, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2345,11 +3303,11 @@ PrefabInstance:
     - target: {fileID: 2128355837191441527, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1626800620}
     - target: {fileID: 2380718651202138832, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1062278868}
     - target: {fileID: 2596957926113402938, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2357,19 +3315,19 @@ PrefabInstance:
     - target: {fileID: 2726731778658718792, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1645057672}
     - target: {fileID: 2816831734691548057, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 620952837}
     - target: {fileID: 2821655904238734759, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 385336900}
     - target: {fileID: 2927593092117553206, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1754780842}
     - target: {fileID: 3455292422214010178, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2385,7 +3343,7 @@ PrefabInstance:
     - target: {fileID: 4127316761828931847, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 2130130915}
     - target: {fileID: 4252702714118357385, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2393,7 +3351,7 @@ PrefabInstance:
     - target: {fileID: 4321514657177891973, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 90556116}
     - target: {fileID: 4406155116359948159, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.71
@@ -2433,14 +3391,18 @@ PrefabInstance:
     - target: {fileID: 4876285997155681295, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 331220854}
     - target: {fileID: 5008022236170083033, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1560282167}
     - target: {fileID: 5134136590023790061, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5134136590023790061, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.01
       objectReference: {fileID: 0}
     - target: {fileID: 6140994139569067330, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
@@ -2453,7 +3415,7 @@ PrefabInstance:
     - target: {fileID: 6272350532052637613, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 290667516}
     - target: {fileID: 6490625522564147758, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -2465,11 +3427,11 @@ PrefabInstance:
     - target: {fileID: 6633947738691741599, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1218770826}
     - target: {fileID: 6745302439343835087, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1618774875}
     - target: {fileID: 7045030354117346258, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2485,7 +3447,7 @@ PrefabInstance:
     - target: {fileID: 7137442478868344379, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1025549716}
     - target: {fileID: 7152111983555740953, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2497,15 +3459,15 @@ PrefabInstance:
     - target: {fileID: 7653977287501116505, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 784587277}
     - target: {fileID: 7725258897302460643, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 454521091}
     - target: {fileID: 7841272781267861279, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 766856818}
     - target: {fileID: 7975042476016782316, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2525,11 +3487,11 @@ PrefabInstance:
     - target: {fileID: 8616184511030011274, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1562828742}
     - target: {fileID: 8628502785719625371, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+      objectReference: {fileID: 1609899015}
     - target: {fileID: 8869669039281602302, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2913,19 +3875,106 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.005
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.015
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1195207990
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1195272539
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1218770826
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1250830930 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7242450453789606078, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -2949,13 +3998,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1258022974
@@ -3014,15 +4066,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1314089221
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1319111267
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1326100250 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 401122468259050895, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3046,13 +4157,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1348873830 stripped
@@ -3078,13 +4192,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1380646766
@@ -3157,17 +4274,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.005
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.015
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1423889983
@@ -3284,13 +4404,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1426563810 stripped
@@ -3316,102 +4439,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
---- !u!1001 &1461483474
-PrefabInstance:
+--- !u!21 &1478049884
+Material:
+  serializedVersion: 8
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
     serializedVersion: 3
-    m_TransformParent: {fileID: 411100437}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -2.991
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.808
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -5568371526223589888, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -5568371526223589888, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_Name
-      value: IVDrip
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7071182760956848314, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-    - target: {fileID: 7202271454713460447, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-    - target: {fileID: 8513859187771203891, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: -5568371526223589888, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 770710968}
-    - targetCorrespondingSourceObject: {fileID: 8513859187771203891, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 226898127}
-  m_SourcePrefab: {fileID: 100100000, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1496488243 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6140994139569067330, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3435,15 +4502,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1502414676
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1560282167
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1561720058 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1599826595754709761, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3467,15 +4593,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1562828742
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1583512062 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9186007496021145544, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3499,15 +4656,130 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1590222423
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1609899015
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1618774875
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1620287391
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1624090962 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -466329591000292508, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3531,15 +4803,102 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1626800620
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1645057672
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1668528196
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1687147290 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2251244191874932685, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3563,13 +4922,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1725020461 stripped
@@ -3595,13 +4957,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1725920353 stripped
@@ -3627,13 +4992,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1751336224 stripped
@@ -3659,15 +5027,74 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1754780842
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1755664497
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!4 &1777655286 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
@@ -3725,19 +5152,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tone: 1
   scaleWidthToBounds: 1
-  outlineWidthFactor: 0.015
-  creaseWidthFactor: 0.01
-  outlineWidth: 0.035
+  outlineWidthFactor: 0.005
+  creaseWidthFactor: 0.005
+  outlineWidth: 0.015
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: -6478536213147159724, guid: efb7c97edc908814ebe239f07b1fd80e, type: 3}
+--- !u!21 &1821882434
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1830786954
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1845712555 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 281855664364225751, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3761,15 +5247,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1874586503
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1878649279 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2874765826992384646, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3793,15 +5310,46 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1893875786
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1903717060 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3137722172632951806, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3825,20 +5373,135 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+--- !u!21 &1918305583
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!4 &1919636105 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
   m_PrefabInstance: {fileID: 1156760505}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &1920285864
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1950362462
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1952501068
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1971975486 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8009987137999418058, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
@@ -3862,13 +5525,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &1984860743 stripped
@@ -3894,13 +5560,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &2013045020
@@ -3994,13 +5663,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &2046689244 stripped
@@ -4026,13 +5698,16 @@ MonoBehaviour:
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
   drawSilhouette: 1
+  silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
   creaseWidth: 0.02
   maxRelativeToMinAxis: 0.12
+  minWorldOutlineWidth: 0.003
+  thinSheetAspectThreshold: 0.12
+  forceThinSheetOutline: 0
   bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
   buildOnAwake: 0
-  keepOriginalColorsInEditor: 1
   cachedOriginalMaterials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
 --- !u!1 &2055533103
@@ -4172,6 +5847,263 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!21 &2120145470
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &2130130915
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!4 &543450652272037945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148333628035}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -2.991, y: 0, z: -0.808}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6645823805994003939}
+  - {fileID: 6738450969508455683}
+  m_Father: {fileID: 411100437}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &919132148333628035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 543450652272037945}
+  m_Layer: 0
+  m_Name: IVDrip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &3655000509340154322
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6645823805994003939}
+  - component: {fileID: 5366159434997698455}
+  - component: {fileID: 7202271455570936077}
+  - component: {fileID: 770710968}
+  m_Layer: 0
+  m_Name: Cylinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!33 &4109396431428724675
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513859189163955937}
+  m_Mesh: {fileID: -7387706064836869012, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
+--- !u!33 &5366159434997698455
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3655000509340154322}
+  m_Mesh: {fileID: 2534964839176971238, guid: ec4a487d9d506f745b409e417f08d06b, type: 3}
+--- !u!4 &6645823805994003939
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3655000509340154322}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 543450652272037945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &6738450969508455683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513859189163955937}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 543450652272037945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &7071182762416185192
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513859189163955937}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 789301506}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!23 &7202271455570936077
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3655000509340154322}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 504220688}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8513859189163955937
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6738450969508455683}
+  - component: {fileID: 4109396431428724675}
+  - component: {fileID: 7071182762416185192}
+  - component: {fileID: 226898127}
+  m_Layer: 0
+  m_Name: Cylinder.001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

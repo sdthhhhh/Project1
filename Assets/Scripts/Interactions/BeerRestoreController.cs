@@ -13,6 +13,10 @@ public sealed class BeerRestoreController : MonoBehaviour
     [SerializeField, Tooltip("Collider on Beer (1)/2 used by the existing Crosshair raycaster.")] private Collider restoreSlotCollider;
     [SerializeField, Tooltip("Optional existing click component to disable before collection. Usually left empty because InspectableRaycaster checks CanClick directly.")] private MonoBehaviour restoreInteractionComponent;
 
+    [Header("Reveal On Restore")]
+    [SerializeField, Tooltip("Activated when beer is put back (e.g. DiaryFragment01). Reuse this list pattern for fragments 2–4 on other restore puzzles.")]
+    private GameObject[] revealOnRestore;
+
     public bool HasPiece { get; private set; }
     public bool IsRestored { get; private set; }
 
@@ -82,6 +86,7 @@ public sealed class BeerRestoreController : MonoBehaviour
         }
         SetRestoreVisual(false);
         SetRestoreTargetEnabled(false);
+        SetRevealOnRestoreActive(false);
     }
 
     private void Restore()
@@ -96,6 +101,18 @@ public sealed class BeerRestoreController : MonoBehaviour
             completeBeerRoot.SetActive(true);
             Transform[] all=completeBeerRoot.GetComponentsInChildren<Transform>(true);
             foreach(Transform child in all)child.gameObject.SetActive(true);
+        }
+        SetRevealOnRestoreActive(true);
+    }
+
+    private void SetRevealOnRestoreActive(bool active)
+    {
+        if (revealOnRestore == null)
+            return;
+        for (int i = 0; i < revealOnRestore.Length; i++)
+        {
+            if (revealOnRestore[i] != null)
+                revealOnRestore[i].SetActive(active);
         }
     }
 

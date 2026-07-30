@@ -6,6 +6,11 @@ using UnityEngine;
 public sealed class ItemRestorationSystem : MonoBehaviour
 {
     public static ItemRestorationSystem Instance { get; private set; }
+
+    [Header("Reveal On Complete")]
+    [SerializeField, Tooltip("Activated when all numbered books/items (2–6) are restored (e.g. DiaryFragment03).")]
+    private GameObject[] revealOnComplete;
+
     private readonly Dictionary<string, State> states = new Dictionary<string, State>();
     private Drawer rewardDrawer;
     private GameObject medicalReport;
@@ -74,6 +79,31 @@ public sealed class ItemRestorationSystem : MonoBehaviour
         rewardDrawer = FindDrawerBottom();
         medicalReport = FindSceneObject("Medical Report");
         if (medicalReport != null) medicalReport.SetActive(false);
+
+        EnsureRevealOnCompleteDefaults();
+        SetRevealOnCompleteActive(false);
+    }
+
+    /// <summary>Wire DiaryFragment03 by name when the inspector list is empty (runtime-added component).</summary>
+    private void EnsureRevealOnCompleteDefaults()
+    {
+        if (revealOnComplete != null && revealOnComplete.Length > 0)
+            return;
+
+        GameObject frag = FindSceneObject("DiaryFragment03");
+        if (frag != null)
+            revealOnComplete = new[] { frag };
+    }
+
+    private void SetRevealOnCompleteActive(bool active)
+    {
+        if (revealOnComplete == null)
+            return;
+        for (int i = 0; i < revealOnComplete.Length; i++)
+        {
+            if (revealOnComplete[i] != null)
+                revealOnComplete[i].SetActive(active);
+        }
     }
 
     private static Dictionary<string, Transform> FindNumbered(Transform root)
@@ -141,6 +171,7 @@ public sealed class ItemRestorationSystem : MonoBehaviour
         foreach (State state in states.Values) if (!state.placed) return;
         completed = true;
         if (medicalReport != null) medicalReport.SetActive(true);
+        SetRevealOnCompleteActive(true);
         if (rewardDrawer != null) rewardDrawer.UnlockAndOpen();
         else InteractionUI.Instance?.ShowStatus("Drawer is open");
     }

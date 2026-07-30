@@ -19,6 +19,10 @@ public sealed class PhotoRestoreController : MonoBehaviour
     [SerializeField, Tooltip("Collider belonging to InteractedPhoto. The existing Crosshair raycaster uses it for placement.")]
     private Collider restoreTargetCollider;
 
+    [Header("Reveal On Restore")]
+    [SerializeField, Tooltip("Activated when the photo is put back (e.g. DiaryFragment02). Same list pattern as BeerRestoreController.")]
+    private GameObject[] revealOnRestore;
+
     public bool HasPhoto { get; private set; }
     public bool IsRestored { get; private set; }
 
@@ -98,6 +102,7 @@ public sealed class PhotoRestoreController : MonoBehaviour
         if (restoreTargetRenderer != null) restoreTargetRenderer.enabled = false;
         if (restoreTargetCollider != null) restoreTargetCollider.enabled = true;
 
+        SetRevealOnRestoreActive(false);
         SyncPhotoOutlineVisibility();
     }
 
@@ -117,7 +122,19 @@ public sealed class PhotoRestoreController : MonoBehaviour
 
         if (restoreTargetRenderer != null) restoreTargetRenderer.enabled = true;
 
+        SetRevealOnRestoreActive(true);
         SyncPhotoOutlineVisibility();
+    }
+
+    private void SetRevealOnRestoreActive(bool active)
+    {
+        if (revealOnRestore == null)
+            return;
+        for (int i = 0; i < revealOnRestore.Length; i++)
+        {
+            if (revealOnRestore[i] != null)
+                revealOnRestore[i].SetActive(active);
+        }
     }
 
     private void CachePhotoComponents()
