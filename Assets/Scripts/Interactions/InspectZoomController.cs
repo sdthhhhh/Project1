@@ -135,6 +135,7 @@ public sealed class InspectZoomController : MonoBehaviour
     public void CloseZoom()
     {
         if (!IsZoomOpen) return;
+        InspectableHotspot closing = currentHotspot;
         if (activeDiaryPuzzle != null)
         {
             activeDiaryPuzzle.Close();
@@ -145,6 +146,8 @@ public sealed class InspectZoomController : MonoBehaviour
         if (zoomImage != null) { zoomImage.sprite = null; zoomImage.gameObject.SetActive(false); }
         if (zoomText != null) { zoomText.text = string.Empty; zoomText.gameObject.SetActive(false); }
         currentHotspot = null;
+        if (closing != null)
+            closing.ApplyRevealOnZoomClose();
     }
 
     private void RefreshVisibleHotspot()

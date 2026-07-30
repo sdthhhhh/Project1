@@ -25,23 +25,28 @@ public sealed class DiaryFragment : MonoBehaviour, IInspectableCollectible
 
     public void Configure(int id) => fragmentId = id;
 
-    public void SetDiaryText(string text) => diaryText = text ?? string.Empty;
+    public void SetDiaryText(string text)
+    {
+        diaryText = text ?? string.Empty;
+        SyncInspectTextPage();
+    }
 
     private void Awake()
     {
         inspectable = GetComponent<InspectableObject>();
-        if (inspectable != null)
-        {
-            inspectable.SetCanInspect(true);
-            if (string.IsNullOrWhiteSpace(inspectable.Description) ||
-                inspectable.Description == "A detail that may be worth remembering.")
-            {
-                inspectable.ConfigurePreview(
-                    gameObject,
-                    "Diary Fragment " + fragmentId,
-                    Vector3.zero);
-            }
-        }
+        SyncInspectTextPage();
+    }
+
+    /// <summary>Diary fragments always use the shared TextPage inspect kind.</summary>
+    private void SyncInspectTextPage()
+    {
+        if (inspectable == null)
+            inspectable = GetComponent<InspectableObject>();
+        if (inspectable == null)
+            return;
+
+        inspectable.SetCanInspect(true);
+        inspectable.SetTextPage("Diary Fragment " + fragmentId, diaryText);
     }
 
     public void CollectFromInspection()
@@ -64,6 +69,7 @@ public sealed class DiaryFragment : MonoBehaviour, IInspectableCollectible
     {
         if (fragmentId < 1)
             fragmentId = 1;
+        SyncInspectTextPage();
     }
 
     private void Reset()
@@ -71,6 +77,7 @@ public sealed class DiaryFragment : MonoBehaviour, IInspectableCollectible
         EnsureInteractCollider();
         if (GetComponent<InspectableObject>() == null)
             gameObject.AddComponent<InspectableObject>();
+        SyncInspectTextPage();
     }
 
     [ContextMenu("Ensure Interact Collider")]

@@ -50,6 +50,8 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
     [Header("Reveal On Complete")]
     [SerializeField, Tooltip("Activated when the cover puzzle is finished (e.g. DiaryFragment04). Does not open the diary book UI.")]
     private GameObject[] revealOnComplete;
+    [SerializeField, Tooltip("Objects with DeactivateOnInteract unlocked after the cover puzzle (e.g. bed pillows).")]
+    private GameObject[] unlockInteractablesOnComplete;
 
     private Camera previewCamera;
     private Transform previewPivot;
@@ -722,6 +724,7 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
         }
 
         SetRevealOnCompleteActive(true);
+        UnlockInteractablesOnComplete();
         InteractionUI.Instance?.ShowStatus("The diary cover is complete.");
 
         // Close inspect / puzzle — do not open the diary book reading UI.
@@ -744,6 +747,19 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
         }
     }
 
+    private void UnlockInteractablesOnComplete()
+    {
+        if (unlockInteractablesOnComplete == null)
+            return;
+        for (int i = 0; i < unlockInteractablesOnComplete.Length; i++)
+        {
+            GameObject go = unlockInteractablesOnComplete[i];
+            if (go == null)
+                continue;
+            go.SendMessage("SetInteractionEnabled", true, SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
     private PuzzlePiece FindPiece(Collider col)
     {
         for (int i = 0; i < pieces.Count; i++)
@@ -758,6 +774,13 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
 
     private static int ResolveFragmentId(GameObject source, int fallback)
     {
+        if (source == null)
+            return fallback;
+
+        DiaryPuzzlePieceWorld worldPiece = source.GetComponentInChildren<DiaryPuzzlePieceWorld>(true);
+        if (worldPiece != null)
+            return worldPiece.FragmentId;
+
         DiaryFragment frag = source.GetComponentInChildren<DiaryFragment>(true);
         if (frag != null)
             return frag.FragmentId;

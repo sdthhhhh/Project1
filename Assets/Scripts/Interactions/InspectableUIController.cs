@@ -84,8 +84,7 @@ public sealed class InspectableUIController : MonoBehaviour
             descriptionText.text = description ?? string.Empty;
         if (putBackPrompt != null)
             putBackPrompt.text = closePrompt ?? "Put Back";
-        if (rotatePrompt != null)
-            rotatePrompt.gameObject.SetActive(false);
+        SetRotatePromptVisible(false);
         rotationMode = false;
     }
 
@@ -96,47 +95,75 @@ public sealed class InspectableUIController : MonoBehaviour
         IsUtilityOverlay = false;
         EnsureTextPageUi();
 
-        DiaryFragment diaryPage = target.GetComponent<DiaryFragment>();
-        textPageMode = diaryPage != null;
+        textPageMode = target.ContentKind == InspectContentKind.TextPage;
 
         inspectPanel.SetActive(true); inspectPanel.transform.SetAsLastSibling();
         ApplyPanelBackgroundAlpha();DisableLegacyDescriptionBackground();
 
         if (textPageMode)
         {
-            ShowTextPage(diaryPage);
+            ShowTextPage(target);
             return;
         }
 
         SetTextPageVisible(false);
         if (objectPreview != null) objectPreview.enabled = true;
-        if (rotatePrompt != null) rotatePrompt.gameObject.SetActive(true);
+        SetRotatePromptVisible(true);
         CreatePreview(target);
         if (descriptionText != null) descriptionText.text = target.Description;
         if (putBackPrompt != null) putBackPrompt.text = target.GetComponent<IInspectableCollectible>()!=null?"Collect":"Put Back";
         rotationMode=false;UpdateRotatePrompt();
     }
 
-    private void ShowTextPage(DiaryFragment diaryPage)
+    private void ShowTextPage(InspectableObject target)
     {
         DestroyPreview();
         if (previewCamera != null)
             previewCamera.enabled = false;
         if (objectPreview != null)
             objectPreview.enabled = false;
-        if (rotatePrompt != null)
-            rotatePrompt.gameObject.SetActive(false);
+        // Hide whole RotatePrompt (E circle + label). Disabling only the TMP leaves ECircle visible.
+        SetRotatePromptVisible(false);
         rotationMode = false;
 
         SetTextPageVisible(true);
+        ApplyTextPageLayout();
         if (descriptionText != null)
-            descriptionText.text = "Diary Fragment " + diaryPage.FragmentId;
+            descriptionText.text = target.Description;
         if (textPageBody != null)
-            textPageBody.text = string.IsNullOrWhiteSpace(diaryPage.DiaryText)
+            textPageBody.text = string.IsNullOrWhiteSpace(target.TextPageBody)
                 ? "(Empty page.)"
-                : diaryPage.DiaryText;
+                : target.TextPageBody;
         if (putBackPrompt != null)
-            putBackPrompt.text = "Collect";
+            putBackPrompt.text = target.GetComponent<IInspectableCollectible>() != null ? "Collect" : "Put Back";
+    }
+
+    private void SetRotatePromptVisible(bool visible)
+    {
+        if (rotatePrompt == null)
+            return;
+        Transform root = rotatePrompt.transform.parent != null
+            && rotatePrompt.transform.parent.name.IndexOf("Rotate", System.StringComparison.OrdinalIgnoreCase) >= 0
+            ? rotatePrompt.transform.parent
+            : rotatePrompt.transform;
+        root.gameObject.SetActive(visible);
+        if (visible)
+            rotatePrompt.gameObject.SetActive(true);
+    }
+
+    /// <summary>Slightly smaller than the 3D viewport so the page doesn't dominate the overlay.</summary>
+    private void ApplyTextPageLayout()
+    {
+        if (textPageRoot == null)
+            return;
+        RectTransform rt = textPageRoot.GetComponent<RectTransform>();
+        if (rt == null)
+            return;
+        rt.anchorMin = new Vector2(0.16f, 0.22f);
+        rt.anchorMax = new Vector2(0.54f, 0.78f);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+        rt.pivot = new Vector2(0.5f, 0.5f);
     }
 
     private void SetTextPageVisible(bool visible)
@@ -163,23 +190,11 @@ public sealed class InspectableUIController : MonoBehaviour
                 root.transform.SetSiblingIndex(viewport.GetSiblingIndex() + 1);
 
             RectTransform rt = root.GetComponent<RectTransform>();
-            if (viewport is RectTransform vrt)
-            {
-                rt.anchorMin = vrt.anchorMin;
-                rt.anchorMax = vrt.anchorMax;
-                rt.pivot = vrt.pivot;
-                rt.anchoredPosition = vrt.anchoredPosition;
-                rt.sizeDelta = vrt.sizeDelta;
-                rt.offsetMin = vrt.offsetMin;
-                rt.offsetMax = vrt.offsetMax;
-            }
-            else
-            {
-                rt.anchorMin = new Vector2(0.08f, 0.18f);
-                rt.anchorMax = new Vector2(0.62f, 0.88f);
-                rt.offsetMin = Vector2.zero;
-                rt.offsetMax = Vector2.zero;
-            }
+            rt.anchorMin = new Vector2(0.16f, 0.22f);
+            rt.anchorMax = new Vector2(0.54f, 0.78f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
 
             Image bg = root.AddComponent<Image>();
             bg.color = new Color(0.04f, 0.04f, 0.045f, 0.96f);
@@ -448,7 +463,7 @@ public sealed class InspectableUIController : MonoBehaviour
         if (putBackPromptText != null && putBackPrompt != null)
             putBackPrompt.text = putBackPromptText;
         if (rotatePrompt != null)
-            rotatePrompt.gameObject.SetActive(showRotatePrompt);
+            SetRotatePromptVisible(showRotatePrompt);
         if (!showRotatePrompt)
             rotationMode = false;
     }
@@ -535,7 +550,7 @@ public sealed class InspectableUIController : MonoBehaviour
         IsUtilityOverlay=false;
         if(previewCamera!=null)previewCamera.enabled=false;
         if(objectPreview!=null)objectPreview.enabled=true;
-        if(rotatePrompt!=null)rotatePrompt.gameObject.SetActive(true);
+        SetRotatePromptVisible(true);
         if(inspectPanel!=null)inspectPanel.SetActive(false);
         if(finishedTarget!=null)finishedTarget.NotifyInspectFinished();
     }

@@ -8,7 +8,7 @@ public sealed class ItemRestorationSystem : MonoBehaviour
     public static ItemRestorationSystem Instance { get; private set; }
 
     [Header("Reveal On Complete")]
-    [SerializeField, Tooltip("Activated when all numbered books/items (2–6) are restored (e.g. DiaryFragment03).")]
+    [SerializeField, Tooltip("Activated when all numbered books/items (2–6) are restored (e.g. 日记碎片3).")]
     private GameObject[] revealOnComplete;
 
     private readonly Dictionary<string, State> states = new Dictionary<string, State>();
@@ -84,13 +84,16 @@ public sealed class ItemRestorationSystem : MonoBehaviour
         SetRevealOnCompleteActive(false);
     }
 
-    /// <summary>Wire DiaryFragment03 by name when the inspector list is empty (runtime-added component).</summary>
+    /// <summary>Wire 日记碎片3 by name when the inspector list is empty (runtime-added component).</summary>
     private void EnsureRevealOnCompleteDefaults()
     {
         if (revealOnComplete != null && revealOnComplete.Length > 0)
             return;
 
-        GameObject frag = FindSceneObject("DiaryFragment03");
+        // Text diary page (not the cover puzzle piece DiaryFragment03).
+        GameObject frag = FindSceneObject("日记碎片3");
+        if (frag == null)
+            frag = FindSceneObject("DiaryFragment03");
         if (frag != null)
             revealOnComplete = new[] { frag };
     }

@@ -14,7 +14,7 @@ public sealed class BeerRestoreController : MonoBehaviour
     [SerializeField, Tooltip("Optional existing click component to disable before collection. Usually left empty because InspectableRaycaster checks CanClick directly.")] private MonoBehaviour restoreInteractionComponent;
 
     [Header("Reveal On Restore")]
-    [SerializeField, Tooltip("Activated when beer is put back (e.g. DiaryFragment01). Reuse this list pattern for fragments 2–4 on other restore puzzles.")]
+    [SerializeField, Tooltip("Activated when beer is put back (e.g. 日记碎片1). Reuse this list pattern for fragments 2–4 on other restore puzzles.")]
     private GameObject[] revealOnRestore;
 
     public bool HasPiece { get; private set; }

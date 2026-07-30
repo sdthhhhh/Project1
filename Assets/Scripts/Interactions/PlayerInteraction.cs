@@ -14,15 +14,19 @@ public class PlayerInteraction : MonoBehaviour
 
             if (interactable != null)
             {
-                InteractionUI.Instance.ShowInteract(interactable.GetInteractText());
-
-                if (Input.GetKeyDown(KeyCode.E))
+                string prompt = interactable.GetInteractText();
+                if (!string.IsNullOrEmpty(prompt))
                 {
-                    InteractionUI.Instance.HideInteract();
-                    interactable.Interact();
-                }
+                    InteractionUI.Instance.ShowInteract(prompt);
 
-                return;
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        InteractionUI.Instance.HideInteract();
+                        interactable.Interact();
+                    }
+
+                    return;
+                }
             }
         }
 
