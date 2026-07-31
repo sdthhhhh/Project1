@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Mesh outline (component = who gets outlines; generated shells are Never saved into git).
@@ -34,16 +35,18 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     [SerializeField] private OutlineTone tone = OutlineTone.White;
     [SerializeField, Tooltip("If on, outline/crease widths scale with each mesh's size.")]
     private bool scaleWidthToBounds = true;
-    [SerializeField, Range(0.005f, 0.08f), Tooltip("Outline width as a fraction of mesh size (when scaled).")]
+    [SerializeField, Range(0.001f, 0.08f), Tooltip("Outline width as a fraction of mesh size (when scaled).")]
     private float outlineWidthFactor = 0.015f;
     [SerializeField, Range(0.002f, 0.05f), Tooltip("Crease width as a fraction of mesh size (when scaled).")]
     private float creaseWidthFactor = 0.01f;
     [SerializeField, Range(0.005f, 0.12f), Tooltip("Absolute LOCAL width used when Scale Width To Bounds is off.")]
     private float outlineWidth = 0.02f;
-    [SerializeField] private bool drawSilhouette = true;
+    [SerializeField, FormerlySerializedAs("drawSilhouette"), Tooltip("OutlineShell silhouette rim (sealed / ThinSheet / extrude). Off = body + creases only.")]
+    private bool drawOutlineShell = true;
     [SerializeField, Tooltip("Auto: flat sheets inflate, rods/boxes sealed. Or force Sealed / ThinSheet manually.")]
     private SilhouetteMode silhouetteMode = SilhouetteMode.Auto;
-    [SerializeField] private bool drawHardEdges = true;
+    [SerializeField, Tooltip("OutlineCreases hard-edge structural lines. Can be used without OutlineShell.")]
+    private bool drawHardEdges = true;
     [SerializeField, Range(20f, 90f)] private float hardEdgeAngleDegrees = 60f;
     [SerializeField, Range(0.005f, 0.08f)] private float creaseWidth = 0.015f;
     [SerializeField, Range(0.05f, 0.25f), Tooltip("Outline cannot exceed this fraction of the cap axis (thickness, or average size for thin sheets).")]
@@ -83,6 +86,18 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
     public bool UsesComicBody => !preserveOriginalMaterials;
 
+    public bool DrawOutlineShell
+    {
+        get => drawOutlineShell;
+        set => drawOutlineShell = value;
+    }
+
+    public bool DrawHardEdges
+    {
+        get => drawHardEdges;
+        set => drawHardEdges = value;
+    }
+
     public OutlineTone Tone
     {
         get => tone;
@@ -103,7 +118,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     {
         tone = newTone;
         scaleWidthToBounds = true;
-        outlineWidthFactor = Mathf.Clamp(newOutlineWidthFactor, 0.005f, 0.08f);
+        outlineWidthFactor = Mathf.Clamp(newOutlineWidthFactor, 0.001f, 0.08f);
         bodyColor = newBodyColor;
         drawHardEdges = hardEdges;
         creaseWidthFactor = Mathf.Clamp(newCreaseWidthFactor, 0.002f, 0.05f);
@@ -503,9 +518,21 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         if (bodyShader == null)
             return;
 
-        // Comic body stays on the renderer (small). Only helper meshes/GOs are DontSave.
+        // Comic fill on every submesh. FBX assets often keep a 2nd Lit/wire slot
+        // (e.g. wire_00000000); only assigning sharedMaterials[0] left that grey visible.
+        // Match subMeshCount so every submesh gets OutlineBody (not a single-slot guess).
         bodyMat = new Material(bodyShader);
-        sourceRenderer.sharedMaterial = bodyMat;
+        bodyMat.SetColor("_BaseColor", bodyColor);
+
+        int subCount = 1;
+        MeshFilter filter = GetComponent<MeshFilter>();
+        if (filter != null && filter.sharedMesh != null)
+            subCount = Mathf.Max(1, filter.sharedMesh.subMeshCount);
+
+        Material[] bodies = new Material[subCount];
+        for (int i = 0; i < subCount; i++)
+            bodies[i] = bodyMat;
+        sourceRenderer.sharedMaterials = bodies;
     }
 
     /// <summary>Editor/runtime helper: seed cached Lit materials before Rebuild with Preserve on.</summary>
@@ -593,7 +620,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         bool dense = triCount > MaxSealedShellTris;
         shellUsesShaderExtrusion = false;
 
-        if (drawSilhouette)
+        if (drawOutlineShell)
         {
             if (dense)
             {
