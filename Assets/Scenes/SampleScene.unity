@@ -18969,39 +18969,6 @@ MonoBehaviour:
   buildOnAwake: 1
   cachedOriginalMaterials:
   - {fileID: -5296283515073483586, guid: 0117fb8ead7d2b64a8f4e2114ed905e2, type: 3}
---- !u!114 &422871789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503480506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ead95f95d39ba74983547438cc2dd75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tone: 1
-  scaleWidthToBounds: 1
-  outlineWidthFactor: 0.08
-  creaseWidthFactor: 0.05
-  outlineWidth: 0.12
-  drawOutlineShell: 1
-  silhouetteMode: 0
-  drawHardEdges: 0
-  hardEdgeAngleDegrees: 60
-  creaseWidth: 0.015
-  maxRelativeToMinAxis: 0.12
-  minWorldOutlineWidth: 0.003
-  thinSheetAspectThreshold: 0.12
-  forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
-  preserveOriginalMaterials: 0
-  buildOnAwake: 1
-  cachedOriginalMaterials:
-  - {fileID: -569311074694664441, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
-  - {fileID: -8023036141899820962, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
-  - {fileID: 5333762672232743836, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
 --- !u!21 &423406388
 Material:
   serializedVersion: 8
@@ -28129,34 +28096,6 @@ RectTransform:
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!21 &656721479
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/URP/OutlineBody
-  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats: []
-    m_Colors:
-    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
-  m_BuildTextureStacks: []
---- !u!21 &656949493
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -48177,34 +48116,6 @@ MonoScript:
   m_ClassName: RestorationPlace
   m_Namespace: 
   m_AssemblyName: Assembly-CSharp
---- !u!21 &1268190354
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/URP/OutlineBody
-  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats: []
-    m_Colors:
-    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
-  m_BuildTextureStacks: []
 --- !u!21 &1269979182
 Material:
   serializedVersion: 8
@@ -51048,10 +50959,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.002
   outlineWidth: 0.005
-  drawOutlineShell: 1
+  drawOutlineShell: 0
   silhouetteMode: 0
   drawHardEdges: 1
-  hardEdgeAngleDegrees: 60
+  hardEdgeAngleDegrees: 30
   creaseWidth: 0.005
   maxRelativeToMinAxis: 0.12
   minWorldOutlineWidth: 0.0001
@@ -54431,6 +54342,34 @@ MonoBehaviour:
   inspectUI: {fileID: 493583742}
   collectibleInspectUI: {fileID: 1920290006}
   doorPasswordUI: {fileID: 1361115252}
+--- !u!21 &1429219407
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!21 &1429411798
 Material:
   serializedVersion: 8
@@ -56774,6 +56713,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[3]
       value: 
       objectReference: {fileID: 431643979}
+    - target: {fileID: -2353531401383624246, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -1329061553833508840, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       propertyPath: m_Materials.Array.size
       value: 4
@@ -56781,19 +56724,19 @@ PrefabInstance:
     - target: {fileID: -1329061553833508840, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1268190354}
+      objectReference: {fileID: 1429219407}
     - target: {fileID: -1329061553833508840, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 1268190354}
+      objectReference: {fileID: 1429219407}
     - target: {fileID: -1329061553833508840, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 1268190354}
+      objectReference: {fileID: 1429219407}
     - target: {fileID: -1329061553833508840, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       propertyPath: m_Materials.Array.data[3]
       value: 
-      objectReference: {fileID: 1268190354}
+      objectReference: {fileID: 1429219407}
     - target: {fileID: 919132149155446097, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       propertyPath: m_Name
       value: PlantSet(1)
@@ -56851,7 +56794,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 423518147}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4523538664337683456, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 77806841011507648, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       insertIndex: -1
@@ -56884,9 +56828,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2711474307161605317, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1521388064}
-    - targetCorrespondingSourceObject: {fileID: 4523538664337683456, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 422871789}
     - targetCorrespondingSourceObject: {fileID: 4908524011301305468, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 597798349}
@@ -56899,11 +56840,6 @@ Transform:
 --- !u!1 &1503480505 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4908524011301305468, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
-  m_PrefabInstance: {fileID: 1503480502}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1503480506 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4523538664337683456, guid: 0b26102c5a1765f4a965a60626f20ac9, type: 3}
   m_PrefabInstance: {fileID: 1503480502}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1503480508 stripped
@@ -56956,7 +56892,7 @@ MonoBehaviour:
   drawOutlineShell: 1
   silhouetteMode: 0
   drawHardEdges: 1
-  hardEdgeAngleDegrees: 60
+  hardEdgeAngleDegrees: 30
   creaseWidth: 0.015
   maxRelativeToMinAxis: 0.12
   minWorldOutlineWidth: 0.003
@@ -60379,7 +60315,7 @@ PrefabInstance:
     - target: {fileID: 327064008815436722, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 656949493}
+      objectReference: {fileID: 1954839465}
     - target: {fileID: 466608246689542871, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -76427,6 +76363,34 @@ MonoBehaviour:
   buildOnAwake: 1
   cachedOriginalMaterials:
   - {fileID: 175985918378496639, guid: 9b120b43f4356ce4fb8a0d9143929bf9, type: 3}
+--- !u!21 &1954839465
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1955456560
 GameObject:
   m_ObjectHideFlags: 0
