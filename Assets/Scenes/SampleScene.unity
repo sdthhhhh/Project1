@@ -50959,7 +50959,7 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.002
   outlineWidth: 0.005
-  drawOutlineShell: 0
+  drawOutlineShell: 1
   silhouetteMode: 0
   drawHardEdges: 1
   hardEdgeAngleDegrees: 30
@@ -54415,7 +54415,7 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.002
   outlineWidth: 0.005
-  drawOutlineShell: 1
+  drawOutlineShell: 0
   silhouetteMode: 0
   drawHardEdges: 1
   hardEdgeAngleDegrees: 60
@@ -55416,6 +55416,34 @@ MonoScript:
   m_Namespace: 
   m_AssemblyName: Assembly-CSharp
 --- !u!21 &1461813573
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/URP/OutlineBody
+  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!21 &1462076397
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -60063,7 +60091,7 @@ PrefabInstance:
     - target: {fileID: -7664728788398519507, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1707307235}
+      objectReference: {fileID: 1462076397}
     - target: {fileID: -7628274954807177987, guid: 9736e2b829b4b7a4c8024b2df52fb3d7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -67275,34 +67303,6 @@ MonoBehaviour:
   cachedOriginalMaterials:
   - {fileID: 175985918378496639, guid: 9b120b43f4356ce4fb8a0d9143929bf9, type: 3}
 --- !u!21 &1706693618
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/URP/OutlineBody
-  m_Shader: {fileID: 4800000, guid: a8febb5ad2fd03b4b9760a7d96ba9e0d, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats: []
-    m_Colors:
-    - _BaseColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
-  m_BuildTextureStacks: []
---- !u!21 &1707307235
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
