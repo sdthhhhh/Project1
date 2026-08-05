@@ -30,7 +30,7 @@ public sealed class ColorSwatchTest : MonoBehaviour
             : transform.position + Vector3.forward * distance;
         Vector3 right = cam != null ? cam.transform.right : Vector3.right;
 
-        Spawn(0, "OutlineSwatch_Black", MeshOutlineStyle.OutlineTone.Black, origin - right * spacing);
+        Spawn(0, "OutlineSwatch_Yellow", MeshOutlineStyle.OutlineTone.Yellow, origin - right * spacing);
         Spawn(1, "OutlineSwatch_White", MeshOutlineStyle.OutlineTone.White, origin);
         Spawn(2, "OutlineSwatch_Red", MeshOutlineStyle.OutlineTone.Red, origin + right * spacing);
 

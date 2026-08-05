@@ -20,7 +20,7 @@ public static class RestorePhotoOutlines
             return;
         }
 
-        Color body = new Color(0.09f, 0.09f, 0.1f, 1f);
+        Color body = new Color(0f, 0f, 0f, 1f);
         int total = 0, shells = 0;
         MeshOutlineStyle[] styles = Object.FindObjectsOfType<MeshOutlineStyle>(true);
         for (int i = 0; i < styles.Length; i++)

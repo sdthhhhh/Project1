@@ -16,9 +16,9 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
     public enum OutlineTone
     {
-        Black,
-        White,
-        Red
+        Yellow = 0, // was Black; same index so old scenes keep tone slot 0
+        White = 1,
+        Red = 2
     }
 
     /// <summary>
@@ -43,6 +43,12 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     private float outlineWidth = 0.02f;
     [SerializeField, FormerlySerializedAs("drawSilhouette"), Tooltip("OutlineShell silhouette rim (sealed / ThinSheet / extrude). Off = body + creases only.")]
     private bool drawOutlineShell = true;
+    [SerializeField, Tooltip("Constant screen-pixel thickness for BOTH OutlineShell and OutlineCreases. Skips sealed/object-space bake so every object uses the same path.")]
+    private bool useScreenSpaceWidth = true;
+    [SerializeField, Range(0.5f, 8f), Tooltip("Silhouette thickness in screen pixels.")]
+    private float outlinePixelWidth = 2f;
+    [SerializeField, Range(0.5f, 8f), Tooltip("Hard-edge crease thickness in screen pixels.")]
+    private float creasePixelWidth = 1.5f;
     [SerializeField, Tooltip("Auto: flat sheets inflate, rods/boxes sealed. Or force Sealed / ThinSheet manually.")]
     private SilhouetteMode silhouetteMode = SilhouetteMode.Auto;
     [SerializeField, Tooltip("OutlineCreases hard-edge structural lines. Can be used without OutlineShell.")]
@@ -57,14 +63,14 @@ public sealed class MeshOutlineStyle : MonoBehaviour
     private float thinSheetAspectThreshold = 0.12f;
     [SerializeField, HideInInspector, Tooltip("Legacy; migrated into Silhouette Mode = ThinSheet.")]
     private bool forceThinSheetOutline;
-    [SerializeField] private Color bodyColor = new Color(0.09f, 0.09f, 0.1f, 1f);
+    [SerializeField] private Color bodyColor = new Color(0f, 0f, 0f, 1f);
     [SerializeField, Tooltip("Keep Lit/original materials on the mesh; only add outline shells (photos, textured props).")]
     private bool preserveOriginalMaterials;
     [SerializeField, Tooltip("Rebuild outline shells when Play starts (generated helpers are DontSave).")]
     private bool buildOnAwake = true;
     [SerializeField] private Material[] cachedOriginalMaterials;
 
-    private static readonly Color ToneBlack = new Color(0.05f, 0.05f, 0.055f, 1f);
+    private static readonly Color ToneYellow = new Color(1f, 0.92f, 0.15f, 1f);
     private static readonly Color ToneWhite = new Color(0.93f, 0.94f, 0.96f, 1f);
     private static readonly Color ToneRed = new Color(0.9f, 0.2f, 0.16f, 1f);
 
@@ -97,6 +103,9 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         get => drawHardEdges;
         set => drawHardEdges = value;
     }
+
+    /// <summary>True after a Play-mode Rebuild finished (shell and/or creases as configured).</summary>
+    public bool BuiltThisPlaySession => builtThisPlaySession;
 
     public OutlineTone Tone
     {
@@ -545,12 +554,19 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
     /// <summary>
     /// Fast Cull-Front outline for Play-Mode streaming (far / pending objects).
-    /// Near objects should call Rebuild() for sealed quality.
+    /// Respects drawOutlineShell — never invents a silhouette when shell is intentionally off.
     /// </summary>
     public void RebuildLightPlaceholder()
     {
         if (gameObject.name == "OutlineShell" || gameObject.name == "OutlineCreases")
             return;
+
+        // CautionLines etc. use crease-only; forcing a shell made them flash solid white in Play.
+        if (!drawOutlineShell)
+        {
+            Rebuild();
+            return;
+        }
 
         MeshFilter sourceFilter = GetComponent<MeshFilter>();
         MeshRenderer sourceRenderer = GetComponent<Renderer>() as MeshRenderer;
@@ -570,7 +586,7 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         shellUsesShaderExtrusion = true;
 
         shellMat = new Material(shellShader);
-        shellMat.SetFloat("_OutlineWidth", localOutline);
+        ConfigureShellWidth(shellMat, localOutline);
         MarkGenerated(shellMat);
         CreateShellObject(sourceMesh, shellMat);
 
@@ -622,22 +638,29 @@ public sealed class MeshOutlineStyle : MonoBehaviour
 
         if (drawOutlineShell)
         {
-            if (dense)
+            // Screen-space: one path for all meshes (no sealed / thin-sheet mix → no partial look).
+            if (useScreenSpaceWidth)
             {
-                // Ultra-dense meshes: Cull-Front share-mesh (avoid multi-GB sealed builds).
                 shellMat = new Material(shellShader);
-                shellMat.SetFloat("_OutlineWidth", localOutline);
+                ConfigureShellWidth(shellMat, localOutline);
+                MarkGenerated(shellMat);
+                shellUsesShaderExtrusion = true;
+                CreateShellObject(sourceMesh, shellMat);
+            }
+            else if (dense)
+            {
+                shellMat = new Material(shellShader);
+                ConfigureShellWidth(shellMat, localOutline);
                 MarkGenerated(shellMat);
                 shellUsesShaderExtrusion = true;
                 CreateShellObject(sourceMesh, shellMat);
             }
             else if (ShouldUseThinSheetSilhouette(sourceMesh))
             {
-                // Cards / photos: sealed face extrusion is nearly invisible face-on.
-                // Share mesh + uniform inflate + Cull Front → reliable rim.
-                // Scale around mesh bounds center (not pivot) so off-center pivots stay aligned.
                 shellMat = new Material(shellShader);
+                shellMat.SetFloat("_ScreenSpaceOutline", 0f);
                 shellMat.SetFloat("_OutlineWidth", 0f);
+                shellMat.SetFloat("_OutlinePixelWidth", 0f);
                 MarkGenerated(shellMat);
                 shellUsesShaderExtrusion = false;
                 CreateShellObject(sourceMesh, shellMat);
@@ -648,20 +671,21 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             }
             else
             {
-                // Same path as Tool Generate: sealed face slabs + fins + corners.
                 shellMesh = BuildSealedOutlineShell(sourceMesh, localOutline);
                 if (shellMesh != null)
                 {
                     MarkGenerated(shellMesh);
                     shellMat = new Material(shellShader);
+                    shellMat.SetFloat("_ScreenSpaceOutline", 0f);
                     shellMat.SetFloat("_OutlineWidth", 0f);
+                    shellMat.SetFloat("_OutlinePixelWidth", 0f);
                     MarkGenerated(shellMat);
                     CreateShellObject(shellMesh, shellMat);
                 }
                 else
                 {
                     shellMat = new Material(shellShader);
-                    shellMat.SetFloat("_OutlineWidth", localOutline);
+                    ConfigureShellWidth(shellMat, localOutline);
                     MarkGenerated(shellMat);
                     shellUsesShaderExtrusion = true;
                     CreateShellObject(sourceMesh, shellMat);
@@ -669,14 +693,32 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             }
         }
 
-        // Creases match the pre-oversize path (skip on dense — too heavy).
+        // Creases: screen-space ribbons when enabled (same pixel model as shell).
+        // Dense meshes still skip — edge collect on 100k+ tris is too heavy.
         if (drawHardEdges && !dense)
         {
-            creaseMat = new Material(shellShader);
-            creaseMat.renderQueue = (int)RenderQueue.Geometry + 30;
-            creaseMat.SetFloat("_OutlineWidth", 0f);
-            MarkGenerated(creaseMat);
-            creaseMesh = BuildCreaseMesh(sourceMesh, hardEdgeAngleDegrees, localCrease);
+            if (useScreenSpaceWidth)
+            {
+                Shader creaseShader = Shader.Find("Custom/URP/OutlineCrease");
+                if (creaseShader == null)
+                    creaseShader = shellShader;
+                creaseMat = new Material(creaseShader);
+                creaseMat.renderQueue = (int)RenderQueue.Geometry + 30;
+                ConfigureCreaseWidth(creaseMat);
+                MarkGenerated(creaseMat);
+                creaseMesh = BuildCreaseMeshScreenSpace(sourceMesh, hardEdgeAngleDegrees);
+            }
+            else
+            {
+                creaseMat = new Material(shellShader);
+                creaseMat.renderQueue = (int)RenderQueue.Geometry + 30;
+                creaseMat.SetFloat("_ScreenSpaceOutline", 0f);
+                creaseMat.SetFloat("_OutlineWidth", 0f);
+                creaseMat.SetFloat("_OutlinePixelWidth", 0f);
+                MarkGenerated(creaseMat);
+                creaseMesh = BuildCreaseMesh(sourceMesh, hardEdgeAngleDegrees, localCrease);
+            }
+
             if (creaseMesh != null)
             {
                 MarkGenerated(creaseMesh);
@@ -797,20 +839,60 @@ public sealed class MeshOutlineStyle : MonoBehaviour
         if (shellMat != null)
         {
             shellMat.SetColor("_OutlineColor", outline);
-            shellMat.SetFloat("_OutlineWidth", shellUsesShaderExtrusion ? localOutlineWidth : 0f);
+            if (shellUsesShaderExtrusion)
+                ConfigureShellWidth(shellMat, localOutlineWidth);
+            else
+            {
+                shellMat.SetFloat("_ScreenSpaceOutline", 0f);
+                shellMat.SetFloat("_OutlineWidth", 0f);
+                shellMat.SetFloat("_OutlinePixelWidth", 0f);
+            }
         }
         if (creaseMat != null)
         {
             creaseMat.SetColor("_OutlineColor", outline);
-            creaseMat.SetFloat("_OutlineWidth", 0f);
+            if (useScreenSpaceWidth)
+                ConfigureCreaseWidth(creaseMat);
+            else
+            {
+                creaseMat.SetFloat("_ScreenSpaceOutline", 0f);
+                creaseMat.SetFloat("_OutlineWidth", 0f);
+                creaseMat.SetFloat("_OutlinePixelWidth", 0f);
+            }
         }
+    }
+
+    private void ConfigureShellWidth(Material mat, float localOutlineWidth)
+    {
+        if (mat == null)
+            return;
+
+        if (useScreenSpaceWidth)
+        {
+            mat.SetFloat("_ScreenSpaceOutline", 1f);
+            mat.SetFloat("_OutlinePixelWidth", Mathf.Max(0.5f, outlinePixelWidth));
+            mat.SetFloat("_OutlineWidth", 0f);
+        }
+        else
+        {
+            mat.SetFloat("_ScreenSpaceOutline", 0f);
+            mat.SetFloat("_OutlinePixelWidth", 0f);
+            mat.SetFloat("_OutlineWidth", localOutlineWidth);
+        }
+    }
+
+    private void ConfigureCreaseWidth(Material mat)
+    {
+        if (mat == null)
+            return;
+        mat.SetFloat("_OutlinePixelWidth", Mathf.Max(0.5f, creasePixelWidth));
     }
 
     public static Color ResolveToneColor(OutlineTone t)
     {
         switch (t)
         {
-            case OutlineTone.Black: return ToneBlack;
+            case OutlineTone.Yellow: return ToneYellow;
             case OutlineTone.Red: return ToneRed;
             default: return ToneWhite;
         }
@@ -1090,6 +1172,104 @@ public sealed class MeshOutlineStyle : MonoBehaviour
             Mathf.Round(v.x * s) / s,
             Mathf.Round(v.y * s) / s,
             Mathf.Round(v.z * s) / s);
+    }
+
+    private static Mesh BuildCreaseMeshScreenSpace(Mesh source, float angleDegrees)
+    {
+        Vector3[] srcVerts = source.vertices;
+        int[] tris = source.triangles;
+        if (srcVerts == null || tris == null || tris.Length < 3)
+            return null;
+
+        var edgeNormals = new Dictionary<EdgeKey, EdgeFaces>(tris.Length);
+        for (int t = 0; t < tris.Length; t += 3)
+        {
+            int i0 = tris[t];
+            int i1 = tris[t + 1];
+            int i2 = tris[t + 2];
+
+            Vector3 v0 = srcVerts[i0];
+            Vector3 v1 = srcVerts[i1];
+            Vector3 v2 = srcVerts[i2];
+            Vector3 faceNormal = Vector3.Cross(v1 - v0, v2 - v0);
+            if (faceNormal.sqrMagnitude < 1e-10f)
+                continue;
+            faceNormal.Normalize();
+
+            AddEdge(edgeNormals, v0, v1, faceNormal);
+            AddEdge(edgeNormals, v1, v2, faceNormal);
+            AddEdge(edgeNormals, v2, v0, faceNormal);
+        }
+
+        float cosThreshold = Mathf.Cos(angleDegrees * Mathf.Deg2Rad);
+        var segments = new List<CreaseSegment>(64);
+        foreach (KeyValuePair<EdgeKey, EdgeFaces> pair in edgeNormals)
+        {
+            EdgeFaces faces = pair.Value;
+            bool isHard;
+            Vector3 outward;
+
+            if (!faces.hasB)
+            {
+                isHard = true;
+                outward = faces.normalA;
+            }
+            else
+            {
+                float dot = Vector3.Dot(faces.normalA, faces.normalB);
+                isHard = dot < cosThreshold;
+                outward = (faces.normalA + faces.normalB).normalized;
+                if (outward.sqrMagnitude < 0.5f)
+                    outward = faces.normalA;
+            }
+
+            if (!isHard)
+                continue;
+
+            segments.Add(new CreaseSegment(pair.Key.a, pair.Key.b, outward));
+        }
+
+        if (segments.Count == 0)
+            return null;
+
+        var verts = new List<Vector3>(segments.Count * 4);
+        var normals = new List<Vector3>(segments.Count * 4);
+        var tangents = new List<Vector4>(segments.Count * 4);
+        var indices = new List<int>(segments.Count * 6);
+
+        for (int s = 0; s < segments.Count; s++)
+        {
+            CreaseSegment seg = segments[s];
+            Vector3 outward = seg.outward.sqrMagnitude > 1e-8f ? seg.outward.normalized : Vector3.up;
+            Vector3 a = seg.a + outward * 1e-4f;
+            Vector3 b = seg.b + outward * 1e-4f;
+            Vector3 dir = b - a;
+            float len = dir.magnitude;
+            if (len < 1e-5f)
+                continue;
+            dir /= len;
+
+            // No endpoint overhang (was len*0.02 overlap for corner sealing).
+            int baseIndex = verts.Count;
+            verts.Add(a); normals.Add(outward); tangents.Add(new Vector4(dir.x, dir.y, dir.z, -1f));
+            verts.Add(a); normals.Add(outward); tangents.Add(new Vector4(dir.x, dir.y, dir.z, 1f));
+            verts.Add(b); normals.Add(outward); tangents.Add(new Vector4(dir.x, dir.y, dir.z, 1f));
+            verts.Add(b); normals.Add(outward); tangents.Add(new Vector4(dir.x, dir.y, dir.z, -1f));
+            AddQuad(indices, baseIndex + 0, baseIndex + 1, baseIndex + 2, baseIndex + 3);
+        }
+
+        if (indices.Count == 0)
+            return null;
+
+        var mesh = new Mesh { name = "OutlineCreasesScreen" };
+        if (verts.Count > 65000)
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        mesh.SetVertices(verts);
+        mesh.SetNormals(normals);
+        mesh.SetTangents(tangents);
+        mesh.SetTriangles(indices, 0);
+        mesh.RecalculateBounds();
+        return mesh;
     }
 
     private static Mesh BuildCreaseMesh(Mesh source, float angleDegrees, float width)

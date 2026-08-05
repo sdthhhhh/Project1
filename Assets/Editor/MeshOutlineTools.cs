@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public sealed class MeshOutlineTools : EditorWindow
 {
-    private static readonly Color DefaultBody = new Color(0.09f, 0.09f, 0.1f, 1f);
+    private static readonly Color DefaultBody = new Color(0f, 0f, 0f, 1f);
 
     private float outlineWidthFactor = 0.015f;
     private MeshOutlineStyle.OutlineTone tone = MeshOutlineStyle.OutlineTone.White;
@@ -25,6 +25,21 @@ public sealed class MeshOutlineTools : EditorWindow
         var win = GetWindow<MeshOutlineTools>("Mesh Outline");
         win.minSize = new Vector2(340f, 400f);
         win.Show();
+    }
+
+    [InitializeOnLoadMethod]
+    private static void AutoEnableReadableBeforePlay()
+    {
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChangedForReadable;
+        EditorApplication.playModeStateChanged += OnPlayModeStateChangedForReadable;
+    }
+
+    private static void OnPlayModeStateChangedForReadable(PlayModeStateChange state)
+    {
+        // Tool Generate already enables Read/Write; direct Play often skipped that step,
+        // so crease/sealed builds silently produced nothing.
+        if (state == PlayModeStateChange.ExitingEditMode)
+            EnableReadWriteForOutlineMeshes(showDialog: false);
     }
 
     [MenuItem("Tools/Mesh Outline/Photos → Thin-Sheet Outline + Generate")]

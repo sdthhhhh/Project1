@@ -2,7 +2,7 @@ Shader "Custom/URP/OutlineBody"
 {
     Properties
     {
-        _BaseColor("Base Color", Color) = (0.1, 0.1, 0.1, 1)
+        _BaseColor("Base Color", Color) = (0, 0, 0, 1)
     }
 
     SubShader

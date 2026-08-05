@@ -172,7 +172,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -181,7 +184,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -208,7 +211,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -217,7 +223,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -272,7 +278,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -281,7 +290,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -308,7 +317,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -317,7 +329,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -538,7 +550,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.01
   creaseWidthFactor: 0.005
   outlineWidth: 0.025
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 1
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -547,7 +562,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.006
   thinSheetAspectThreshold: 0.2
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -630,7 +645,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.005
   outlineWidth: 0.015
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -639,7 +657,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -666,7 +684,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -675,7 +696,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -702,7 +723,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -711,7 +735,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -766,7 +790,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -775,7 +802,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -858,7 +885,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -867,7 +897,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -922,7 +952,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -931,7 +964,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -986,7 +1019,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -995,7 +1031,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1078,7 +1114,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1087,7 +1126,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1114,7 +1153,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1123,7 +1165,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1184,7 +1226,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1193,7 +1238,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1220,7 +1265,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1229,7 +1277,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1256,7 +1304,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1265,7 +1316,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1376,7 +1427,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1385,7 +1439,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1589,7 +1643,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1598,7 +1655,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1787,7 +1844,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1796,7 +1856,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -1879,7 +1939,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -1888,7 +1951,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2033,7 +2096,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2042,7 +2108,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2105,7 +2171,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2114,7 +2183,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2141,7 +2210,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2150,7 +2222,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2316,7 +2388,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2325,7 +2400,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2509,7 +2584,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.01
   creaseWidthFactor: 0.005
   outlineWidth: 0.03
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 1
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2518,7 +2596,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.006
   thinSheetAspectThreshold: 0.2
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2795,7 +2873,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2804,7 +2885,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -2980,7 +3061,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -2989,7 +3073,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3044,7 +3128,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3053,7 +3140,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3080,7 +3167,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3089,7 +3179,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3116,7 +3206,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3125,7 +3218,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3314,7 +3407,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3323,7 +3419,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3378,7 +3474,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.005
   outlineWidth: 0.015
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3387,7 +3486,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3470,7 +3569,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3479,7 +3581,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -3506,7 +3608,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -3515,7 +3620,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -4470,7 +4575,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.005
   outlineWidth: 0.015
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -4479,7 +4587,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -4590,7 +4698,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -4599,7 +4710,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -4659,7 +4770,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -4668,7 +4782,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -4751,7 +4865,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -4760,7 +4877,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -4787,7 +4904,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -4796,7 +4916,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -4874,7 +4994,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.005
   outlineWidth: 0.015
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -4883,7 +5006,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5001,7 +5124,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5010,7 +5136,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5037,7 +5163,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5046,7 +5175,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5101,7 +5230,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5110,7 +5242,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5193,7 +5325,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5202,7 +5337,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5257,7 +5392,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5266,7 +5404,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5405,7 +5543,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5414,7 +5555,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5525,7 +5666,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5534,7 +5678,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5561,7 +5705,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5570,7 +5717,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5597,7 +5744,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5606,7 +5756,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5633,7 +5783,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5642,7 +5795,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5763,7 +5916,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.005
   creaseWidthFactor: 0.005
   outlineWidth: 0.015
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5772,7 +5928,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5855,7 +6011,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5864,7 +6023,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5919,7 +6078,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5928,7 +6090,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -5983,7 +6145,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -5992,7 +6157,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -6136,7 +6301,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -6145,7 +6313,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -6172,7 +6340,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -6181,7 +6352,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -6276,7 +6447,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -6285,7 +6459,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:
@@ -6312,7 +6486,10 @@ MonoBehaviour:
   outlineWidthFactor: 0.015
   creaseWidthFactor: 0.01
   outlineWidth: 0.035
-  drawSilhouette: 1
+  drawOutlineShell: 1
+  useScreenSpaceWidth: 1
+  outlinePixelWidth: 2
+  creasePixelWidth: 1.5
   silhouetteMode: 0
   drawHardEdges: 0
   hardEdgeAngleDegrees: 60
@@ -6321,7 +6498,7 @@ MonoBehaviour:
   minWorldOutlineWidth: 0.003
   thinSheetAspectThreshold: 0.12
   forceThinSheetOutline: 0
-  bodyColor: {r: 0.09, g: 0.09, b: 0.1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   preserveOriginalMaterials: 0
   buildOnAwake: 0
   cachedOriginalMaterials:

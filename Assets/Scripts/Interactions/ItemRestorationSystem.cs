@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>按 MovableItems/Deskroom 下的同名数字，自动建立六件物品的拾取和归位流程。</summary>
+/// <summary>按 MovableItems 与 Deskroom 下同名编号 2–6，建立拾取与归位。归位槽是 Deskroom 物品实例（幽灵外观），直接用 E 交互。</summary>
 public sealed class ItemRestorationSystem : MonoBehaviour
 {
     public static ItemRestorationSystem Instance { get; private set; }
@@ -70,7 +70,7 @@ public sealed class ItemRestorationSystem : MonoBehaviour
             sourceInspect.SetCanInspect(true);
             RestorationInspectablePickup pickup=source.GetComponent<RestorationInspectablePickup>();if(pickup==null)pickup=source.gameObject.AddComponent<RestorationInspectablePickup>();pickup.Configure(id);
 
-            SetVisible(target.gameObject, false);
+            // Placement slots are the Deskroom item instances themselves (ghost look until placed).
             EnsureCollider(target.gameObject);
             InspectableObject targetInspect=target.GetComponent<InspectableObject>();if(targetInspect==null){targetInspect=target.gameObject.AddComponent<InspectableObject>();targetInspect.ConfigurePreview(target.gameObject,$"The restored position for item {id}.",Vector3.zero);}targetInspect.SetCanInspect(false);
             RestorationPlace place=target.GetComponent<RestorationPlace>();if(place==null)place=target.gameObject.AddComponent<RestorationPlace>();place.Configure(id);
@@ -113,8 +113,24 @@ public sealed class ItemRestorationSystem : MonoBehaviour
     {
         var result = new Dictionary<string, Transform>();
         foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
-            if (TryReadNumber(child.name, out int n) && n >= 2 && n <= 6 && !result.ContainsKey(n.ToString()))
-                result.Add(n.ToString(), FindVisualObject(child, root));
+        {
+            if (!TryReadNumber(child.name, out int n) || n < 2 || n > 6)
+                continue;
+
+            string key = n.ToString();
+            Transform visual = FindVisualObject(child, root);
+            if (!result.TryGetValue(key, out Transform existing))
+            {
+                result.Add(key, visual);
+                continue;
+            }
+
+            // Prefer active PlacementSlots instances over leftover inactive shelf copies.
+            bool existingActive = existing != null && existing.gameObject.activeInHierarchy;
+            bool candidateActive = visual != null && visual.gameObject.activeInHierarchy;
+            if (!existingActive && candidateActive)
+                result[key] = visual;
+        }
         return result;
     }
 
@@ -162,10 +178,18 @@ public sealed class ItemRestorationSystem : MonoBehaviour
     {
         if (!CanPlace(id)) return;
         State state = states[id]; state.placed = true;
-        SetVisible(target, true);
-        InspectableObject inspectable=target.GetComponent<InspectableObject>();if(inspectable!=null)inspectable.SetCanInspect(false);
-        RestorationPlace place=target.GetComponent<RestorationPlace>();if(place!=null)Destroy(place);
-        InteractionUI.Instance?.ShowStatus(state.displayName+" restored");CheckComplete();
+        RestorationPlace place = target.GetComponent<RestorationPlace>();
+        if (place != null)
+        {
+            place.RevealPlaced();
+            Destroy(place);
+        }
+        else
+            SetVisible(target, true);
+        InspectableObject inspectable = target.GetComponent<InspectableObject>();
+        if (inspectable != null) inspectable.SetCanInspect(false);
+        InteractionUI.Instance?.ShowStatus(state.displayName + " restored");
+        CheckComplete();
     }
 
     private void CheckComplete()
@@ -213,12 +237,16 @@ public sealed class RestorationInspectablePickup : MonoBehaviour,IInspectableCol
 public sealed class RestorationPlace : MonoBehaviour, IInteractable
 {
     private string id;
-    private GameObject dustHint;
+    private MeshOutlineStyle outlineStyle;
+    private readonly List<Renderer> ghostRenderers = new List<Renderer>(8);
+    private readonly List<Material[]> cachedMaterials = new List<Material[]>(8);
+    private bool ghostApplied;
 
     public void Configure(string value)
     {
         id = value;
-        if(Application.isPlaying)CreateDustHint();
+        if (Application.isPlaying)
+            ApplyGhostInstance();
     }
 
     public string GetInteractText()
@@ -233,8 +261,7 @@ public sealed class RestorationPlace : MonoBehaviour, IInteractable
         if (ItemRestorationSystem.Instance != null && ItemRestorationSystem.Instance.CanPlace(id))
         {
             ItemRestorationSystem.Instance.Place(id, gameObject);
-            if (dustHint != null) Destroy(dustHint);
-            enabled=false;
+            enabled = false;
         }
         else
         {
@@ -242,37 +269,88 @@ public sealed class RestorationPlace : MonoBehaviour, IInteractable
         }
     }
 
-    private void CreateDustHint()
+    /// <summary>Swap ghost materials back to the real item look after a successful place.</summary>
+    public void RevealPlaced()
     {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
-        if (renderers.Length == 0) return;
+        RestoreSolidInstance();
+    }
 
-        Bounds bounds = renderers[0].bounds;
-        for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+    private void ApplyGhostInstance()
+    {
+        if (ghostApplied)
+            return;
 
-        dustHint = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        dustHint.name = "PlacementHint_" + id;
-        Destroy(dustHint.GetComponent<Collider>());
-        dustHint.transform.position = new Vector3(bounds.center.x, bounds.min.y + 0.006f, bounds.center.z);
-        dustHint.transform.rotation = transform.rotation;
-        dustHint.transform.localScale = new Vector3(
-            Mathf.Max(bounds.size.x * 0.9f, 0.08f),
-            0.012f,
-            Mathf.Max(bounds.size.z * 0.9f, 0.08f));
+        outlineStyle = GetComponent<MeshOutlineStyle>();
+        if (outlineStyle != null)
+        {
+            outlineStyle.ClearGenerated();
+            outlineStyle.enabled = false;
+        }
 
-        Renderer hintRenderer = dustHint.GetComponent<Renderer>();
         Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
-        if (shader == null) shader = Shader.Find("Unlit/Color");
-        Material material = new Material(shader);
-        Color dustColor = new Color(0.34f, 0.27f, 0.16f, 0.28f);
-        material.color = dustColor;
-        material.SetColor("_BaseColor", dustColor);
-        material.SetFloat("_Surface", 1f);
-        material.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        material.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        material.SetFloat("_ZWrite", 0f);
-        material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        material.renderQueue = 3000;
-        hintRenderer.material = material;
+        if (shader == null)
+            shader = Shader.Find("Unlit/Color");
+
+        Color ghostColor = new Color(0.75f, 0.75f, 0.8f, 0.28f);
+        ghostRenderers.Clear();
+        cachedMaterials.Clear();
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer == null)
+                continue;
+            string n = renderer.gameObject.name;
+            if (n == "OutlineShell" || n == "OutlineCreases"
+                || n == "OutlineShell_Detached" || n == "OutlineCreases_Detached")
+                continue;
+
+            ghostRenderers.Add(renderer);
+            cachedMaterials.Add(renderer.sharedMaterials);
+
+            Material ghostMat = new Material(shader);
+            ghostMat.color = ghostColor;
+            if (ghostMat.HasProperty("_BaseColor"))
+                ghostMat.SetColor("_BaseColor", ghostColor);
+            ghostMat.SetFloat("_Surface", 1f);
+            ghostMat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            ghostMat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            ghostMat.SetFloat("_ZWrite", 0f);
+            ghostMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            ghostMat.renderQueue = 3000;
+
+            Material[] slots = new Material[Mathf.Max(1, renderer.sharedMaterials.Length)];
+            for (int s = 0; s < slots.Length; s++)
+                slots[s] = ghostMat;
+            renderer.sharedMaterials = slots;
+            renderer.enabled = true;
+        }
+
+        ghostApplied = true;
+    }
+
+    private void RestoreSolidInstance()
+    {
+        for (int i = 0; i < ghostRenderers.Count; i++)
+        {
+            if (ghostRenderers[i] == null)
+                continue;
+            if (i < cachedMaterials.Count && cachedMaterials[i] != null)
+                ghostRenderers[i].sharedMaterials = cachedMaterials[i];
+            ghostRenderers[i].enabled = true;
+        }
+
+        ghostRenderers.Clear();
+        cachedMaterials.Clear();
+        ghostApplied = false;
+
+        if (outlineStyle == null)
+            outlineStyle = GetComponent<MeshOutlineStyle>();
+        if (outlineStyle != null)
+        {
+            outlineStyle.enabled = true;
+            outlineStyle.Rebuild();
+        }
     }
 }

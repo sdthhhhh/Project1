@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public sealed class MeshOutlinePlayBuilder : MonoBehaviour
 {
-    [SerializeField, Min(1)] private int buildsPerFrame = 3;
+    [SerializeField, Min(1)] private int buildsPerFrame = 8;
     [SerializeField, Min(0)] private int settleFrames = 30;
 
     private static MeshOutlinePlayBuilder instance;
@@ -82,12 +82,27 @@ public sealed class MeshOutlinePlayBuilder : MonoBehaviour
             MeshOutlineStyle style = styles[i];
             if (style == null)
                 continue;
-            if (style.transform.Find("OutlineShell") != null)
-                continue;
-            if (style.transform.Find("OutlineShell_Detached") != null)
+            if (style.gameObject.name == "OutlineShell" || style.gameObject.name == "OutlineCreases")
                 continue;
             if (!style.isActiveAndEnabled)
                 continue;
+            // Already rebuilt this Play — do not keep re-queueing crease-only objects
+            // (they never get OutlineShell, which used to make EnqueueMissing loop forever).
+            if (style.BuiltThisPlaySession)
+                continue;
+
+            bool wantsShell = style.DrawOutlineShell;
+            bool wantsCrease = style.DrawHardEdges;
+            if (!wantsShell && !wantsCrease)
+                continue;
+
+            if (wantsShell && style.transform.Find("OutlineShell") != null)
+                continue;
+            if (!wantsShell && wantsCrease && style.transform.Find("OutlineCreases") != null)
+                continue;
+            if (style.transform.Find("OutlineShell_Detached") != null)
+                continue;
+
             Enqueue(style);
         }
     }
@@ -153,11 +168,17 @@ public sealed class MeshOutlinePlayBuilder : MonoBehaviour
             try
             {
                 style.Rebuild();
+
+                // Success criteria must match intentional settings:
+                // - drawOutlineShell off (e.g. CautionLines): no shell is correct — do NOT force a white placeholder.
+                // - screen-space shells share the source mesh name, not "OutlineShellSealed".
+                bool wantsShell = style.DrawOutlineShell;
                 Transform shellTf = style.transform.Find("OutlineShell");
                 MeshFilter shellMf = shellTf != null ? shellTf.GetComponent<MeshFilter>() : null;
-                bool sealedOk = shellMf != null && shellMf.sharedMesh != null &&
-                                shellMf.sharedMesh.name == "OutlineShellSealed";
-                if (sealedOk)
+                bool shellPresent = shellMf != null && shellMf.sharedMesh != null;
+                bool buildOk = wantsShell ? shellPresent : true;
+
+                if (buildOk)
                 {
                     MeshOutlineStyle.NotePlaySealedBuilt();
                 }
@@ -170,8 +191,7 @@ public sealed class MeshOutlinePlayBuilder : MonoBehaviour
                     }
                     else
                     {
-                        if (shellTf == null)
-                            style.RebuildLightPlaceholder();
+                        style.RebuildLightPlaceholder();
                         MeshOutlineStyle.NotePlayLightFallback();
                     }
                 }
