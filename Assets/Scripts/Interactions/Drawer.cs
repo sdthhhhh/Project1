@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Drawer : MonoBehaviour, IInteractable
+public class Drawer : MonoBehaviour
 {
     [SerializeField] private Vector3 openDirection = Vector3.forward;
     [SerializeField] private float openDistance = 0.35f;
@@ -58,9 +58,5 @@ public class Drawer : MonoBehaviour, IInteractable
 
         InteractionUI.Instance.ShowStatus("Drawer is open");
         Debug.Log("Drawer is open");
-    }
-    public string GetInteractText()
-    {
-        return "Press E to interact";
     }
 }

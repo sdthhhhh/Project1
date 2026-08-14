@@ -437,8 +437,6 @@ public sealed class InspectableUIController : MonoBehaviour
             Object.Destroy(c);
         foreach (DiaryInspectPuzzleController c in root.GetComponentsInChildren<DiaryInspectPuzzleController>(true))
             Object.Destroy(c);
-        foreach (BedroomDesk c in root.GetComponentsInChildren<BedroomDesk>(true))
-            Object.Destroy(c);
         foreach (InspectableObject c in root.GetComponentsInChildren<InspectableObject>(true))
             Object.Destroy(c);
         foreach (DiaryFragment c in root.GetComponentsInChildren<DiaryFragment>(true))
