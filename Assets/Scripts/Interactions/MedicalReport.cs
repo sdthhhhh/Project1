@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
-public class MedicalReportItem : MonoBehaviour, IInteractable
+public class MedicalReportItem : MonoBehaviour
 {
     public static bool HasMedicalReport = false;
 
@@ -20,11 +20,6 @@ public class MedicalReportItem : MonoBehaviour, IInteractable
 
     private bool isInspecting = false;
     private bool canCloseInspect = false;
-
-    public string GetInteractText()
-    {
-        return "Press E to view report";
-    }
 
     public void Interact()
     {

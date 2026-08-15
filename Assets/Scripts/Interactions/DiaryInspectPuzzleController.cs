@@ -134,6 +134,11 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
     {
         if (IsOpen)
             return;
+        if (DiaryManager.Instance != null && DiaryManager.Instance.PuzzleCompleted)
+        {
+            InteractionUI.Instance?.ShowStatus("The diary cover is already complete.");
+            return;
+        }
 
         AutoWireSources();
         if (currentInspectPreview == null || camera == null)
@@ -725,6 +730,7 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
 
         SetRevealOnCompleteActive(true);
         UnlockInteractablesOnComplete();
+        DisablePuzzleHotspots();
         InteractionUI.Instance?.ShowStatus("The diary cover is complete.");
 
         // Close inspect / puzzle — do not open the diary book reading UI.
@@ -734,6 +740,22 @@ public sealed class DiaryInspectPuzzleController : MonoBehaviour
         InspectableRaycaster raycaster = FindObjectOfType<InspectableRaycaster>();
         if (raycaster != null)
             raycaster.ForceCloseInspection();
+    }
+
+    private void DisablePuzzleHotspots()
+    {
+        if (bookSource == null)
+            return;
+
+        InspectableHotspot[] hotspots = bookSource.GetComponentsInChildren<InspectableHotspot>(true);
+        for (int i = 0; i < hotspots.Length; i++)
+        {
+            InspectableHotspot hotspot = hotspots[i];
+            if (hotspot == null || !hotspot.OpenDiaryPuzzle)
+                continue;
+            hotspot.SetInspectMode(false);
+            hotspot.enabled = false;
+        }
     }
 
     private void SetRevealOnCompleteActive(bool active)

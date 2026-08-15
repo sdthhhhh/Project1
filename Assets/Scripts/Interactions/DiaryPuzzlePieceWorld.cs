@@ -1,27 +1,37 @@
 using UnityEngine;
 
 /// <summary>
-/// World diary puzzle piece: E collects into DiaryManager; no inspect UI.
+/// World diary puzzle piece: LMB opens the shared inspection UI; Q collects it.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class DiaryPuzzlePieceWorld : MonoBehaviour, IInteractable
+public sealed class DiaryPuzzlePieceWorld : MonoBehaviour, IInspectableCollectible
 {
     [SerializeField, Tooltip("Fragment id 1–4 matching the cover puzzle tray slot.")]
     private int fragmentId = 1;
-    [SerializeField] private string interactText = "Press E to collect";
-
     private bool collected;
 
     public int FragmentId => fragmentId;
 
     public void Configure(int id) => fragmentId = id;
 
-    public string GetInteractText()
+    private void Awake()
     {
-        return collected ? string.Empty : interactText;
+        InspectableObject inspectable = GetComponent<InspectableObject>();
+        if (inspectable == null)
+            inspectable = gameObject.AddComponent<InspectableObject>();
+
+        inspectable.ConfigurePreview(
+            gameObject,
+            $"Diary puzzle fragment {fragmentId}.",
+            Vector3.zero);
+        inspectable.SetContentKind(InspectContentKind.Model3D);
+        inspectable.SetCanInspect(true);
+
+        if (GetComponentInChildren<Collider>(true) == null)
+            gameObject.AddComponent<BoxCollider>();
     }
 
-    public void Interact()
+    public void CollectFromInspection()
     {
         if (collected)
             return;
@@ -33,7 +43,6 @@ public sealed class DiaryPuzzlePieceWorld : MonoBehaviour, IInteractable
 
         collected = true;
         DiaryManager.Instance.CollectFragment(fragmentId);
-        InteractionUI.Instance?.HideInteract();
         gameObject.SetActive(false);
     }
 }

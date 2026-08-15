@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// Matches MovableItems 2-6 to PlacementSlots 2-6. Items are collected through
-/// the shared inspection UI, then placed into the matching yellow outline with E.
+/// the shared inspection UI, then placed into the matching yellow outline with LMB.
 /// </summary>
 public sealed class ItemRestorationSystem : MonoBehaviour
 {

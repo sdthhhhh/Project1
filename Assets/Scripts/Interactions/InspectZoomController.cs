@@ -96,6 +96,13 @@ public sealed class InspectZoomController : MonoBehaviour
     public void OpenZoom(InspectableHotspot hotspot)
     {
         if (!inspecting || IsZoomOpen || hotspot == null) return;
+        if (hotspot.OpenDiaryPuzzle && DiaryManager.Instance != null && DiaryManager.Instance.PuzzleCompleted)
+        {
+            hotspot.SetInspectMode(false);
+            hotspot.enabled = false;
+            InteractionUI.Instance?.ShowStatus("The diary cover is already complete.");
+            return;
+        }
         currentHotspot = hotspot;
         IsZoomOpen = true;
         if (magnifierButton != null) magnifierButton.gameObject.SetActive(false);
